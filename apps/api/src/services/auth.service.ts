@@ -17,7 +17,7 @@ const OAUTH_CONFIG = {
     slack: {
         authorizeUrl: 'https://slack.com/oauth/v2/authorize',
         tokenUrl: 'https://slack.com/api/oauth.v2.access',
-        scopes: ['chat:write', 'users:read', 'app_mentions:read'],
+        scopes: ['chat:write', 'users:read', 'users:read.email', 'app_mentions:read'],
     },
     github: {
         authorizeUrl: 'https://github.com/login/oauth/authorize',

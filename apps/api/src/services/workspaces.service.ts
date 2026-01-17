@@ -3,11 +3,14 @@
  *
  * Database operations for multi-tenant workspace management.
  * Provides lookup by integration IDs (Slack, GitHub, Jira).
+ * 
+ * Security: OAuth tokens are encrypted at rest using AES-256-GCM.
  */
 
 import { eq, or } from "drizzle-orm";
 import type { PolicyTier } from "shared";
 import { db, schema } from "../db";
+import { encryptToken, decryptToken } from "../lib/token-encryption";
 
 // ============================================
 // Types
@@ -30,6 +33,45 @@ export interface UpdateWorkspaceInput {
 }
 
 // ============================================
+// Helper Functions
+// ============================================
+
+/**
+ * Decrypt workspace tokens after DB read
+ */
+async function decryptWorkspaceTokens(workspace: any) {
+    if (workspace.slackAccessToken) {
+        workspace.slackAccessToken = await decryptToken(workspace.slackAccessToken);
+    }
+    if (workspace.githubInstallationId) {
+        workspace.githubInstallationId = await decryptToken(workspace.githubInstallationId);
+    }
+    if (workspace.jiraAccessToken) {
+        workspace.jiraAccessToken = await decryptToken(workspace.jiraAccessToken);
+    }
+    return workspace;
+}
+
+/**
+ * Encrypt workspace tokens before DB write
+ */
+async function encryptWorkspaceTokens(input: UpdateWorkspaceInput) {
+    const encrypted = { ...input };
+
+    if (encrypted.slackAccessToken) {
+        encrypted.slackAccessToken = await encryptToken(encrypted.slackAccessToken);
+    }
+    if (encrypted.githubInstallationId) {
+        encrypted.githubInstallationId = await encryptToken(encrypted.githubInstallationId);
+    }
+    if (encrypted.jiraAccessToken) {
+        encrypted.jiraAccessToken = await encryptToken(encrypted.jiraAccessToken);
+    }
+
+    return encrypted;
+}
+
+// ============================================
 // Service Functions
 // ============================================
 
@@ -43,7 +85,9 @@ export async function getWorkspaceById(id: string) {
         .where(eq(schema.workspaces.id, id))
         .limit(1);
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
@@ -56,7 +100,9 @@ export async function findBySlackTeamId(slackTeamId: string) {
         .where(eq(schema.workspaces.slackTeamId, slackTeamId))
         .limit(1);
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
@@ -69,7 +115,9 @@ export async function findByGitHubOrg(githubOrg: string) {
         .where(eq(schema.workspaces.githubOrg, githubOrg))
         .limit(1);
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
@@ -82,7 +130,9 @@ export async function findByJiraSite(jiraSite: string) {
         .where(eq(schema.workspaces.jiraSite, jiraSite))
         .limit(1);
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
@@ -113,7 +163,9 @@ export async function findByIntegration(params: {
         .where(or(...conditions))
         .limit(1);
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
@@ -133,22 +185,30 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
 
 /**
  * Update workspace
+ * Encrypts any OAuth tokens before storage
  */
 export async function updateWorkspace(id: string, input: UpdateWorkspaceInput) {
+    // Encrypt tokens before writing to DB
+    const encryptedInput = await encryptWorkspaceTokens(input);
+
     const [workspace] = await db
         .update(schema.workspaces)
         .set({
-            ...input,
+            ...encryptedInput,
             updatedAt: new Date(),
         })
         .where(eq(schema.workspaces.id, id))
         .returning();
 
-    return workspace || null;
+    if (!workspace) return null;
+
+    // Decrypt before returning
+    return await decryptWorkspaceTokens(workspace);
 }
 
 /**
  * List all workspaces
+ * Note: Tokens are NOT decrypted in list view for performance
  */
 export async function listWorkspaces() {
     return db.select().from(schema.workspaces);

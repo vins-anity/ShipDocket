@@ -8,7 +8,7 @@ import {
     verifyJiraSignature,
     verifySlackSignature,
 } from "../../middleware/verify-webhook";
-import { eventsService, policiesService, workspacesService } from "../../services";
+import { eventsService, policiesService, slackService, workspacesService } from "../../services";
 
 /**
  * Webhook Router Module
@@ -253,6 +253,18 @@ const webhooks = new Hono()
                             const delayHours = Math.max(0, delayMs / (1000 * 60 * 60)); // ensure non-negative
 
                             await scheduleClosureCheck(taskId, workspace.id, delayHours);
+
+                            // PHASE 3: Send Slack closure proposal notification to manager (per thesis)
+                            const prAuthorEmail = payload.pull_request?.user?.email || null;
+                            if (prAuthorEmail && workspace.slackAccessToken) {
+                                await slackService.sendClosureProposal(
+                                    workspace.id,
+                                    taskId,
+                                    payload.pull_request?.title || `PR #${payload.pull_request?.number}`,
+                                    prAuthorEmail,
+                                    new Date(checkResult.scheduledCloseAt)
+                                );
+                            }
                         }
                     }
                 }
@@ -313,25 +325,33 @@ const webhooks = new Hono()
                 if (toStatus?.toLowerCase().includes("in progress")) {
                     console.log(`[Jira] Passive Handshake detected for ${payload.issue?.key}`);
 
+                    const taskId = payload.issue?.key || "UNKNOWN";
+                    const taskTitle = payload.issue?.fields?.summary || "Untitled Task";
+
                     /* @ts-expect-error */
                     await eventsService.createEvent({
                         workspaceId: workspace.id,
-                        taskId: payload.issue?.key || "UNKNOWN",
+                        taskId,
                         eventType: "handshake",
                         triggerSource: "jira_webhook",
                         payload: {
-                            issueTitle: payload.issue?.fields?.summary,
+                            issueTitle: taskTitle,
                             status: toStatus,
                             user: payload.user?.displayName,
                             raw: payload,
                         },
                     });
 
-                    // Note: Proof Packet creation is implied/handled by Handshake event?
-                    // Usually we should explicitly create a Proof Packet DRAFT here if one doesn't exist.
-                    // But eventsService is lower level.
-                    // Proper flow: hand logic to `proofsService.handleHandshake(...)`?
-                    // For now, simpler: relying on event log.
+                    // PHASE 1: Send Slack notification to developer (per thesis)
+                    const assigneeEmail = payload.issue?.fields?.assignee?.emailAddress;
+                    if (assigneeEmail && workspace.slackAccessToken) {
+                        await slackService.sendHandshakeNotification(
+                            workspace.id,
+                            taskId,
+                            taskTitle,
+                            assigneeEmail
+                        );
+                    }
                 } else {
                     /* @ts-expect-error */
                     await eventsService.createEvent({
