@@ -11,6 +11,10 @@ out/
 .nuxt/
 
 # Environment variables
+.env/*/*
+.env/*
+.env/*/**
+
 .env
 .env.local
 .env.development.local

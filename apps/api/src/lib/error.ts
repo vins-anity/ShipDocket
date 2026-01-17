@@ -44,3 +44,41 @@ export class WebhookVerificationError extends AppError {
         super(`Webhook signature verification failed for ${provider}`, 401);
     }
 }
+
+// ============================================
+// Utility Functions
+// ============================================
+
+/**
+ * UUID v4 regex pattern
+ */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Validates if a string is a valid UUID v4
+ */
+export function isValidUUID(str: string): boolean {
+    return UUID_REGEX.test(str);
+}
+
+/**
+ * Wraps a database operation to catch invalid UUID errors and return 404
+ */
+export async function withUUIDValidation<T>(
+    id: string,
+    resourceName: string,
+    operation: () => Promise<T | null>
+): Promise<T | null> {
+    if (!isValidUUID(id)) {
+        return null;
+    }
+    try {
+        return await operation();
+    } catch (error) {
+        // Check for PostgreSQL invalid UUID error
+        if (error instanceof Error && error.message.includes("invalid input syntax for type uuid")) {
+            return null;
+        }
+        throw error;
+    }
+}

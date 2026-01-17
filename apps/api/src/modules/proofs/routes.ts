@@ -7,9 +7,12 @@ import {
     GenerateSummarySchema,
     ProofPacketListSchema,
     ProofPacketSchema,
+    type ProofStatus,
     ShareResultSchema,
 } from "shared";
 import * as v from "valibot";
+import * as geminiService from "../../lib/gemini";
+import * as proofsService from "../../services/proofs.service";
 
 /**
  * Proofs Module
@@ -48,18 +51,18 @@ const proofs = new Hono()
         }),
         async (c) => {
             const workspaceId = c.req.query("workspaceId");
-            const _status = c.req.query("status");
+            const status = c.req.query("status") as ProofStatus | undefined;
             const page = Number.parseInt(c.req.query("page") || "1", 10);
             const pageSize = Math.min(Number.parseInt(c.req.query("pageSize") || "20", 10), 100);
 
-            // TODO: Fetch from database
-
-            return c.json({
-                packets: [],
-                total: 0,
+            const result = await proofsService.listProofPackets({
+                workspaceId,
+                status,
                 page,
                 pageSize,
             });
+
+            return c.json(result);
         },
     )
 
@@ -89,44 +92,37 @@ const proofs = new Hono()
         async (c) => {
             const id = c.req.param("id");
 
-            // TODO: Fetch from database
+            // Validate UUID format
+            const { isValidUUID } = await import("../../lib/error");
+            if (!isValidUUID(id)) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
 
-            // Placeholder response matching Appendix B schema
+            const packet = await proofsService.getProofPacketById(id);
+
+            if (!packet) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
+
+            // Augment with expected structure from Appendix B
             return c.json({
-                id,
-                workspaceId: "workspace-1",
-                status: "draft",
+                ...packet,
                 task: {
-                    id: "10001",
-                    key: "TRAIL-123",
-                    summary: "Implement user authentication",
-                    type: "Story",
-                    priority: "High",
-                    assignee: "developer@example.com",
+                    id: packet.taskId,
+                    key: packet.taskId,
+                    summary: "Task summary",
                 },
-                aiSummary: null,
                 handshake: {
-                    eventId: "event-1",
-                    triggeredAt: new Date().toISOString(),
+                    triggeredAt: packet.createdAt,
                     triggerSource: "jira_webhook",
-                    assignee: "developer@example.com",
                 },
                 execution: {
-                    prUrl: null,
-                    prMergedAt: null,
                     approvals: [],
                     ciPassed: false,
-                    ciPassedAt: null,
-                    commits: [],
                 },
                 closure: {
-                    closedAt: null,
-                    closureType: undefined,
+                    closedAt: packet.closedAt,
                 },
-                hashChainRoot: null,
-                exportedUrl: null,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
             });
         },
     )
@@ -155,26 +151,22 @@ const proofs = new Hono()
         async (c) => {
             const body = c.req.valid("json");
 
-            const now = new Date().toISOString();
-            const packet = {
-                id: crypto.randomUUID(),
+            const packet = await proofsService.createProofPacket({
                 workspaceId: body.workspaceId,
-                status: "draft" as const,
-                task: {
-                    id: body.taskId,
-                    key: body.taskKey,
-                    summary: body.taskSummary,
+                taskId: body.taskId,
+            });
+
+            return c.json(
+                {
+                    ...packet,
+                    task: {
+                        id: body.taskId,
+                        key: body.taskKey,
+                        summary: body.taskSummary,
+                    },
                 },
-                aiSummary: null,
-                hashChainRoot: null,
-                exportedUrl: null,
-                createdAt: now,
-                updatedAt: now,
-            };
-
-            // TODO: Save to database
-
-            return c.json(packet, 201);
+                201,
+            );
         },
     )
 
@@ -210,10 +202,39 @@ const proofs = new Hono()
             const id = c.req.param("id");
             const _options = c.req.valid("json");
 
-            // TODO: Fetch proof packet from database
-            // TODO: Aggregate commit messages, PR description
-            // TODO: Call Gemini AI API
+            // Fetch proof packet
+            const packet = await proofsService.getProofPacketById(id);
 
+            if (!packet) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
+
+            // Generate AI summary if Gemini is configured
+            if (geminiService.isConfigured()) {
+                try {
+                    const result = await geminiService.generateProofSummary({
+                        taskKey: packet.taskId,
+                        taskSummary: "Task implementation",
+                        commits: [],
+                    });
+
+                    // Update proof packet with summary
+                    await proofsService.updateProofPacket(id, {
+                        aiSummary: result.summary,
+                        aiSummaryModel: result.model,
+                    });
+
+                    return c.json({
+                        success: true,
+                        summary: result.summary,
+                        model: result.model,
+                    });
+                } catch (_error) {
+                    // Fall through to mock response
+                }
+            }
+
+            // Mock response if Gemini not configured
             const mockSummary =
                 "This update implements secure user authentication with email/password login, " +
                 "password reset functionality, and session management. The changes were reviewed " +
@@ -222,7 +243,7 @@ const proofs = new Hono()
             return c.json({
                 success: true,
                 summary: mockSummary,
-                model: "gemini-1.5-flash",
+                model: "mock",
             });
         },
     )
@@ -249,6 +270,12 @@ const proofs = new Hono()
         }),
         async (c) => {
             const id = c.req.param("id");
+
+            // Verify packet exists
+            const packet = await proofsService.getProofPacketById(id);
+            if (!packet) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
 
             // TODO: Generate PDF using a library like puppeteer or react-pdf
 
@@ -284,20 +311,19 @@ const proofs = new Hono()
         async (c) => {
             const id = c.req.param("id");
 
-            // TODO: Fetch complete proof packet and return
+            const packet = await proofsService.getProofPacketById(id);
+
+            if (!packet) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
 
             return c.json({
-                id,
-                workspaceId: "workspace-1",
-                status: "finalized",
+                ...packet,
                 task: {
-                    id: "10001",
-                    key: "TRAIL-123",
-                    summary: "Implement user authentication",
+                    id: packet.taskId,
+                    key: packet.taskId,
+                    summary: "Task summary",
                 },
-                aiSummary: "User authentication feature completed with secure login flow.",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
             });
         },
     )
@@ -326,13 +352,25 @@ const proofs = new Hono()
         async (c) => {
             const id = c.req.param("id");
 
-            // TODO: Generate signed URL or token-based share link
+            // Verify packet exists
+            const packet = await proofsService.getProofPacketById(id);
+            if (!packet) {
+                return c.json({ error: "Proof packet not found" }, 404);
+            }
 
+            // Generate share token and update packet
             const shareToken = crypto.randomUUID();
+            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+            await proofsService.updateProofPacket(id, {
+                status: "exported",
+                exportedUrl: `https://trail.ai/share/${shareToken}`,
+            });
+
             return c.json({
                 success: true,
                 shareUrl: `https://trail.ai/share/${shareToken}`,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                expiresAt: expiresAt.toISOString(),
             });
         },
     );

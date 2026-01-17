@@ -3,6 +3,7 @@ import { describeRoute } from "hono-openapi";
 import { resolver, validator as vValidator } from "hono-openapi/valibot";
 import { ChainVerificationSchema, EventListSchema, EventQuerySchema, EventSchema } from "shared";
 import * as v from "valibot";
+import * as eventsService from "../../services/events.service";
 
 /**
  * Events Module
@@ -42,23 +43,16 @@ const events = new Hono()
         vValidator("query", EventQuerySchema),
         async (c) => {
             const query = c.req.valid("query");
-            const page = query.page || 1;
-            const pageSize = Math.min(query.pageSize || 20, 100);
 
-            // TODO: Implement actual database query
-            // const results = await db.select().from(schema.events)
-            //     .where(...)
-            //     .orderBy(desc(schema.events.createdAt))
-            //     .limit(pageSize)
-            //     .offset((page - 1) * pageSize);
-
-            return c.json({
-                events: [],
-                total: 0,
-                page,
-                pageSize,
-                hasMore: false,
+            const result = await eventsService.listEvents({
+                workspaceId: query.workspaceId,
+                taskId: query.taskId,
+                eventType: query.eventType,
+                page: query.page || 1,
+                pageSize: Math.min(query.pageSize || 20, 100),
             });
+
+            return c.json(result);
         },
     )
 
@@ -88,20 +82,19 @@ const events = new Hono()
         async (c) => {
             const id = c.req.param("id");
 
-            // TODO: Implement actual database query
+            // Validate UUID format
+            const { isValidUUID } = await import("../../lib/error");
+            if (!isValidUUID(id)) {
+                return c.json({ error: "Event not found" }, 404);
+            }
 
-            // Placeholder response
-            return c.json({
-                id,
-                eventType: "handshake",
-                triggerSource: "jira_webhook",
-                prevHash: null,
-                eventHash: "abc123def456",
-                payload: { placeholder: true },
-                workspaceId: "workspace-1",
-                taskId: "TRAIL-123",
-                createdAt: new Date().toISOString(),
-            });
+            const event = await eventsService.getEventById(id);
+
+            if (!event) {
+                return c.json({ error: "Event not found" }, 404);
+            }
+
+            return c.json(event);
         },
     )
 
@@ -129,17 +122,9 @@ const events = new Hono()
         async (c) => {
             const workspaceId = c.req.param("workspaceId");
 
-            // TODO: Implement actual verification
-            // const events = await db.select().from(schema.events)
-            //     .where(eq(schema.events.workspaceId, workspaceId))
-            //     .orderBy(asc(schema.events.createdAt));
-            // const result = await verifyChainIntegrity(events);
+            const result = await eventsService.verifyWorkspaceChain(workspaceId);
 
-            return c.json({
-                valid: true,
-                verifiedCount: 0,
-                errors: [],
-            });
+            return c.json(result);
         },
     )
 
@@ -179,19 +164,9 @@ const events = new Hono()
         async (c) => {
             const taskId = c.req.param("taskId");
 
-            // TODO: Implement actual query and aggregation
+            const result = await eventsService.getEventsByTask(taskId);
 
-            return c.json({
-                taskId,
-                events: [],
-                summary: {
-                    handshakeAt: null,
-                    closedAt: null,
-                    prCount: 0,
-                    approvalCount: 0,
-                    ciPassed: false,
-                },
-            });
+            return c.json(result);
         },
     );
 

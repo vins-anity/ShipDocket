@@ -150,6 +150,10 @@ export async function createEvent(input: CreateEventInput) {
     // Insert into database
     const [event] = await db.insert(schema.events).values(eventData).returning();
 
+    if (!event) {
+        throw new Error("Failed to create event");
+    }
+
     return mapEventToResponse(event);
 }
 

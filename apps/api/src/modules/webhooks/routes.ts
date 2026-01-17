@@ -171,7 +171,7 @@ const webhooks = new Hono()
             const statusChange = payload.changelog?.items?.find((item) => item.field === "status");
 
             if (statusChange) {
-                const fromStatus = statusChange.fromString;
+                const _fromStatus = statusChange.fromString;
                 const toStatus = statusChange.toString;
 
                 // Trigger Passive Handshake when moving to "In Progress"

@@ -124,7 +124,11 @@ export async function createProofPacket(input: CreateProofPacketInput) {
         })
         .returning();
 
-    return packet!;
+    if (!packet) {
+        throw new Error("Failed to create proof packet");
+    }
+
+    return packet;
 }
 
 /**

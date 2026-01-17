@@ -11,6 +11,7 @@ import {
     PolicyTierSchema,
 } from "shared";
 import * as v from "valibot";
+import * as policiesService from "../../services/policies.service";
 
 /**
  * Policies Module
@@ -21,54 +22,8 @@ import * as v from "valibot";
  * @see Section 5.4.3 in thesis: "Policy & Optimistic Engine"
  */
 
-// ============================================
-// Default Policy Presets
-// ============================================
-
-const POLICY_PRESETS: Record<
-    PolicyTier,
-    {
-        name: string;
-        tier: PolicyTier;
-        description: string;
-        requiredApprovals: number;
-        requireCiPass: boolean;
-        autoCloseDelayHours: number;
-        requireAllChecksPass: boolean;
-        requireLinkedIssue: boolean;
-    }
-> = {
-    agile: {
-        name: "Agile",
-        tier: "agile",
-        description: "Fast-moving teams with high trust. 1 approval, 24h auto-close.",
-        requiredApprovals: 1,
-        requireCiPass: true,
-        autoCloseDelayHours: 24,
-        requireAllChecksPass: false,
-        requireLinkedIssue: false,
-    },
-    standard: {
-        name: "Standard",
-        tier: "standard",
-        description: "Balanced workflow. 2 approvals, 48h auto-close.",
-        requiredApprovals: 2,
-        requireCiPass: true,
-        autoCloseDelayHours: 48,
-        requireAllChecksPass: false,
-        requireLinkedIssue: true,
-    },
-    hardened: {
-        name: "Hardened",
-        tier: "hardened",
-        description: "High-compliance environments. 3 approvals, 72h auto-close.",
-        requiredApprovals: 3,
-        requireCiPass: true,
-        autoCloseDelayHours: 72,
-        requireAllChecksPass: true,
-        requireLinkedIssue: true,
-    },
-};
+// Re-export POLICY_PRESETS from service for use in routes
+const { POLICY_PRESETS } = policiesService;
 
 // ============================================
 // Routes
@@ -99,19 +54,26 @@ const policies = new Hono()
         async (c) => {
             const workspaceId = c.req.query("workspaceId");
 
-            // TODO: Fetch from database
-            // For now, return preset policies
-            const now = new Date().toISOString();
-            const policyList = Object.values(POLICY_PRESETS).map((preset, index) => ({
-                id: `preset-${preset.tier}`,
-                workspaceId: workspaceId || "default",
-                ...preset,
-                isDefault: index === 1, // Standard is default
-                isActive: true,
-                createdAt: now,
-            }));
+            // Fetch from database
+            const dbPolicies = await policiesService.listPolicies(workspaceId);
 
-            return c.json({ policies: policyList });
+            // If no policies in DB, return presets
+            if (dbPolicies.length === 0) {
+                const now = new Date().toISOString();
+                const presetList = Object.values(POLICY_PRESETS).map((preset, index) => ({
+                    id: `preset-${preset.tier}`,
+                    workspaceId: workspaceId || "default",
+                    ...preset,
+                    isDefault: index === 1,
+                    isActive: true,
+                    createdAt: now,
+                }));
+                return c.json({ policies: presetList });
+            }
+
+            return c.json({
+                policies: dbPolicies.map(policiesService.mapPolicyToResponse),
+            });
         },
     )
 
@@ -179,28 +141,24 @@ const policies = new Hono()
         async (c) => {
             const body = c.req.valid("json");
 
-            // Apply preset defaults if tier is specified
-            const preset = body.tier ? POLICY_PRESETS[body.tier] : POLICY_PRESETS.standard;
-
-            const policy = {
-                id: crypto.randomUUID(),
+            const policy = await policiesService.createPolicy({
                 workspaceId: body.workspaceId,
                 name: body.name,
-                tier: body.tier || "standard",
-                description: body.description || preset.description,
-                requiredApprovals: body.requiredApprovals ?? preset.requiredApprovals,
-                requireCiPass: body.requireCiPass ?? preset.requireCiPass,
-                autoCloseDelayHours: body.autoCloseDelayHours ?? preset.autoCloseDelayHours,
-                requireAllChecksPass: body.requireAllChecksPass ?? preset.requireAllChecksPass,
-                requireLinkedIssue: body.requireLinkedIssue ?? preset.requireLinkedIssue,
-                isDefault: body.isDefault ?? false,
-                isActive: true,
-                createdAt: new Date().toISOString(),
-            };
+                tier: body.tier,
+                description: body.description,
+                requiredApprovals: body.requiredApprovals,
+                requireCiPass: body.requireCiPass,
+                autoCloseDelayHours: body.autoCloseDelayHours,
+                requireAllChecksPass: body.requireAllChecksPass,
+                requireLinkedIssue: body.requireLinkedIssue,
+                isDefault: body.isDefault,
+            });
 
-            // TODO: Save to database
+            if (!policy) {
+                return c.json({ error: "Failed to create policy" }, 500);
+            }
 
-            return c.json(policy, 201);
+            return c.json(policiesService.mapPolicyToResponse(policy), 201);
         },
     )
 
@@ -229,54 +187,30 @@ const policies = new Hono()
         async (c) => {
             const { taskId, workspaceId, policyId } = c.req.valid("json");
 
-            // TODO: Fetch actual events for this task
-            // TODO: Fetch policy from database or use default
+            // Get policy (use standard preset as fallback)
+            const policy = policyId
+                ? await policiesService.getPolicyById(policyId)
+                : await policiesService.getDefaultPolicy(workspaceId);
 
-            const policy = POLICY_PRESETS.standard;
+            const policyRules = policy || POLICY_PRESETS.standard;
 
-            // Mock check results
+            // TODO: Fetch actual events for this task to determine real check status
+            // For now, return mock check results
             const checks = {
                 prMerged: false,
                 ciPassed: false,
                 approvalsCount: 0,
-                approvalsRequired: policy.requiredApprovals,
+                approvalsRequired: policyRules.requiredApprovals,
                 allChecksPassed: false,
                 linkedIssueFound: Boolean(taskId),
             };
 
-            // Evaluate eligibility
-            const eligible =
-                checks.prMerged &&
-                (!policy.requireCiPass || checks.ciPassed) &&
-                checks.approvalsCount >= policy.requiredApprovals &&
-                (!policy.requireAllChecksPass || checks.allChecksPassed) &&
-                (!policy.requireLinkedIssue || checks.linkedIssueFound);
-
-            let reason: string | undefined;
-            if (!eligible) {
-                if (!checks.prMerged) reason = "PR not merged";
-                else if (policy.requireCiPass && !checks.ciPassed) reason = "CI not passed";
-                else if (checks.approvalsCount < policy.requiredApprovals)
-                    reason = `Insufficient approvals (${checks.approvalsCount}/${policy.requiredApprovals})`;
-                else if (policy.requireAllChecksPass && !checks.allChecksPassed)
-                    reason = "Not all checks passed";
-                else if (policy.requireLinkedIssue && !checks.linkedIssueFound)
-                    reason = "No linked issue found";
-            }
-
-            // Calculate scheduled close time if eligible
-            const scheduledCloseAt = eligible
-                ? new Date(Date.now() + policy.autoCloseDelayHours * 60 * 60 * 1000).toISOString()
-                : null;
-
-            return c.json({
-                eligible,
-                policyId: policyId || "preset-standard",
-                policyName: policy.name,
-                reason,
+            const result = await policiesService.evaluateClosure(
+                { taskId, workspaceId, policyId },
                 checks,
-                scheduledCloseAt,
-            });
+            );
+
+            return c.json(result);
         },
     )
 
@@ -319,11 +253,23 @@ const policies = new Hono()
                         createdAt: new Date().toISOString(),
                     });
                 }
+                return c.json({ error: "Policy not found" }, 404);
             }
 
-            // TODO: Fetch from database
+            // Validate UUID format before querying
+            const { isValidUUID } = await import("../../lib/error");
+            if (!isValidUUID(id)) {
+                return c.json({ error: "Policy not found" }, 404);
+            }
 
-            return c.json({ error: "Policy not found" }, 404);
+            // Fetch from database
+            const policy = await policiesService.getPolicyById(id);
+
+            if (!policy) {
+                return c.json({ error: "Policy not found" }, 404);
+            }
+
+            return c.json(policiesService.mapPolicyToResponse(policy));
         },
     );
 
