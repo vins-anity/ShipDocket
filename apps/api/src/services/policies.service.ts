@@ -263,13 +263,13 @@ export async function evaluateAndFinalize(taskId: string, workspaceId: string) {
     // For now, we assume conditions are still met if we reached this job.
     // We can simulate a check:
     const mockCurrentChecks: ClosureChecks = {
-        prMerged: true, // If it wasn't merged, we wouldn't have scheduled this? 
+        prMerged: true, // If it wasn't merged, we wouldn't have scheduled this?
         // Actually we schedule "on merge", so yes it should be true.
         ciPassed: true,
         approvalsCount: 2,
         approvalsRequired: 1,
         allChecksPassed: true,
-        linkedIssueFound: true
+        linkedIssueFound: true,
     };
 
     const evaluation = await evaluateClosure({ taskId, workspaceId }, mockCurrentChecks);
@@ -285,8 +285,8 @@ export async function evaluateAndFinalize(taskId: string, workspaceId: string) {
             payload: {
                 method: "optimistic_auto_close",
                 policyId: evaluation.policyId,
-                checks: mockCurrentChecks
-            }
+                checks: mockCurrentChecks,
+            },
         });
 
         // 4. Finalize Proof Packet

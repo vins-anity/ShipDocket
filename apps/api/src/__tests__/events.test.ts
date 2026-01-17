@@ -40,7 +40,9 @@ describe("Events API", () => {
         });
 
         it("should accept query parameters", async () => {
-            const res = await app.request(`/events?workspaceId=${TEST_WORKSPACE_ID}&page=1&pageSize=10`);
+            const res = await app.request(
+                `/events?workspaceId=${TEST_WORKSPACE_ID}&page=1&pageSize=10`,
+            );
             expect(res.status).toBe(200);
 
             const json = await res.json();

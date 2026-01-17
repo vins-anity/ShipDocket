@@ -67,7 +67,7 @@ export function isValidUUID(str: string): boolean {
 export async function withUUIDValidation<T>(
     id: string,
     resourceName: string,
-    operation: () => Promise<T | null>
+    operation: () => Promise<T | null>,
 ): Promise<T | null> {
     if (!isValidUUID(id)) {
         return null;
@@ -76,7 +76,10 @@ export async function withUUIDValidation<T>(
         return await operation();
     } catch (error) {
         // Check for PostgreSQL invalid UUID error
-        if (error instanceof Error && error.message.includes("invalid input syntax for type uuid")) {
+        if (
+            error instanceof Error &&
+            error.message.includes("invalid input syntax for type uuid")
+        ) {
             return null;
         }
         throw error;

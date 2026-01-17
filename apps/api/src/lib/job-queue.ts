@@ -28,7 +28,7 @@ export async function startJobQueue() {
 
     console.log("Initializing Job Queue (pg-boss)...");
 
-    // @ts-ignore - PgBoss constructor issue
+    // @ts-expect-error - PgBoss constructor issue
     boss = new PgBoss(connectionString);
 
     boss.on("error", (error: Error) => console.error("Job Queue Error:", error));
@@ -66,7 +66,7 @@ export async function scheduleClosureCheck(taskId: string, workspaceId: string, 
     const jobId = await boss.send(
         QUEUE_NAMES.CHECK_CLOSURE,
         { taskId, workspaceId },
-        { startAfter: delayHours * 60 * 60, singletonKey: taskId } // Singleton ensures only one check per task
+        { startAfter: delayHours * 60 * 60, singletonKey: taskId }, // Singleton ensures only one check per task
     );
 
     return jobId;
@@ -81,7 +81,7 @@ export async function cancelClosureCheck(taskId: string) {
 
     // pg-boss doesn't strictly support "cancel by singleton key" easily in v9 without fetching ID
     // But we can cancel by jobId if we stored it, or use `cancel`.
-    // For now, simpler approach: we just let it run, and the logic inside evaluateAndFinalize 
+    // For now, simpler approach: we just let it run, and the logic inside evaluateAndFinalize
     // should re-check if it's still eligible (e.g. if status is not "vetoed").
 
     // However, we can try to cancel via key if supported, or just rely on state check.

@@ -26,7 +26,6 @@ async function main() {
 
         process.on("SIGINT", shutdown);
         process.on("SIGTERM", shutdown);
-
     } catch (error) {
         console.error("Failed to start worker:", error);
         process.exit(1);
