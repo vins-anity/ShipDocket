@@ -209,7 +209,6 @@ const proofs = new Hono()
                 return c.json({ error: "Proof packet not found" }, 404);
             }
 
-
             // Try to generate AI summary
             try {
                 const result = await generateProofSummary({
@@ -296,12 +295,16 @@ const proofs = new Hono()
             summary: "Export Proof Packet as JSON",
             description:
                 "Returns the complete proof packet in the Appendix B JSON format for external integrations.",
-            responses:
-                200:
-            description: "JSON export",
-            content:
-                "application/json":
-            schema: resolver(ProofPacketSchema),,,,,
+            responses: {
+                200: {
+                    description: "JSON export",
+                    content: {
+                        "application/json": {
+                            schema: resolver(ProofPacketSchema),
+                        },
+                    },
+                },
+            },
         }),
         async (c) => {
             const id = c.req.param("id");
@@ -333,12 +336,16 @@ const proofs = new Hono()
             summary: "Generate shareable link",
             description:
                 "Creates a public, time-limited URL for sharing the proof packet with clients.",
-            responses:
-                200:
-            description: "Shareable link generated",
-            content:
-                "application/json":
-            schema: resolver(ShareResultSchema),,,,,
+            responses: {
+                200: {
+                    description: "Shareable link generated",
+                    content: {
+                        "application/json": {
+                            schema: resolver(ShareResultSchema),
+                        },
+                    },
+                },
+            },
         }),
         async (c) => {
             const id = c.req.param("id");
