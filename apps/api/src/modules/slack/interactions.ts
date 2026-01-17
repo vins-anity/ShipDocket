@@ -26,7 +26,7 @@ function verifySlackSignature(body: string, timestamp: string, signature: string
     }
 
     // Reject requests older than 5 minutes (replay attack prevention)
-    const requestTimestamp = Number.parseInt(timestamp);
+    const requestTimestamp = Number.parseInt(timestamp, 10);
     const now = Math.floor(Date.now() / 1000);
     if (Math.abs(now - requestTimestamp) > 300) {
         return false;
