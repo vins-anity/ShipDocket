@@ -48,3 +48,6 @@ coverage/
 
 # Drizzle
 drizzle/migrations/.snapshot.json
+
+# TypeScript
+*.tsbuildinfo
