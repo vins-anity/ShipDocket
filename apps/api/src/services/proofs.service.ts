@@ -205,3 +205,11 @@ function mapProofPacketToResponse(packet: schema.ProofPacket) {
         updatedAt: packet.updatedAt.toISOString(),
     };
 }
+
+/**
+ * Get workspace for a proof packet (used for finding integration settings)
+ */
+export async function getWorkspaceForProof(workspaceId: string) {
+    const { workspacesService } = await import("../services");
+    return workspacesService.getWorkspaceById(workspaceId);
+}

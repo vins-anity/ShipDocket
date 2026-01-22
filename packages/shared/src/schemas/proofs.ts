@@ -77,6 +77,7 @@ export const ProofPacketSchema = v.object({
     status: ProofStatusSchema,
     task: TaskSchema,
     aiSummary: v.optional(v.nullable(v.string())),
+    aiSummaryModel: v.optional(v.nullable(v.string())),
     handshake: v.optional(HandshakeSchema),
     execution: v.optional(ExecutionSchema),
     closure: v.optional(ClosureSchema),

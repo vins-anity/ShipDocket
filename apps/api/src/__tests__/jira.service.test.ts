@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { JiraService } from '../services/jira.service';
 
+// Use spyOn to allow implementation changes and avoid global type mismatches
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+global.fetch = mockFetch as unknown as typeof fetch;
 
 describe('Jira Service', () => {
     let service: JiraService;

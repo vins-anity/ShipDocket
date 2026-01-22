@@ -235,18 +235,20 @@ const proofs = new Hono()
 
                         if (prNumber && repoName) {
                             const [owner, repo] = repoName.split('/');
-                            const { githubService } = await import("../../services");
+                            if (owner && repo) {
+                                const { githubService } = await import("../../services");
 
-                            const [prDetails, prCommits] = await Promise.all([
-                                githubService.fetchPRDetails(owner, repo, prNumber),
-                                githubService.fetchCommits(owner, repo, prNumber)
-                            ]);
+                                const [prDetails, prCommits] = await Promise.all([
+                                    githubService.fetchPRDetails(owner, repo, prNumber),
+                                    githubService.fetchCommits(owner, repo, prNumber)
+                                ]);
 
-                            prDescription = prDetails.body || "";
-                            commits = prCommits.map(c => ({
-                                message: c.message,
-                                author: c.author
-                            }));
+                                prDescription = prDetails.body || "";
+                                commits = prCommits.map(c => ({
+                                    message: c.message,
+                                    author: c.author
+                                }));
+                            }
                         }
                     }
                 } catch (ghError) {

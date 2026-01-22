@@ -7,6 +7,7 @@ import {
     IconFileText,
     IconLink,
     IconLoader2,
+    IconShieldCheck,
     IconSparkles,
 } from "@tabler/icons-react";
 import { useState } from "react";
