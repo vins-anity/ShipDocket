@@ -1,5 +1,7 @@
 # Trail AI: A Delivery Assurance and Evidence-Based Audit System for Software Agencies
 
+> **Note:** This is the original thesis document. For the current **System Architecture**, see [ARCHITECTURE.md](./ARCHITECTURE.md). For the **Roadmap**, see [ROADMAP.md](./ROADMAP.md).
+
 ## Capstone Project Thesis Document
 
 **Student Name:** Jhonn Vincent Arcipe

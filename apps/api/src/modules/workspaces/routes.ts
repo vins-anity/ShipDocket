@@ -27,10 +27,17 @@ app.get("/current", async (c) => {
         const all = await workspacesService.listWorkspaces();
         if (all.length > 0 && all[0]) {
             workspace = await workspacesService.getWorkspaceById(all[0].id);
+        } else {
+            // AUTO-SEED: If no workspace exists, create one for the demo
+            console.log("[Auto-Seed] Creating default workspace...");
+            workspace = await workspacesService.createWorkspace({
+                name: "My Agency",
+            });
         }
     }
 
     if (!workspace) {
+        // Should be impossible given the auto-seed above, but safe guard
         return c.json({ error: "Workspace not found" }, 404);
     }
 
