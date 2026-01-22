@@ -176,39 +176,43 @@ export async function verifyWorkspaceChain(workspaceId: string) {
  * @returns Active tasks count (handshakes without corresponding closures)
  */
 export async function getDashboardStats(workspaceId?: string) {
+    try {
+        // Active tasks = tasks with handshake but no closure_approved
+        // Note: closure_approved indicates a task is finalized (not closure_vetoed which means rejected)
 
-    // Active tasks = tasks with handshake but no closure_approved
-    // Note: closure_approved indicates a task is finalized (not closure_vetoed which means rejected)
+        // Get all handshake task IDs
+        const handshakes = await db
+            .selectDistinct({ taskId: schema.events.taskId })
+            .from(schema.events)
+            .where(
+                workspaceId
+                    ? and(eq(schema.events.workspaceId, workspaceId), eq(schema.events.eventType, "handshake"))
+                    : eq(schema.events.eventType, "handshake")
+            );
 
-    // Get all handshake task IDs
-    const handshakes = await db
-        .selectDistinct({ taskId: schema.events.taskId })
-        .from(schema.events)
-        .where(
-            workspaceId
-                ? and(eq(schema.events.workspaceId, workspaceId), eq(schema.events.eventType, "handshake"))
-                : eq(schema.events.eventType, "handshake")
-        );
+        // Get all closed task IDs (closure_approved means task is finalized)
+        const closures = await db
+            .selectDistinct({ taskId: schema.events.taskId })
+            .from(schema.events)
+            .where(
+                workspaceId
+                    ? and(
+                        eq(schema.events.workspaceId, workspaceId),
+                        eq(schema.events.eventType, "closure_approved")
+                    )
+                    : eq(schema.events.eventType, "closure_approved")
+            );
 
-    // Get all closed task IDs (closure_approved means task is finalized)
-    const closures = await db
-        .selectDistinct({ taskId: schema.events.taskId })
-        .from(schema.events)
-        .where(
-            workspaceId
-                ? and(
-                    eq(schema.events.workspaceId, workspaceId),
-                    eq(schema.events.eventType, "closure_approved")
-                )
-                : eq(schema.events.eventType, "closure_approved")
-        );
+        const closedTaskIds = new Set(closures.map((c) => c.taskId).filter(Boolean));
+        const activeTasks = handshakes.filter((h) => h.taskId && !closedTaskIds.has(h.taskId)).length;
 
-    const closedTaskIds = new Set(closures.map((c) => c.taskId).filter(Boolean));
-    const activeTasks = handshakes.filter((h) => h.taskId && !closedTaskIds.has(h.taskId)).length;
-
-    return {
-        activeTasks,
-    };
+        return {
+            activeTasks,
+        };
+    } catch (error) {
+        console.error("DEBUG: Error in getDashboardStats:", error);
+        throw error;
+    }
 }
 
 // ============================================

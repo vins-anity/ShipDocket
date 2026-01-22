@@ -18,32 +18,32 @@ describe("Proofs API", () => {
 
     // Setup: Create a test workspace and mock AI
     beforeAll(async () => {
-        // Mock AI response
+        const mockResponse = {
+            id: "chatcmpl-mock-456",
+            object: "chat.completion",
+            created: Date.now(),
+            model: "mistralai/devstral-2512:free",
+            choices: [
+                {
+                    index: 0,
+                    message: {
+                        role: "assistant",
+                        content: "AI Generated Summary",
+                    },
+                    finish_reason: "stop",
+                },
+            ],
+        };
+
         global.fetch = mock(() =>
             Promise.resolve({
                 ok: true,
                 status: 200,
                 headers: new Headers({ "content-type": "application/json" }),
-                json: async () => ({
-                    choices: [
-                        {
-                            message: {
-                                content: "AI Generated Summary",
-                            },
-                        },
-                    ],
-                }),
-                text: async () => JSON.stringify({
-                    choices: [
-                        {
-                            message: {
-                                content: "AI Generated Summary",
-                            },
-                        },
-                    ],
-                }),
+                json: async () => mockResponse,
+                text: async () => JSON.stringify(mockResponse),
             } as Response)
-        );
+        ) as any;
 
         await db.insert(schema.workspaces).values({
             id: TEST_WORKSPACE_ID,

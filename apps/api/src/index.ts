@@ -10,7 +10,6 @@ import policies from "./modules/policies/routes";
 import proofs from "./modules/proofs/routes";
 import slackInteractions from "./modules/slack/interactions";
 import webhooks from "./modules/webhooks/routes";
-import { eventsService } from "./services";
 
 const app = new Hono()
     .use("*", logger())
@@ -51,6 +50,7 @@ const app = new Hono()
     .route("/events", events)
     // Dashboard Stats
     .get("/stats", async (c) => {
+        const { eventsService } = await import("./services");
         const workspaceId = c.req.query("workspaceId");
         const stats = await eventsService.getDashboardStats(workspaceId);
         return c.json(stats);

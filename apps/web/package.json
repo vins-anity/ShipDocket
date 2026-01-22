@@ -8,7 +8,8 @@
         "build": "tsc -b && bunx --bun vite build",
         "lint": "biome check .",
         "format": "biome check --write .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "test": "echo 'No tests for web yet'"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",

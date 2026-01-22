@@ -20,7 +20,7 @@
         "lint": "biome check .",
         "format": "biome check --write .",
         "type-check": "turbo type-check",
-        "test": "vitest run",
+        "test": "turbo test",
         "postinstall": "turbo build --filter=shared --filter=api",
         "prepare": "husky"
     },

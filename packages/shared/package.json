@@ -12,7 +12,8 @@
     },
     "scripts": {
         "build": "tsc",
-        "dev": "tsc --watch"
+        "dev": "tsc --watch",
+        "test": "echo 'No tests for shared yet'"
     },
     "dependencies": {
         "valibot": "^1.2.0"

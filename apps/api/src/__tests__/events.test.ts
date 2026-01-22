@@ -97,6 +97,9 @@ describe("Events API", () => {
     describe("GET /stats", () => {
         it("should return dashboard statistics", async () => {
             const res = await app.request("/stats");
+            if (res.status !== 200) {
+                console.error("GET /stats failed:", await res.text());
+            }
             expect(res.status).toBe(200);
 
             const json = await res.json();
@@ -106,6 +109,9 @@ describe("Events API", () => {
 
         it("should return stats filtered by workspace", async () => {
             const res = await app.request(`/stats?workspaceId=${TEST_WORKSPACE_ID}`);
+            if (res.status !== 200) {
+                console.error("GET /stats?workspaceId failed:", await res.text());
+            }
             expect(res.status).toBe(200);
 
             const json = await res.json();
