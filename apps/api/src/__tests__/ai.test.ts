@@ -7,7 +7,7 @@
  * These tests are designed to be resilient to this SDK bug.
  */
 
-import { afterAll, beforeAll, describe, expect, test, mock } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { generateProofSummary, isConfigured, type ProofSummaryInput } from "../lib/ai";
 
 describe("OpenRouter AI Integration", () => {
@@ -37,7 +37,7 @@ describe("OpenRouter AI Integration", () => {
             ],
         };
 
-        global.fetch = mock(() =>
+        global.fetch = vi.fn(() =>
             Promise.resolve({
                 ok: true,
                 status: 200,

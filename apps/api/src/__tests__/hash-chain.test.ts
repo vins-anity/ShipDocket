@@ -4,7 +4,7 @@
  * TDD approach: Tests for tamper-evident event logging
  */
 
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it } from "vitest";
 import { computeEventHash, verifyChainIntegrity } from "../lib/hash-chain";
 
 describe("Hash Chain", () => {

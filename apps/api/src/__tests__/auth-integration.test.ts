@@ -4,7 +4,7 @@
  * Tests the complete flow from encryption to OAuth to storage
  */
 
-import { beforeAll, describe, expect, test } from "bun:test";
+import { beforeAll, describe, expect, test } from "vitest";
 import { decryptToken, encryptToken, generateEncryptionKey } from "../lib/token-encryption";
 import * as authService from "../services/auth.service";
 

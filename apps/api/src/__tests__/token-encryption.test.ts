@@ -4,7 +4,7 @@
  * Tests for Bun Web Crypto API encryption/decryption
  */
 
-import { beforeAll, describe, expect, test } from "bun:test";
+import { beforeAll, describe, expect, test } from "vitest";
 import {
     decryptToken,
     encryptToken,
@@ -80,9 +80,7 @@ describe("Token Encryption", () => {
         process.env.ENCRYPTION_KEY = generateEncryptionKey();
 
         // Should throw error with wrong key
-        expect(async () => {
-            await decryptToken(encrypted);
-        }).toThrow();
+        await expect(decryptToken(encrypted)).rejects.toThrow();
 
         // Restore original key
         process.env.ENCRYPTION_KEY = originalKey;
@@ -95,9 +93,7 @@ describe("Token Encryption", () => {
         // Corrupt the ciphertext by changing a character
         const corrupted = `${encrypted.slice(0, -2)}ff`;
 
-        expect(async () => {
-            await decryptToken(corrupted);
-        }).toThrow();
+        await expect(decryptToken(corrupted)).rejects.toThrow();
     });
 
     test("validateEncryption should return true", async () => {

@@ -1,42 +1,42 @@
 
-import { describe, expect, it, mock } from "bun:test";
+import { describe, expect, it, vi } from "vitest";
 import { Hono } from "hono";
 
 // Define mock functions at top scope
 const mockEventsService = {
-    createEvent: mock(),
-    listEvents: mock(),
+    createEvent: vi.fn(),
+    listEvents: vi.fn(),
 };
 const mockWorkspacesService = {
-    findBySlackTeamId: mock(),
-    findByGitHubOrg: mock(),
+    findBySlackTeamId: vi.fn(),
+    findByGitHubOrg: vi.fn(),
 };
-const mockCancelClosureJob = mock();
-const mockScheduleClosureCheck = mock();
-const mockSlackService = { sendClosureProposal: mock() };
-const mockPoliciesService = { evaluateClosure: mock() };
+const mockCancelClosureJob = vi.fn();
+const mockScheduleClosureCheck = vi.fn();
+const mockSlackService = { sendClosureProposal: vi.fn() };
+const mockPoliciesService = { evaluateClosure: vi.fn() };
 
-// Mock dependencies BEFORE any imports (Bun mock.module hoisting behavior varies, best to be explicit)
-mock.module("../services", () => ({
+// Mock dependencies BEFORE any imports (Vitest hoisting handles this)
+vi.mock("../services", () => ({
     eventsService: mockEventsService,
     workspacesService: mockWorkspacesService,
     slackService: mockSlackService,
     policiesService: mockPoliciesService,
 }));
 
-mock.module("../lib/job-queue", () => ({
+vi.mock("../lib/job-queue", () => ({
     cancelClosureJob: mockCancelClosureJob,
     scheduleClosureCheck: mockScheduleClosureCheck,
 }));
 
-mock.module("../middleware/rate-limiter", () => ({
+vi.mock("../middleware/rate-limiter", () => ({
     rateLimiter: () => async (c: any, next: any) => await next(),
     RateLimits: { webhooks: {} }
 }));
 
 // Mock signature verification to simply pass through
 // The critical part is ensuring these are mocked BEFORE the route module imports them
-mock.module("../middleware/verify-webhook", () => ({
+vi.mock("../middleware/verify-webhook", () => ({
     verifySlackSignature: async (c: any, next: any) => await next(),
     verifyGitHubSignature: async (c: any, next: any) => await next(),
     verifyJiraSignature: async (c: any, next: any) => await next(),

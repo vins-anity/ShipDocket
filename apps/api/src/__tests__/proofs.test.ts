@@ -4,7 +4,7 @@
  * TDD approach: Tests for Proof Packet generation and export
  */
 
-import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import { db, schema } from "../db";
 import app from "../index";
@@ -35,7 +35,7 @@ describe("Proofs API", () => {
             ],
         };
 
-        global.fetch = mock(() =>
+        global.fetch = vi.fn(() =>
             Promise.resolve({
                 ok: true,
                 status: 200,
