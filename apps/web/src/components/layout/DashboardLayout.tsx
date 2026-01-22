@@ -1,11 +1,11 @@
 import {
     IconFileText,
     IconLayoutDashboard,
+    IconLogout,
     IconMenu2,
     IconSettings,
     IconShieldCheck,
     IconX,
-    IconLogout,
 } from "@tabler/icons-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -151,7 +151,10 @@ export function DashboardLayout() {
                                     </Link>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={signOut} className="text-red-400 focus:text-red-400">
+                                <DropdownMenuItem
+                                    onClick={signOut}
+                                    className="text-red-400 focus:text-red-400"
+                                >
                                     <IconLogout className="mr-2 h-4 w-4" />
                                     <span>Log out</span>
                                 </DropdownMenuItem>

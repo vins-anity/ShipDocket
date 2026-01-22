@@ -1,9 +1,8 @@
-
 import { createClient } from "@supabase/supabase-js";
 
 /**
  * Seed Script: Create Demo User
- * 
+ *
  * Creates a default user for the demo purposes.
  * User: demo@trail.ai
  * Pass: password123
@@ -20,8 +19,8 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
         autoRefreshToken: false,
-        persistSession: false
-    }
+        persistSession: false,
+    },
 });
 
 async function seedUser() {
@@ -31,25 +30,30 @@ async function seedUser() {
     const password = process.env.SEED_PASSWORD || "password123";
 
     if (!process.env.SEED_EMAIL || !process.env.SEED_PASSWORD) {
-        console.warn("⚠️  Using default demo credentials. Set SEED_EMAIL and SEED_PASSWORD in .env to override.");
+        console.warn(
+            "⚠️  Using default demo credentials. Set SEED_EMAIL and SEED_PASSWORD in .env to override.",
+        );
     }
 
     // Check if user exists
-    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    const {
+        data: { users },
+        error: listError,
+    } = await supabase.auth.admin.listUsers();
 
     if (listError) {
         console.error("❌ Failed to list users:", listError.message);
         process.exit(1);
     }
 
-    const existingUser = users.find(u => u.email === email);
+    const existingUser = users.find((u) => u.email === email);
 
     if (existingUser) {
         console.log(`ℹ️  User ${email} already exists. Updating password...`);
         const { error: updateError } = await supabase.auth.admin.updateUserById(existingUser.id, {
             password: password,
             email_confirm: true,
-            user_metadata: { full_name: "Demo User" }
+            user_metadata: { full_name: "Demo User" },
         });
 
         if (updateError) {
@@ -63,8 +67,8 @@ async function seedUser() {
             password,
             email_confirm: true,
             user_metadata: {
-                full_name: "Demo User"
-            }
+                full_name: "Demo User",
+            },
         });
 
         if (createError) {

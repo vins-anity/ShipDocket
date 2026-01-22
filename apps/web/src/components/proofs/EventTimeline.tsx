@@ -78,7 +78,7 @@ const defaultConfig = {
 export function EventTimeline({ events }: EventTimelineProps) {
     // Sort events by creation date (oldest first for timeline)
     const sortedEvents = [...events].sort(
-        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
     return (
@@ -99,7 +99,7 @@ export function EventTimeline({ events }: EventTimelineProps) {
                         <div
                             className={cn(
                                 "relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                                config.color
+                                config.color,
                             )}
                         >
                             <Icon className="h-4 w-4" />
@@ -109,9 +109,7 @@ export function EventTimeline({ events }: EventTimelineProps) {
                         <div className="flex-1 pb-6">
                             <div className="flex items-start justify-between">
                                 <div>
-                                    <p className="font-medium text-sm">
-                                        {config.label}
-                                    </p>
+                                    <p className="font-medium text-sm">{config.label}</p>
                                     <p className="text-xs text-muted-foreground">
                                         {formatDistanceToNow(new Date(event.createdAt), {
                                             addSuffix: true,

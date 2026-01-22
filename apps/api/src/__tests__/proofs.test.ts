@@ -4,8 +4,8 @@
  * TDD approach: Tests for Proof Packet generation and export
  */
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { db, schema } from "../db";
 import app from "../index";
 
@@ -42,7 +42,7 @@ describe("Proofs API", () => {
                 headers: new Headers({ "content-type": "application/json" }),
                 json: async () => mockResponse,
                 text: async () => JSON.stringify(mockResponse),
-            } as Response)
+            } as Response),
         ) as any;
 
         await db.insert(schema.workspaces).values({

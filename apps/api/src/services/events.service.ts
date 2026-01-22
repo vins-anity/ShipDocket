@@ -186,8 +186,11 @@ export async function getDashboardStats(workspaceId?: string) {
             .from(schema.events)
             .where(
                 workspaceId
-                    ? and(eq(schema.events.workspaceId, workspaceId), eq(schema.events.eventType, "handshake"))
-                    : eq(schema.events.eventType, "handshake")
+                    ? and(
+                          eq(schema.events.workspaceId, workspaceId),
+                          eq(schema.events.eventType, "handshake"),
+                      )
+                    : eq(schema.events.eventType, "handshake"),
             );
 
         // Get all closed task IDs (closure_approved means task is finalized)
@@ -197,14 +200,16 @@ export async function getDashboardStats(workspaceId?: string) {
             .where(
                 workspaceId
                     ? and(
-                        eq(schema.events.workspaceId, workspaceId),
-                        eq(schema.events.eventType, "closure_approved")
-                    )
-                    : eq(schema.events.eventType, "closure_approved")
+                          eq(schema.events.workspaceId, workspaceId),
+                          eq(schema.events.eventType, "closure_approved"),
+                      )
+                    : eq(schema.events.eventType, "closure_approved"),
             );
 
         const closedTaskIds = new Set(closures.map((c) => c.taskId).filter(Boolean));
-        const activeTasks = handshakes.filter((h) => h.taskId && !closedTaskIds.has(h.taskId)).length;
+        const activeTasks = handshakes.filter(
+            (h) => h.taskId && !closedTaskIds.has(h.taskId),
+        ).length;
 
         return {
             activeTasks,

@@ -1,6 +1,5 @@
-
-import { describe, expect, it, vi } from "vitest";
 import { Hono } from "hono";
+import { describe, expect, it, vi } from "vitest";
 
 // Define mock functions at top scope
 const mockEventsService = {
@@ -31,7 +30,7 @@ vi.mock("../lib/job-queue", () => ({
 
 vi.mock("../middleware/rate-limiter", () => ({
     rateLimiter: () => async (c: any, next: any) => await next(),
-    RateLimits: { webhooks: {} }
+    RateLimits: { webhooks: {} },
 }));
 
 // Mock signature verification to simply pass through
@@ -68,7 +67,7 @@ describe.skip("Webhook Routes", () => {
             team: { id: "T123" },
             user: { id: "U456" },
             type: "block_actions",
-            actions: [{ action_id: "reject_task", value: "TASK-1" }]
+            actions: [{ action_id: "reject_task", value: "TASK-1" }],
         };
 
         const formData = new URLSearchParams();
@@ -77,7 +76,7 @@ describe.skip("Webhook Routes", () => {
         const req = new Request("http://localhost/slack/interactive", {
             method: "POST",
             body: formData.toString(),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
 
         // Hono app.fetch request
@@ -93,11 +92,13 @@ describe.skip("Webhook Routes", () => {
         const body = await res.json(); // Re-read body after check (or use cloned request if needed, but sequential is fine)
 
         expect(body.text).toContain("rejected");
-        expect(mockEventsService.createEvent).toHaveBeenCalledWith(expect.objectContaining({
-            eventType: "handshake_rejected",
-            taskId: "TASK-1",
-            payload: expect.objectContaining({ rejectedBySlackUser: "U456" })
-        }));
+        expect(mockEventsService.createEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+                eventType: "handshake_rejected",
+                taskId: "TASK-1",
+                payload: expect.objectContaining({ rejectedBySlackUser: "U456" }),
+            }),
+        );
     });
 
     it("should handle Slack 'veto_closure' action", async () => {
@@ -111,7 +112,7 @@ describe.skip("Webhook Routes", () => {
 
         // Mock returning a previous proposal with a Job ID
         mockEventsService.listEvents.mockResolvedValue({
-            events: [{ payload: { pgBossJobId: "job-abc" } }]
+            events: [{ payload: { pgBossJobId: "job-abc" } }],
         });
 
         mockCancelClosureJob.mockResolvedValue(true);
@@ -120,7 +121,7 @@ describe.skip("Webhook Routes", () => {
             team: { id: "T123" },
             user: { id: "U999" },
             type: "block_actions",
-            actions: [{ action_id: "veto_closure", value: "TASK-1" }]
+            actions: [{ action_id: "veto_closure", value: "TASK-1" }],
         };
 
         const formData = new URLSearchParams();
@@ -129,7 +130,7 @@ describe.skip("Webhook Routes", () => {
         const req = new Request("http://localhost/slack/interactive", {
             method: "POST",
             body: formData.toString(),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
 
         const res = await app.fetch(req);
@@ -140,9 +141,11 @@ describe.skip("Webhook Routes", () => {
 
         expect(res.status).toBe(200);
         expect(mockCancelClosureJob).toHaveBeenCalledWith("job-abc");
-        expect(mockEventsService.createEvent).toHaveBeenCalledWith(expect.objectContaining({
-            eventType: "closure_vetoed",
-            taskId: "TASK-1"
-        }));
+        expect(mockEventsService.createEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+                eventType: "closure_vetoed",
+                taskId: "TASK-1",
+            }),
+        );
     });
 });

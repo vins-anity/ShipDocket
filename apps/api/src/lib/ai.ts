@@ -97,9 +97,9 @@ function buildPrompt(input: ProofSummaryInput, options: SummaryOptions): string 
     const commitsSection =
         includeCommits && input.commits && input.commits.length > 0
             ? `\n\nCommit History:\n${input.commits
-                .slice(0, 10)
-                .map((c) => `- ${c.message}`)
-                .join("\n")}`
+                  .slice(0, 10)
+                  .map((c) => `- ${c.message}`)
+                  .join("\n")}`
             : "";
 
     const prSection =

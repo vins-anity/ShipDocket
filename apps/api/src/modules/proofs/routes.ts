@@ -218,15 +218,15 @@ const proofs = new Hono()
                 try {
                     const workspace = await proofsService.getWorkspaceForProof(packet.workspaceId);
                     if (workspace?.githubOrg) {
-                        // Assuming taskKey maps to PR number or branch - sophisticated logic needed here 
-                        // For MVP: We need a way to link taskId to PR. 
+                        // Assuming taskKey maps to PR number or branch - sophisticated logic needed here
+                        // For MVP: We need a way to link taskId to PR.
                         // Strategy: Use eventsService to find "pr_merged" event for this taskId to get prNumber
                         const { eventsService } = await import("../../services");
                         const { events } = await eventsService.listEvents({
                             workspaceId: packet.workspaceId,
                             taskId: packet.taskId,
                             eventType: "pr_merged",
-                            pageSize: 1
+                            pageSize: 1,
                         });
 
                         const prEvent = events[0];
@@ -234,19 +234,19 @@ const proofs = new Hono()
                         const repoName = prEvent?.payload?.repo as string | undefined; // e.g. "org/repo"
 
                         if (prNumber && repoName) {
-                            const [owner, repo] = repoName.split('/');
+                            const [owner, repo] = repoName.split("/");
                             if (owner && repo) {
                                 const { githubService } = await import("../../services");
 
                                 const [prDetails, prCommits] = await Promise.all([
                                     githubService.fetchPRDetails(owner, repo, prNumber),
-                                    githubService.fetchCommits(owner, repo, prNumber)
+                                    githubService.fetchCommits(owner, repo, prNumber),
                                 ]);
 
                                 prDescription = prDetails.body || "";
-                                commits = prCommits.map(c => ({
+                                commits = prCommits.map((c) => ({
                                     message: c.message,
-                                    author: c.author
+                                    author: c.author,
                                 }));
                             }
                         }

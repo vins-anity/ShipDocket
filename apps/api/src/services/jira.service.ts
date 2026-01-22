@@ -4,9 +4,9 @@ export class JiraService {
     private apiToken: string;
 
     constructor() {
-        this.baseUrl = process.env.JIRA_HOST || '';
-        this.email = process.env.JIRA_EMAIL || '';
-        this.apiToken = process.env.JIRA_API_TOKEN || '';
+        this.baseUrl = process.env.JIRA_HOST || "";
+        this.email = process.env.JIRA_EMAIL || "";
+        this.apiToken = process.env.JIRA_API_TOKEN || "";
     }
 
     /**
@@ -14,7 +14,7 @@ export class JiraService {
      */
     async syncTaskStatus(taskId: string, status: string) {
         if (!this.baseUrl || !this.email || !this.apiToken) {
-            console.warn('[Jira] Credentials missing, skipping status sync');
+            console.warn("[Jira] Credentials missing, skipping status sync");
             return;
         }
 
@@ -23,9 +23,9 @@ export class JiraService {
             const transitionsResponse = await fetch(
                 `https://${this.baseUrl}/rest/api/3/issue/${taskId}/transitions`,
                 {
-                    method: 'GET',
+                    method: "GET",
                     headers: this.getHeaders(),
-                }
+                },
             );
 
             if (!transitionsResponse.ok) {
@@ -34,7 +34,7 @@ export class JiraService {
 
             const transitionsData = await transitionsResponse.json();
             const transition = transitionsData.transitions.find(
-                (t: any) => t.name.toLowerCase() === status.toLowerCase()
+                (t: any) => t.name.toLowerCase() === status.toLowerCase(),
             );
 
             if (!transition) {
@@ -46,12 +46,12 @@ export class JiraService {
             const updateResponse = await fetch(
                 `https://${this.baseUrl}/rest/api/3/issue/${taskId}/transitions`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     headers: this.getHeaders(),
                     body: JSON.stringify({
                         transition: { id: transition.id },
                     }),
-                }
+                },
             );
 
             if (!updateResponse.ok) {
@@ -66,11 +66,11 @@ export class JiraService {
     }
 
     private getHeaders() {
-        const auth = Buffer.from(`${this.email}:${this.apiToken}`).toString('base64');
+        const auth = Buffer.from(`${this.email}:${this.apiToken}`).toString("base64");
         return {
-            'Authorization': `Basic ${auth}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            Authorization: `Basic ${auth}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
         };
     }
 }

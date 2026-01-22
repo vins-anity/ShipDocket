@@ -33,7 +33,9 @@ export class GitHubService {
             };
         } catch (error) {
             console.error(`[GitHub] Failed to fetch PR #${prNumber}:`, error);
-            throw new Error(`Failed to fetch PR details: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(
+                `Failed to fetch PR details: ${error instanceof Error ? error.message : String(error)}`,
+            );
         }
     }
 
@@ -57,7 +59,9 @@ export class GitHubService {
             }));
         } catch (error) {
             console.error(`[GitHub] Failed to fetch commits for PR #${prNumber}:`, error);
-            throw new Error(`Failed to fetch commits: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(
+                `Failed to fetch commits: ${error instanceof Error ? error.message : String(error)}`,
+            );
         }
     }
 }

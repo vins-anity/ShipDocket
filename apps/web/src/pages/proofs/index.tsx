@@ -64,13 +64,20 @@ export function ProofPacketsPage() {
                                                 {proof.task?.key || proof.taskId || proof.id}
                                             </CardTitle>
                                             <p className="text-sm text-muted-foreground">
-                                                {proof.task?.summary || "Proof Packet"} • {new Date(proof.createdAt).toLocaleDateString()}
+                                                {proof.task?.summary || "Proof Packet"} •{" "}
+                                                {new Date(proof.createdAt).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <Badge className={statusColors[proof.status] || "bg-muted text-muted-foreground"}>
-                                            {proof.status?.charAt(0).toUpperCase() + proof.status?.slice(1) || "Pending"}
+                                        <Badge
+                                            className={
+                                                statusColors[proof.status] ||
+                                                "bg-muted text-muted-foreground"
+                                            }
+                                        >
+                                            {proof.status?.charAt(0).toUpperCase() +
+                                                proof.status?.slice(1) || "Pending"}
                                         </Badge>
                                         <IconChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                                     </div>
@@ -83,4 +90,3 @@ export function ProofPacketsPage() {
         </div>
     );
 }
-

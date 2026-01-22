@@ -174,7 +174,7 @@ export async function finalizeProofPacket(id: string, closureEventId: string) {
     const { eventsService } = await import("../services");
     const closureEvent = await eventsService.getEventById(closureEventId);
 
-    // The "Root" of the proof is the hash of the closure event, 
+    // The "Root" of the proof is the hash of the closure event,
     // which cryptographically links to all previous events (handshake, PRs, etc.)
     const hashChainRoot = closureEvent?.eventHash || "broken-chain-error";
 

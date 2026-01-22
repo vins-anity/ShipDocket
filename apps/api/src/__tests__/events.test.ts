@@ -4,8 +4,8 @@
  * TDD approach: Tests for hash-chained event log endpoints
  */
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db, schema } from "../db";
 import app from "../index";
 

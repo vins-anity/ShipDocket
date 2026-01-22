@@ -44,7 +44,7 @@ describe("OpenRouter AI Integration", () => {
                 headers: new Headers({ "content-type": "application/json" }),
                 json: async () => mockResponse,
                 text: async () => JSON.stringify(mockResponse),
-            } as Response)
+            } as Response),
         ) as any;
     });
 
@@ -124,4 +124,3 @@ describe("OpenRouter AI Integration", () => {
         expect(result.summary).toBeTruthy();
     });
 });
-

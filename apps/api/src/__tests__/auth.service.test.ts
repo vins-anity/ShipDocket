@@ -108,14 +108,18 @@ describe("Auth Service", () => {
             // @ts-expect-error - Mocking global fetch
             global.fetch = mockFetch;
 
-            await expect(authService.exchangeCodeForToken("slack", "bad-code", "redirect")).rejects.toThrow("OAuth token exchange failed");
+            await expect(
+                authService.exchangeCodeForToken("slack", "bad-code", "redirect"),
+            ).rejects.toThrow("OAuth token exchange failed");
         });
 
         test("should throw error if credentials not configured", async () => {
             const originalSecret = process.env.GITHUB_CLIENT_SECRET;
             delete process.env.GITHUB_CLIENT_SECRET;
 
-            await expect(authService.exchangeCodeForToken("github", "code", "redirect")).rejects.toThrow("OAuth credentials not configured for github");
+            await expect(
+                authService.exchangeCodeForToken("github", "code", "redirect"),
+            ).rejects.toThrow("OAuth credentials not configured for github");
 
             process.env.GITHUB_CLIENT_SECRET = originalSecret;
         });
