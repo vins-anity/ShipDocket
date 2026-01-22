@@ -5,6 +5,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LoginPage } from "@/pages/auth/login";
 import { DashboardPage } from "@/pages/dashboard";
 import { ProofPacketsPage } from "@/pages/proofs";
+import { SettingsPage } from "@/pages/settings";
 import { AppProviders } from "./providers";
 
 function App() {
@@ -18,14 +19,7 @@ function App() {
                         <Route element={<DashboardLayout />}>
                             <Route path="/" element={<DashboardPage />} />
                             <Route path="/proofs" element={<ProofPacketsPage />} />
-                            <Route
-                                path="/settings"
-                                element={
-                                    <div className="text-muted-foreground p-8">
-                                        Settings (In Progress)
-                                    </div>
-                                }
-                            />
+                            <Route path="/settings" element={<SettingsPage />} />
                         </Route>
                     </Route>
                 </Routes>

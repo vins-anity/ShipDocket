@@ -5,14 +5,26 @@ import {
     IconSettings,
     IconShieldCheck,
     IconX,
+    IconLogout,
 } from "@tabler/icons-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/useUIStore";
 
 export function DashboardLayout() {
     const { isSidebarOpen, toggleSidebar } = useUIStore();
+    const { user, signOut } = useAuth();
     const location = useLocation();
 
     const navItems = [
@@ -107,11 +119,44 @@ export function DashboardLayout() {
                         <Button
                             variant="outline"
                             size="sm"
-                            className="hidden sm:flex bg-transparent border-primary/20 hover:bg-primary/10 text-primary-foreground"
+                            className="hidden sm:flex bg-transparent border-primary/20 hover:bg-primary/10 text-primary"
                         >
                             Feedback
                         </Button>
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 border border-white/20" />
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 border border-white/20" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">
+                                            {user?.user_metadata?.full_name || "Trail User"}
+                                        </p>
+                                        <p className="text-xs leading-none text-muted-foreground">
+                                            {user?.email}
+                                        </p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <Link to="/settings">
+                                        <DropdownMenuItem>
+                                            <IconSettings className="mr-2 h-4 w-4" />
+                                            <span>Settings</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={signOut} className="text-red-400 focus:text-red-400">
+                                    <IconLogout className="mr-2 h-4 w-4" />
+                                    <span>Log out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </header>
 
