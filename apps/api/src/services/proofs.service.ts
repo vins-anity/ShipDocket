@@ -165,10 +165,23 @@ export async function getOrCreateProofPacket(taskId: string, workspaceId: string
 /**
  * Finalize proof packet (mark as closed)
  */
+// Finalize proof packet (mark as closed and seal hash chain)
 export async function finalizeProofPacket(id: string, closureEventId: string) {
+    const packet = await getProofPacketById(id);
+    if (!packet) throw new Error("Packet not found");
+
+    // Fetch the closure event to get its hash
+    const { eventsService } = await import("../services");
+    const closureEvent = await eventsService.getEventById(closureEventId);
+
+    // The "Root" of the proof is the hash of the closure event, 
+    // which cryptographically links to all previous events (handshake, PRs, etc.)
+    const hashChainRoot = closureEvent?.eventHash || "broken-chain-error";
+
     return updateProofPacket(id, {
         status: "finalized",
         closureEventId,
+        hashChainRoot,
         closedAt: new Date(),
     });
 }

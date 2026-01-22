@@ -211,11 +211,54 @@ const proofs = new Hono()
 
             // Try to generate AI summary
             try {
+                let commits: { message: string; author: string }[] = [];
+                let prDescription = "";
+
+                // Fetch real GitHub context if workspace has it connected
+                try {
+                    const workspace = await proofsService.getWorkspaceForProof(packet.workspaceId);
+                    if (workspace?.githubOrg) {
+                        // Assuming taskKey maps to PR number or branch - sophisticated logic needed here 
+                        // For MVP: We need a way to link taskId to PR. 
+                        // Strategy: Use eventsService to find "pr_merged" event for this taskId to get prNumber
+                        const { eventsService } = await import("../../services");
+                        const { events } = await eventsService.listEvents({
+                            workspaceId: packet.workspaceId,
+                            taskId: packet.taskId,
+                            eventType: "pr_merged",
+                            pageSize: 1
+                        });
+
+                        const prEvent = events[0];
+                        const prNumber = prEvent?.payload?.prNumber as number | undefined;
+                        const repoName = prEvent?.payload?.repo as string | undefined; // e.g. "org/repo"
+
+                        if (prNumber && repoName) {
+                            const [owner, repo] = repoName.split('/');
+                            const { githubService } = await import("../../services");
+
+                            const [prDetails, prCommits] = await Promise.all([
+                                githubService.fetchPRDetails(owner, repo, prNumber),
+                                githubService.fetchCommits(owner, repo, prNumber)
+                            ]);
+
+                            prDescription = prDetails.body || "";
+                            commits = prCommits.map(c => ({
+                                message: c.message,
+                                author: c.author
+                            }));
+                        }
+                    }
+                } catch (ghError) {
+                    console.warn(`[Proofs] Failed to fetch GitHub context:`, ghError);
+                }
+
                 const result = await generateProofSummary({
                     taskKey: packet.taskId,
-                    taskSummary: "Proof Packet Summary",
-                    commits: [],
-                    approvers: [],
+                    taskSummary: "Proof Packet Summary", // ideally fetch title from Jira/Event
+                    commits: commits,
+                    prDescription: prDescription,
+                    approvers: [], // could fetch from PR details
                 });
 
                 // Update packet with AI summary

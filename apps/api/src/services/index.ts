@@ -8,3 +8,5 @@ export * as policiesService from "./policies.service";
 export * as proofsService from "./proofs.service";
 export * as slackService from "./slack.service";
 export * as workspacesService from "./workspaces.service";
+export * as githubService from "./github.service";
+export * as jiraService from "./jira.service";
