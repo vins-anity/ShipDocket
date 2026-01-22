@@ -85,7 +85,7 @@ export const ChainVerificationSchema = v.object({
             index: v.number(),
             type: v.picklist(["broken_link", "invalid_hash"]),
             message: v.string(),
-        })
+        }),
     ),
 });
 

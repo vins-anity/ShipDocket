@@ -9,7 +9,12 @@ export function ProofPacketsPage() {
 
     // Fallback/Placeholder while we connect to real backend
     const proofs = data?.packets || [
-        { id: "PP-2847", task: "Authentication System Overhaul", status: "Verified", date: "Jan 10, 2026" },
+        {
+            id: "PP-2847",
+            task: "Authentication System Overhaul",
+            status: "Verified",
+            date: "Jan 10, 2026",
+        },
         { id: "PP-2846", task: "Stripe Integration", status: "Pending", date: "Jan 09, 2026" },
         { id: "PP-2845", task: "User Profile Settings", status: "Exported", date: "Jan 08, 2026" },
     ];
@@ -34,7 +39,9 @@ export function ProofPacketsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Proof Packets</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                        Proof Packets
+                    </h1>
                     <p className="text-muted-foreground mt-1">Tamper-evident delivery receipts.</p>
                 </div>
                 <Button>Export Report</Button>
@@ -42,19 +49,28 @@ export function ProofPacketsPage() {
 
             <div className="grid gap-4">
                 {proofs.map((proof: any) => (
-                    <Card key={proof.id} className="bg-card/50 backdrop-blur-sm border-white/5 hover:bg-card/80 transition-colors cursor-pointer group">
+                    <Card
+                        key={proof.id}
+                        className="bg-card/50 backdrop-blur-sm border-white/5 hover:bg-card/80 transition-colors cursor-pointer group"
+                    >
                         <CardHeader className="flex flex-row items-center justify-between py-4">
                             <div className="flex items-center gap-4">
                                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                                     <IconFileText className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-base font-medium">{proof.task || proof.id}</CardTitle>
-                                    <p className="text-sm text-muted-foreground">{proof.id} • {proof.date || new Date().toLocaleDateString()}</p>
+                                    <CardTitle className="text-base font-medium">
+                                        {proof.task || proof.id}
+                                    </CardTitle>
+                                    <p className="text-sm text-muted-foreground">
+                                        {proof.id} • {proof.date || new Date().toLocaleDateString()}
+                                    </p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4">
-                                <Badge variant={proof.status === "Verified" ? "default" : "secondary"}>
+                                <Badge
+                                    variant={proof.status === "Verified" ? "default" : "secondary"}
+                                >
                                     {proof.status || "Pending"}
                                 </Badge>
                                 <IconChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />

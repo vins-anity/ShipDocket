@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { IconAlertCircle, IconLoader2 } from "@tabler/icons-react";
-import { useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { IconAlertCircle, IconLoader2 } from "@tabler/icons-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as v from "valibot";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/lib/supabase";
 
 const LoginSchema = v.object({
     email: v.pipe(v.string(), v.email("Please enter a valid email address.")),

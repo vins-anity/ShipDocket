@@ -65,12 +65,12 @@ export const GitHubPullRequestSchema = v.object({
         v.object({
             ref: v.string(),
             sha: v.string(),
-        })
+        }),
     ),
     base: v.optional(
         v.object({
             ref: v.string(),
-        })
+        }),
     ),
 });
 
@@ -120,13 +120,13 @@ export const JiraIssueFieldsSchema = v.object({
         v.nullable(
             v.object({
                 name: v.string(),
-            })
-        )
+            }),
+        ),
     ),
     issuetype: v.optional(
         v.object({
             name: v.string(),
-        })
+        }),
     ),
 });
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api-client";
 import type { EventType } from "shared";
+import { api } from "@/lib/api-client";
 
 interface UseEventsOptions {
     workspaceId?: string;

@@ -1,6 +1,6 @@
+import { IconLoader2 } from "@tabler/icons-react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
-import { IconLoader2 } from "@tabler/icons-react";
 
 export function ProtectedRoute() {
     const { session, loading } = useAuth();

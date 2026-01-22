@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api-client";
 import type { ProofStatus } from "shared";
+import { api } from "@/lib/api-client";
 
 interface UseProofPacketsOptions {
     workspaceId?: string;

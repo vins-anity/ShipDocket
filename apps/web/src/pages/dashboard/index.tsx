@@ -1,8 +1,8 @@
 import { IconActivity, IconAlertCircle, IconCircleCheck, IconClock } from "@tabler/icons-react";
+import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { useEvents } from "@/hooks/use-events";
-import { formatDistanceToNow } from "date-fns";
 
 export function DashboardPage() {
     const { stats, isLoading: statsLoading } = useDashboardStats();
@@ -55,9 +55,7 @@ export function DashboardPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Real-time metrics
-                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">Real-time metrics</p>
                         </CardContent>
                     </Card>
                 ))}
@@ -90,7 +88,9 @@ export function DashboardPage() {
                                                 {event.eventType}
                                             </p>
                                             <p className="text-xs text-muted-foreground">
-                                                {formatDistanceToNow(new Date(event.createdAt), { addSuffix: true })}
+                                                {formatDistanceToNow(new Date(event.createdAt), {
+                                                    addSuffix: true,
+                                                })}
                                             </p>
                                         </div>
                                     </div>

@@ -1,5 +1,5 @@
-import { useProofPackets } from "./use-proofs";
 import { useEvents } from "./use-events";
+import { useProofPackets } from "./use-proofs";
 
 export function useDashboardStats() {
     // 1. Pending Proofs (Status: pending)

@@ -22,7 +22,7 @@ import { eventsService, policiesService, slackService, workspacesService } from 
 function extractTaskId(text: string | undefined): string | null {
     if (!text) return null;
     const match = text.match(/([A-Z]+-\d+)/);
-    return match ? match[1] ?? null : null;
+    return match ? (match[1] ?? null) : null;
 }
 
 const webhooks = new Hono()
@@ -266,7 +266,7 @@ const webhooks = new Hono()
                                     workspace.id,
                                     taskId,
                                     payload.pull_request?.title ||
-                                    `PR #${payload.pull_request?.number}`,
+                                        `PR #${payload.pull_request?.number}`,
                                     prAuthorEmail,
                                     new Date(checkResult.scheduledCloseAt),
                                 );
