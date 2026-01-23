@@ -34,3 +34,18 @@ services:
         sync: false
     startCommand: bun run worker
     plan: free
+
+  # The Frontend
+  - type: static
+    name: trail-web
+    repo: https://github.com/vins-anity/trail
+    rootDir: .
+    buildCommand: bun install && bun run build:web
+    publishDir: apps/web/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://trail-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -47,9 +47,12 @@ export const startJobQueue = initializeBoss;
  */
 export async function getBoss(): Promise<PgBoss> {
     if (!boss) {
-        await initializeBoss();
+        boss = await initializeBoss();
     }
-    return boss!;
+    if (!boss) {
+        throw new Error("Failed to initialize job queue");
+    }
+    return boss;
 }
 
 /**

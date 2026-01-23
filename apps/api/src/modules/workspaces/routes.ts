@@ -1,11 +1,10 @@
-
 import { Hono } from "hono";
-import { workspacesService } from "../../services";
 import { supabaseAuth } from "../../middleware/supabase-auth";
+import { workspacesService } from "../../services";
 
 type Variables = {
     userId: string;
-    user: any;
+    user: unknown;
 };
 
 const app = new Hono<{ Variables: Variables }>();
@@ -29,7 +28,7 @@ app.get("/", async (c) => {
  */
 app.post("/", async (c) => {
     const userId = c.get("userId") as string;
-    const body = await c.req.json<{ name: string; defaultPolicyTier?: any }>();
+    const body = await c.req.json<{ name: string; defaultPolicyTier?: string }>();
 
     if (!body.name) {
         return c.json({ error: "Workspace name is required" }, 400);
@@ -39,7 +38,11 @@ app.post("/", async (c) => {
         const workspace = await workspacesService.createWorkspace({
             name: body.name,
             userId: userId,
-            defaultPolicyTier: body.defaultPolicyTier,
+            defaultPolicyTier: body.defaultPolicyTier as
+                | "agile"
+                | "standard"
+                | "hardened"
+                | undefined,
         });
         return c.json(workspace, 201);
     } catch (err) {
@@ -60,7 +63,7 @@ app.get("/current", async (c) => {
 
     const allWorkspaces = await workspacesService.getWorkspacesForUser(userId);
 
-    let workspace;
+    let workspace = null;
 
     if (workspaceId) {
         workspace = allWorkspaces.find((w) => w.id === workspaceId);

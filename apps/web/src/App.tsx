@@ -3,12 +3,12 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LoginPage } from "@/pages/auth/login";
-import { LandingPage } from "@/pages/landing";
 import { DashboardPage } from "@/pages/dashboard";
+import { LandingPage } from "@/pages/landing";
+import { OnboardingPage } from "@/pages/onboarding";
 import { ProofPacketsPage } from "@/pages/proofs";
 import { ProofDetailPage } from "@/pages/proofs/[id]";
 import { SettingsPage } from "@/pages/settings";
-import { OnboardingPage } from "@/pages/onboarding";
 import { AppProviders } from "./providers";
 
 function App() {

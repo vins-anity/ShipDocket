@@ -1,4 +1,4 @@
-import { IconChevronRight, IconFileText, IconLoader2, IconInbox } from "@tabler/icons-react";
+import { IconChevronRight, IconFileText, IconInbox } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,9 @@ export function ProofPacketsPage() {
                         <h1 className="text-3xl font-bold tracking-tight text-foreground">
                             Proof Packets
                         </h1>
-                        <p className="text-muted-foreground mt-1">Tamper-evident delivery receipts.</p>
+                        <p className="text-muted-foreground mt-1">
+                            Tamper-evident delivery receipts.
+                        </p>
                     </div>
                 </div>
                 <div className="grid gap-4">
@@ -67,8 +69,8 @@ export function ProofPacketsPage() {
                         No proof packets yet
                     </h3>
                     <p className="text-sm text-muted-foreground max-w-md mb-6">
-                        Proof packets will appear here when tasks are tracked through your connected tools.
-                        Make sure your integrations are set up correctly.
+                        Proof packets will appear here when tasks are tracked through your connected
+                        tools. Make sure your integrations are set up correctly.
                     </p>
                     <Button variant="outline" className="hover:glow-sm transition-all">
                         View Integration Status

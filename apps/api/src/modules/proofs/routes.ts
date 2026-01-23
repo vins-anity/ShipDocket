@@ -13,9 +13,9 @@ import {
 import * as v from "valibot";
 import { generateProofSummary } from "../../lib/ai";
 import { isValidUUID } from "../../lib/error";
-import * as proofsService from "../../services/proofs.service";
 import { supabaseAuth } from "../../middleware/supabase-auth";
 import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
+import * as proofsService from "../../services/proofs.service";
 
 /**
  * Proofs Module

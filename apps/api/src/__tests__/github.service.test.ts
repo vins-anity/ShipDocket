@@ -92,8 +92,8 @@ describe("GitHub Service", () => {
                 per_page: 50,
             });
             expect(result).toHaveLength(1);
-            expect(result[0]!.message).toBe("Initial commit");
-            expect(result[0]!.author).toBe("Dev");
+            expect(result[0]?.message).toBe("Initial commit");
+            expect(result[0]?.author).toBe("Dev");
         });
     });
 });

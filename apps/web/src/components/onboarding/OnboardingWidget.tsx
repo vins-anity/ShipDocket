@@ -1,9 +1,13 @@
-import { IconBrandGithub, IconBrandSlack, IconCheckbox, IconCircleCheckFilled } from "@tabler/icons-react";
+import {
+    IconBrandGithub,
+    IconBrandSlack,
+    IconCheckbox,
+    IconCircleCheckFilled,
+} from "@tabler/icons-react";
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Progress } from "../ui/progress";
-import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 
 export function OnboardingWidget() {
     const { data: status, isLoading } = useWorkspaceStatus();
@@ -40,7 +44,9 @@ export function OnboardingWidget() {
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <CardTitle className="text-2xl font-bold bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
-                                {isComplete ? "Trail is ready to launch!" : "Set up your Trail workspace"}
+                                {isComplete
+                                    ? "Trail is ready to launch!"
+                                    : "Set up your Trail workspace"}
                             </CardTitle>
                             <p className="text-sm text-muted-foreground">
                                 {isComplete
@@ -50,8 +56,12 @@ export function OnboardingWidget() {
                         </div>
                         <div className="text-right">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-black text-primary animate-pulse-glow">{Math.round(progress)}%</span>
-                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Complete</span>
+                                <span className="text-3xl font-black text-primary animate-pulse-glow">
+                                    {Math.round(progress)}%
+                                </span>
+                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+                                    Complete
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -67,7 +77,7 @@ export function OnboardingWidget() {
                                 icon={<IconCheckbox className="h-6 w-6 text-blue-400" />}
                                 iconBg="bg-blue-500/10"
                                 isConnected={status.hasJira}
-                                onConnect={() => handleConnect('jira')}
+                                onConnect={() => handleConnect("jira")}
                                 label="Jira"
                             />
 
@@ -78,7 +88,7 @@ export function OnboardingWidget() {
                                 icon={<IconBrandGithub className="h-6 w-6 text-slate-200" />}
                                 iconBg="bg-slate-500/10"
                                 isConnected={status.hasGithub}
-                                onConnect={() => handleConnect('github')}
+                                onConnect={() => handleConnect("github")}
                                 label="GitHub"
                             />
 
@@ -89,7 +99,7 @@ export function OnboardingWidget() {
                                 icon={<IconBrandSlack className="h-6 w-6 text-purple-400" />}
                                 iconBg="bg-purple-500/10"
                                 isConnected={status.hasSlack}
-                                onConnect={() => handleConnect('slack')}
+                                onConnect={() => handleConnect("slack")}
                                 label="Slack"
                             />
                         </div>
@@ -102,9 +112,12 @@ export function OnboardingWidget() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-white">Workspace Configuration Complete</h3>
+                                <h3 className="text-xl font-bold text-white">
+                                    Workspace Configuration Complete
+                                </h3>
                                 <p className="text-muted-foreground max-w-sm mx-auto">
-                                    Your environment is fully synchronized. Trail is now passively monitoring your development cycle.
+                                    Your environment is fully synchronized. Trail is now passively
+                                    monitoring your development cycle.
                                 </p>
                             </div>
                             <Button
@@ -132,14 +145,24 @@ interface OnboardingCardProps {
     label: string;
 }
 
-function OnboardingCard({ title, description, icon, iconBg, isConnected, onConnect, label }: OnboardingCardProps) {
+function OnboardingCard({
+    title,
+    description,
+    icon,
+    iconBg,
+    isConnected,
+    onConnect,
+    label,
+}: OnboardingCardProps) {
     return (
-        <div className={cn(
-            "p-6 rounded-xl border transition-all duration-500 flex flex-col h-full relative overflow-hidden group/card",
-            isConnected
-                ? "bg-green-500/5 border-green-500/20"
-                : "bg-white/5 border-white/5 hover:border-primary/50 hover:bg-white/10"
-        )}>
+        <div
+            className={cn(
+                "p-6 rounded-xl border transition-all duration-500 flex flex-col h-full relative overflow-hidden group/card",
+                isConnected
+                    ? "bg-green-500/5 border-green-500/20"
+                    : "bg-white/5 border-white/5 hover:border-primary/50 hover:bg-white/10",
+            )}
+        >
             {isConnected && (
                 <div className="absolute top-0 right-0 p-2">
                     <IconCircleCheckFilled className="h-5 w-5 text-green-500" />
@@ -147,7 +170,12 @@ function OnboardingCard({ title, description, icon, iconBg, isConnected, onConne
             )}
 
             <div className="flex items-center gap-4 mb-4">
-                <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 group-hover/card:scale-110", iconBg)}>
+                <div
+                    className={cn(
+                        "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 group-hover/card:scale-110",
+                        iconBg,
+                    )}
+                >
                     {icon}
                 </div>
                 <div className="flex-1">
@@ -165,7 +193,7 @@ function OnboardingCard({ title, description, icon, iconBg, isConnected, onConne
                     "w-full rounded-lg font-bold transition-all duration-300",
                     isConnected
                         ? "text-green-500 bg-green-500/10 pointer-events-none"
-                        : "bg-primary hover:scale-[1.02] active:scale-95"
+                        : "bg-primary hover:scale-[1.02] active:scale-95",
                 )}
                 onClick={onConnect}
                 disabled={isConnected}
@@ -175,4 +203,3 @@ function OnboardingCard({ title, description, icon, iconBg, isConnected, onConne
         </div>
     );
 }
-

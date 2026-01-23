@@ -1,14 +1,13 @@
-
-import { Context, Next } from "hono";
+import { and, eq } from "drizzle-orm";
+import type { Context, Next } from "hono";
 import { db, schema } from "../db";
-import { eq, and } from "drizzle-orm";
 
 /**
  * Workspace Access Control Middleware
- * 
+ *
  * Ensures the authenticated user is a member of the requested workspace.
  * Requires `authMiddleware` or `supabaseAuth` to run first.
- * 
+ *
  * Usage:
  * app.get("/workspaces/:workspaceId/events", requireWorkspaceAccess(), (c) => ...)
  * app.post("/workspaces/:workspaceId/settings", requireWorkspaceAccess("owner"), (c) => ...)
@@ -24,7 +23,10 @@ export function requireWorkspaceAccess(requiredRole: "owner" | "member" = "membe
 
         // 2. Identify Workspace ID
         // Priority: Route Param > Query Param > Header
-        const workspaceId = c.req.param("workspaceId") || c.req.query("workspaceId") || c.req.header("X-Workspace-ID");
+        const workspaceId =
+            c.req.param("workspaceId") ||
+            c.req.query("workspaceId") ||
+            c.req.header("X-Workspace-ID");
 
         if (!workspaceId) {
             return c.json({ error: "Bad Request - Missing workspaceId identifier" }, 400);
@@ -41,12 +43,15 @@ export function requireWorkspaceAccess(requiredRole: "owner" | "member" = "membe
             const member = await db.query.workspaceMembers.findFirst({
                 where: and(
                     eq(schema.workspaceMembers.workspaceId, workspaceId),
-                    eq(schema.workspaceMembers.userId, userId)
-                )
+                    eq(schema.workspaceMembers.userId, userId),
+                ),
             });
 
             if (!member) {
-                return c.json({ error: "Forbidden - You do not have access to this workspace" }, 403);
+                return c.json(
+                    { error: "Forbidden - You do not have access to this workspace" },
+                    403,
+                );
             }
 
             // 5. Check Role Requirements

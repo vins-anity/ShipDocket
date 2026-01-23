@@ -7,7 +7,7 @@
  * Security: OAuth tokens are encrypted at rest using AES-256-GCM.
  */
 
-import { eq, or, and } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { PolicyTier } from "shared";
 import { db, schema } from "../db";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
@@ -40,7 +40,8 @@ export interface UpdateWorkspaceInput {
 /**
  * Decrypt workspace tokens after DB read
  */
-async function decryptWorkspaceTokens(workspace: any) {
+
+async function decryptWorkspaceTokens(workspace: Record<string, any>) {
     if (workspace.slackAccessToken) {
         workspace.slackAccessToken = await decryptToken(workspace.slackAccessToken);
     }
@@ -182,6 +183,10 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
             })
             .returning();
 
+        if (!workspace) {
+            throw new Error("Failed to create workspace");
+        }
+
         await tx.insert(schema.workspaceMembers).values({
             workspaceId: workspace.id,
             userId: input.userId,
@@ -225,7 +230,7 @@ export async function getWorkspacesForUser(userId: string) {
             workspace: true,
         },
     });
-    return members.map((m) => m.workspace!);
+    return members.map((m) => m.workspace).filter((w): w is NonNullable<typeof w> => !!w);
 }
 
 /**

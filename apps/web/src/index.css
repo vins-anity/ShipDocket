@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -38,7 +38,6 @@
 }
 
 @keyframes pulse-glow {
-
     0%,
     100% {
         box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
@@ -50,7 +49,6 @@
 }
 
 @keyframes float {
-
     0%,
     100% {
         transform: translateY(0px);
@@ -262,13 +260,12 @@
 
     body {
         @apply bg-background text-foreground;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     }
 }
 
 /* ===== Utility Classes ===== */
 @layer utilities {
-
     /* Animation utilities */
     .animate-shimmer {
         animation: shimmer 2s linear infinite;
@@ -339,7 +336,9 @@
 
     /* Hover transitions */
     .hover-lift {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     .hover-lift:hover {

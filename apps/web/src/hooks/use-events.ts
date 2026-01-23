@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { EventType } from "shared";
-import { api } from "@/lib/api-client";
+import { api } from "@/lib/api";
 
 interface UseEventsOptions {
     workspaceId?: string;
@@ -14,19 +14,7 @@ export function useEvents(options: UseEventsOptions = {}) {
     return useQuery({
         queryKey: ["events", options],
         queryFn: async () => {
-            const res = await api.events.$get({
-                query: {
-                    workspaceId: options.workspaceId,
-                    taskId: options.taskId,
-                    eventType: options.eventType,
-                    page: options.page?.toString(),
-                    pageSize: options.pageSize?.toString(),
-                },
-            });
-            if (!res.ok) {
-                throw new Error("Failed to fetch events");
-            }
-            return res.json();
+            return api.events.list(options);
         },
     });
 }

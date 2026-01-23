@@ -4,9 +4,9 @@ import { resolver, validator as vValidator } from "hono-openapi/valibot";
 import { ChainVerificationSchema, EventListSchema, EventQuerySchema, EventSchema } from "shared";
 import * as v from "valibot";
 import { isValidUUID } from "../../lib/error";
-import * as eventsService from "../../services/events.service";
 import { supabaseAuth } from "../../middleware/supabase-auth";
 import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
+import * as eventsService from "../../services/events.service";
 
 /**
  * Events Module
@@ -26,40 +26,41 @@ const events = new Hono();
 // Apply Auth Middleware
 events.use("*", supabaseAuth);
 
-events.get(
-    "/",
-    requireWorkspaceAccess(), // Enforce workspace context for listing events
-    describeRoute({
-        tags: ["Events"],
-        summary: "List events with pagination",
-        description:
-            "Returns hash-chained events from the audit log. Supports filtering by workspace, task, and event type.",
-        responses: {
-            200: {
-                description: "List of events",
-                content: {
-                    "application/json": {
-                        schema: resolver(EventListSchema),
+events
+    .get(
+        "/",
+        requireWorkspaceAccess(), // Enforce workspace context for listing events
+        describeRoute({
+            tags: ["Events"],
+            summary: "List events with pagination",
+            description:
+                "Returns hash-chained events from the audit log. Supports filtering by workspace, task, and event type.",
+            responses: {
+                200: {
+                    description: "List of events",
+                    content: {
+                        "application/json": {
+                            schema: resolver(EventListSchema),
+                        },
                     },
                 },
             },
+        }),
+        vValidator("query", EventQuerySchema),
+        async (c) => {
+            const query = c.req.valid("query");
+
+            const result = await eventsService.listEvents({
+                workspaceId: query.workspaceId,
+                taskId: query.taskId,
+                eventType: query.eventType,
+                page: query.page || 1,
+                pageSize: Math.min(query.pageSize || 20, 100),
+            });
+
+            return c.json(result);
         },
-    }),
-    vValidator("query", EventQuerySchema),
-    async (c) => {
-        const query = c.req.valid("query");
-
-        const result = await eventsService.listEvents({
-            workspaceId: query.workspaceId,
-            taskId: query.taskId,
-            eventType: query.eventType,
-            page: query.page || 1,
-            pageSize: Math.min(query.pageSize || 20, 100),
-        });
-
-        return c.json(result);
-    },
-)
+    )
 
     // ----------------------------------------
     // Get Single Event

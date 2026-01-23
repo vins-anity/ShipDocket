@@ -64,10 +64,7 @@ export const policyTierEnum = pgEnum("policy_tier", [
     "hardened", // 3 approvals, 72h auto-close
 ]);
 
-export const workspaceRoleEnum = pgEnum("workspace_role", [
-    "owner",
-    "member",
-]);
+export const workspaceRoleEnum = pgEnum("workspace_role", ["owner", "member"]);
 
 // ============================================
 // Tables

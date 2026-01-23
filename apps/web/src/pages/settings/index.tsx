@@ -1,11 +1,11 @@
 import { IconBuilding, IconMail, IconShield, IconUser, IconUsers } from "@tabler/icons-react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 
 export function SettingsPage() {
     const { user } = useAuth();
@@ -35,17 +35,18 @@ export function SettingsPage() {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Full Name</label>
+                                <label htmlFor="full-name" className="text-sm font-medium">Full Name</label>
                                 <Input
+                                    id="full-name"
                                     disabled
                                     value={user?.user_metadata?.full_name || "Trail User"}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Email Address</label>
+                                <label htmlFor="email" className="text-sm font-medium">Email Address</label>
                                 <div className="flex gap-2">
                                     <IconMail className="h-4 w-4 absolute translate-y-3 translate-x-3 text-muted-foreground" />
-                                    <Input disabled value={user?.email} className="pl-9" />
+                                    <Input id="email" disabled value={user?.email} className="pl-9" />
                                 </div>
                             </div>
                         </div>
@@ -72,7 +73,9 @@ export function SettingsPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-semibold">{workspace.name}</h4>
-                                        <p className="text-sm text-muted-foreground font-mono text-xs">ID: {workspace.id}</p>
+                                        <p className="text-sm text-muted-foreground font-mono text-xs">
+                                            ID: {workspace.id}
+                                        </p>
                                     </div>
                                 </div>
                                 <Badge

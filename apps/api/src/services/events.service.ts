@@ -5,7 +5,7 @@
  * Uses Drizzle ORM for type-safe queries.
  */
 
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import type { EventType, TriggerSource } from "shared";
 import { db, schema } from "../db";
 import { createHashedEvent, verifyChainIntegrity } from "../lib/hash-chain";
@@ -198,10 +198,10 @@ export async function getDashboardStats(workspaceId?: string) {
         ).length;
 
         // 2. Pending Proofs (closure_proposed but not finalized or vetoed)
-        // This is simplified: count events where eventType = closure_proposed 
+        // This is simplified: count events where eventType = closure_proposed
         // AND not followed by closure_approved or closure_vetoed for same task/proof
         // For MVP speed, let's just count 'closure_proposed' events within last 24h that aren't closed?
-        // Better: Query existing pending jobs from pg-boss? 
+        // Better: Query existing pending jobs from pg-boss?
         // Alternative: Just count closure_proposed events that don't have a matching closure_approved/vetoed
         // Let's go with the query approach similar to active tasks.
 
@@ -215,10 +215,12 @@ export async function getDashboardStats(workspaceId?: string) {
             .from(schema.events)
             .where(and(filters, eq(schema.events.eventType, "closure_vetoed")));
 
-        const finalizedTaskIds = new Set([...closures, ...vetoed].map(c => c.taskId).filter(Boolean));
+        const finalizedTaskIds = new Set(
+            [...closures, ...vetoed].map((c) => c.taskId).filter(Boolean),
+        );
 
         const pendingProofs = proposed.filter(
-            (p) => p.taskId && !finalizedTaskIds.has(p.taskId)
+            (p) => p.taskId && !finalizedTaskIds.has(p.taskId),
         ).length;
 
         // 3. Completed Proofs (closure_approved)
@@ -231,7 +233,7 @@ export async function getDashboardStats(workspaceId?: string) {
             activeTasks,
             pendingProofs,
             completedProofs,
-            vetoed: vetoedCount
+            vetoed: vetoedCount,
         };
     } catch (error) {
         console.error("DEBUG: Error in getDashboardStats:", error);

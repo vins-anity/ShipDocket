@@ -12,9 +12,9 @@ import {
 } from "shared";
 import * as v from "valibot";
 import { isValidUUID } from "../../lib/error";
-import * as policiesService from "../../services/policies.service";
 import { supabaseAuth } from "../../middleware/supabase-auth";
 import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
+import * as policiesService from "../../services/policies.service";
 
 /**
  * Policies Module

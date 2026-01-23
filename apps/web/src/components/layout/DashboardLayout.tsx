@@ -129,7 +129,10 @@ export function DashboardLayout() {
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="relative h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 border border-primary/50">
+                                <Button
+                                    variant="ghost"
+                                    className="relative h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 border border-primary/50"
+                                >
                                     <div className="flex h-full w-full items-center justify-center text-xs font-bold text-primary">
                                         {user?.email?.charAt(0).toUpperCase() || "U"}
                                     </div>

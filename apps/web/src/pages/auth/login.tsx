@@ -55,8 +55,14 @@ export function LoginPage() {
 
             {/* Floating orbs for visual depth */}
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '-1.5s' }} />
-            <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '-3s' }} />
+            <div
+                className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float"
+                style={{ animationDelay: "-1.5s" }}
+            />
+            <div
+                className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float"
+                style={{ animationDelay: "-3s" }}
+            />
 
             {/* Login card */}
             <Card className="relative w-full max-w-md border-white/10 bg-card/80 backdrop-blur-xl shadow-2xl animate-fade-in">

@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 
-export function useDashboardStats() {
+export function useDashboardStats(workspaceId?: string) {
     const { data, isLoading } = useQuery({
-        queryKey: ["dashboard-stats"],
+        queryKey: ["dashboard-stats", workspaceId],
         queryFn: async () => {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/events/stats`);
+            if (!workspaceId) return null;
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/events/stats?workspaceId=${workspaceId}`,
+            );
             if (!res.ok) throw new Error("Failed to fetch stats");
             return res.json();
         },
+        enabled: !!workspaceId,
     });
 
     return {

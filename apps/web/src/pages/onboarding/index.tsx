@@ -1,4 +1,3 @@
-
 import { IconBuildingSkyscraper, IconRocket } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +18,9 @@ export function OnboardingPage() {
         setError("");
 
         try {
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
             const token = session?.access_token;
             if (!token) throw new Error("Not authenticated");
 
@@ -40,8 +41,8 @@ export function OnboardingPage() {
             // Redirect to dashboard
             // We use replace to prevent back navigation
             navigate("/dashboard", { replace: true });
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "An error occurred");
         } finally {
             setLoading(false);
         }
@@ -66,11 +67,12 @@ export function OnboardingPage() {
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground/80 flex items-center gap-2">
+                            <label htmlFor="workspace-name" className="text-sm font-medium text-foreground/80 flex items-center gap-2">
                                 <IconBuildingSkyscraper className="w-4 h-4 text-muted-foreground" />
                                 Workspace Name
                             </label>
                             <Input
+                                id="workspace-name"
                                 placeholder="Acme Corp."
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}

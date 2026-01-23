@@ -29,16 +29,16 @@ vi.mock("../lib/job-queue", () => ({
 }));
 
 vi.mock("../middleware/rate-limiter", () => ({
-    rateLimiter: () => async (c: any, next: any) => await next(),
+    rateLimiter: () => async (_c: any, next: any) => await next(),
     RateLimits: { webhooks: {} },
 }));
 
 // Mock signature verification to simply pass through
 // The critical part is ensuring these are mocked BEFORE the route module imports them
 vi.mock("../middleware/verify-webhook", () => ({
-    verifySlackSignature: async (c: any, next: any) => await next(),
-    verifyGitHubSignature: async (c: any, next: any) => await next(),
-    verifyJiraSignature: async (c: any, next: any) => await next(),
+    verifySlackSignature: async (_c: any, next: any) => await next(),
+    verifyGitHubSignature: async (_c: any, next: any) => await next(),
+    verifyJiraSignature: async (_c: any, next: any) => await next(),
 }));
 
 describe.skip("Webhook Routes", () => {

@@ -34,7 +34,7 @@ export class JiraService {
 
             const transitionsData = await transitionsResponse.json();
             const transition = transitionsData.transitions.find(
-                (t: any) => t.name.toLowerCase() === status.toLowerCase(),
+                (t: { name: string; id: string }) => t.name.toLowerCase() === status.toLowerCase(),
             );
 
             if (!transition) {
