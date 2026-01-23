@@ -3,7 +3,7 @@ services:
   - type: web
     name: trail-api
     runtime: docker
-    repo: https://github.com/YOUR_USERNAME/trail
+    repo: https://github.com/vins-anity/trail
     rootDir: .
     dockerfilePath: ./apps/api/Dockerfile
     envVars:
@@ -26,7 +26,7 @@ services:
   - type: worker
     name: trail-worker
     runtime: docker
-    repo: https://github.com/YOUR_USERNAME/trail
+    repo: https://github.com/vins-anity/trail
     rootDir: .
     dockerfilePath: ./apps/api/Dockerfile
     envVars:
