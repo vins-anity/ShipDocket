@@ -1,47 +1,79 @@
 
 import { Hono } from "hono";
 import { workspacesService } from "../../services";
+import { supabaseAuth } from "../../middleware/supabase-auth";
 
-const app = new Hono();
+type Variables = {
+    userId: string;
+    user: any;
+};
 
+const app = new Hono<{ Variables: Variables }>();
+
+// Apply Supabase Auth middleware to all routes
+app.use("*", supabaseAuth);
+
+/**
+ * GET /
+ * List all workspaces the user is a member of.
+ */
+app.get("/", async (c) => {
+    const userId = c.get("userId") as string;
+    const workspaces = await workspacesService.getWorkspacesForUser(userId);
+    return c.json(workspaces);
+});
+
+/**
+ * POST /
+ * Create a new workspace.
+ */
+app.post("/", async (c) => {
+    const userId = c.get("userId") as string;
+    const body = await c.req.json<{ name: string; defaultPolicyTier?: any }>();
+
+    if (!body.name) {
+        return c.json({ error: "Workspace name is required" }, 400);
+    }
+
+    try {
+        const workspace = await workspacesService.createWorkspace({
+            name: body.name,
+            userId: userId,
+            defaultPolicyTier: body.defaultPolicyTier,
+        });
+        return c.json(workspace, 201);
+    } catch (err) {
+        console.error("Failed to create workspace:", err);
+        return c.json({ error: "Failed to create workspace" }, 500);
+    }
+});
+
+/**
+ * GET /current
+ * Legacy/Convenience endpoint for the Dashboard.
+ * Returns metadata (not tokens) for the active workspace.
+ * Falls back to the first available workspace if no ID provided.
+ */
 app.get("/current", async (c) => {
-    // In a real multi-tenant app, we'd get this from the auth context (JWT)
-    // For MVP/Demo, we'll assume a default workspace or fetch the first one
-    // In the future: const userId = c.get('jwtPayload').sub;
+    const userId = c.get("userId") as string;
+    const workspaceId = c.req.query("workspaceId");
 
-    // For now, let's just list all and take the first one, 
-    // or use a hardcoded ID if we had one.
-    // Ideally user is associated with a workspace.
-
-    // Let's assume we pass workspaceId via query param or header for now in the frontend
-    // or defaulting to a known demo ID for the "Trail Enterprise" workspace we saw in settings.
-
-    let workspaceId = c.req.query("workspaceId");
+    const allWorkspaces = await workspacesService.getWorkspacesForUser(userId);
 
     let workspace;
 
     if (workspaceId) {
-        workspace = await workspacesService.getWorkspaceById(workspaceId);
+        workspace = allWorkspaces.find((w) => w.id === workspaceId);
     } else {
-        // Fallback: Get the first workspace found (Demo mode)
-        const all = await workspacesService.listWorkspaces();
-        if (all.length > 0 && all[0]) {
-            workspace = await workspacesService.getWorkspaceById(all[0].id);
-        } else {
-            // AUTO-SEED: If no workspace exists, create one for the demo
-            console.log("[Auto-Seed] Creating default workspace...");
-            workspace = await workspacesService.createWorkspace({
-                name: "My Agency",
-            });
-        }
+        // Default to the first one found
+        workspace = allWorkspaces[0];
     }
 
     if (!workspace) {
-        // Should be impossible given the auto-seed above, but safe guard
-        return c.json({ error: "Workspace not found" }, 404);
+        return c.json({ error: "No workspace found" }, 404);
     }
 
-    // Return status flags only, NOT the actual tokens
+    // Return sanitized status
     return c.json({
         id: workspace.id,
         name: workspace.name,

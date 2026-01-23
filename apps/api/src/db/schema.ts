@@ -64,6 +64,11 @@ export const policyTierEnum = pgEnum("policy_tier", [
     "hardened", // 3 approvals, 72h auto-close
 ]);
 
+export const workspaceRoleEnum = pgEnum("workspace_role", [
+    "owner",
+    "member",
+]);
+
 // ============================================
 // Tables
 // ============================================
@@ -231,6 +236,22 @@ export const closureJobs = pgTable("closure_jobs", {
     completedAt: timestamp("completed_at"),
 });
 
+/**
+ * Workspace Members - User to Workspace Mapping
+ * Links Supabase Auth users to specific workspaces with roles.
+ */
+export const workspaceMembers = pgTable("workspace_members", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workspaceId: uuid("workspace_id")
+        .notNull()
+        .references(() => workspaces.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull(), // References auth.users
+    role: workspaceRoleEnum("role").default("member").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // ============================================
 // Relations
 // ============================================
@@ -239,6 +260,7 @@ export const workspacesRelations = relations(workspaces, ({ many }) => ({
     events: many(events),
     proofPackets: many(proofPackets),
     policies: many(policies),
+    members: many(workspaceMembers),
 }));
 
 export const eventsRelations = relations(events, ({ one }) => ({
@@ -286,6 +308,13 @@ export const closureJobsRelations = relations(closureJobs, ({ one }) => ({
     }),
 }));
 
+export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) => ({
+    workspace: one(workspaces, {
+        fields: [workspaceMembers.workspaceId],
+        references: [workspaces.id],
+    }),
+}));
+
 // ============================================
 // Type Exports
 // ============================================
@@ -303,4 +332,7 @@ export type Policy = typeof policies.$inferSelect;
 export type NewPolicy = typeof policies.$inferInsert;
 
 export type ClosureJob = typeof closureJobs.$inferSelect;
-export type NewClosureJob = typeof closureJobs.$inferInsert;
+export type newClosureJob = typeof closureJobs.$inferInsert;
+
+export type WorkspaceMember = typeof workspaceMembers.$inferSelect;
+export type NewWorkspaceMember = typeof workspaceMembers.$inferInsert;

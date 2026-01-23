@@ -13,6 +13,8 @@ import {
 import * as v from "valibot";
 import { isValidUUID } from "../../lib/error";
 import * as policiesService from "../../services/policies.service";
+import { supabaseAuth } from "../../middleware/supabase-auth";
+import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
 
 /**
  * Policies Module
@@ -30,12 +32,18 @@ const { POLICY_PRESETS } = policiesService;
 // Routes
 // ============================================
 
-const policies = new Hono()
+const policies = new Hono();
+
+// Apply Auth Middleware
+policies.use("*", supabaseAuth);
+
+policies
     // ----------------------------------------
     // List Policies
     // ----------------------------------------
     .get(
         "/",
+        requireWorkspaceAccess(),
         describeRoute({
             tags: ["Policies"],
             summary: "List available closure policies",

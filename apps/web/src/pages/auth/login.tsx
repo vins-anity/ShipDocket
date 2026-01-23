@@ -44,7 +44,7 @@ export function LoginPage() {
         if (error) {
             setAuthError(error.message);
         } else {
-            navigate("/");
+            navigate("/dashboard");
         }
     };
 

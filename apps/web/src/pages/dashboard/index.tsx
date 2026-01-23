@@ -3,7 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCardSkeleton, ActivitySkeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { useEvents } from "@/hooks/use-events";
@@ -11,11 +11,24 @@ import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { OnboardingWidget } from "../../components/onboarding/OnboardingWidget";
 
 export function DashboardPage() {
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const queryClient = useQueryClient();
     const { data: status, isLoading: statusLoading } = useWorkspaceStatus();
-    const { stats, isLoading: statsLoading } = useDashboardStats();
-    const { data: recentActivity, isLoading: activityLoading } = useEvents({ pageSize: 5 });
+
+    // Redirect to onboarding if no workspace found
+    useEffect(() => {
+        if (!statusLoading && status === null) {
+            navigate("/onboarding");
+        }
+    }, [status, statusLoading, navigate]);
+
+    // Fetch stats and events for the current workspace
+    const { stats, isLoading: statsLoading } = useDashboardStats(status?.id);
+    const { data: recentActivity, isLoading: activityLoading } = useEvents({
+        pageSize: 5,
+        workspaceId: status?.id
+    });
 
     // Handle OAuth success redirect
     useEffect(() => {

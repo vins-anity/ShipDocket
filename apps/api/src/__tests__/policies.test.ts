@@ -10,6 +10,7 @@ import { db, schema } from "../db";
 import app from "../index";
 
 const TEST_WORKSPACE_ID = crypto.randomUUID();
+const MOCK_USER_ID = "00000000-0000-0000-0000-000000000000";
 
 describe("Policies API", () => {
     // Setup: Create a test workspace
@@ -17,6 +18,11 @@ describe("Policies API", () => {
         await db.insert(schema.workspaces).values({
             id: TEST_WORKSPACE_ID,
             name: "Test Workspace Policies",
+        });
+        await db.insert(schema.workspaceMembers).values({
+            workspaceId: TEST_WORKSPACE_ID,
+            userId: MOCK_USER_ID,
+            role: "owner",
         });
     });
 
@@ -41,7 +47,7 @@ describe("Policies API", () => {
         });
 
         it("should include 3 tier presets", async () => {
-            const res = await app.request("/policies");
+            const res = await app.request(`/policies?workspaceId=${TEST_WORKSPACE_ID}`);
             const json = await res.json();
 
             // Presets are always returned if no custom policies

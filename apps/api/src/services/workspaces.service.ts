@@ -7,7 +7,7 @@
  * Security: OAuth tokens are encrypted at rest using AES-256-GCM.
  */
 
-import { eq, or } from "drizzle-orm";
+import { eq, or, and } from "drizzle-orm";
 import type { PolicyTier } from "shared";
 import { db, schema } from "../db";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
@@ -19,6 +19,7 @@ import { decryptToken, encryptToken } from "../lib/token-encryption";
 export interface CreateWorkspaceInput {
     name: string;
     defaultPolicyTier?: PolicyTier;
+    userId: string;
 }
 
 export interface UpdateWorkspaceInput {
@@ -172,15 +173,23 @@ export async function findByIntegration(params: {
  * Create a new workspace
  */
 export async function createWorkspace(input: CreateWorkspaceInput) {
-    const [workspace] = await db
-        .insert(schema.workspaces)
-        .values({
-            name: input.name,
-            defaultPolicyTier: input.defaultPolicyTier || "standard",
-        })
-        .returning();
+    return await db.transaction(async (tx) => {
+        const [workspace] = await tx
+            .insert(schema.workspaces)
+            .values({
+                name: input.name,
+                defaultPolicyTier: input.defaultPolicyTier || "standard",
+            })
+            .returning();
 
-    return workspace;
+        await tx.insert(schema.workspaceMembers).values({
+            workspaceId: workspace.id,
+            userId: input.userId,
+            role: "owner",
+        });
+
+        return workspace;
+    });
 }
 
 /**
@@ -207,9 +216,27 @@ export async function updateWorkspace(id: string, input: UpdateWorkspaceInput) {
 }
 
 /**
- * List all workspaces
- * Note: Tokens are NOT decrypted in list view for performance
+ * Get all workspaces for a specific user
  */
-export async function listWorkspaces() {
-    return db.select().from(schema.workspaces);
+export async function getWorkspacesForUser(userId: string) {
+    const members = await db.query.workspaceMembers.findMany({
+        where: eq(schema.workspaceMembers.userId, userId),
+        with: {
+            workspace: true,
+        },
+    });
+    return members.map((m) => m.workspace!);
+}
+
+/**
+ * Verify if a user has access to a workspace
+ */
+export async function checkAccess(userId: string, workspaceId: string) {
+    const member = await db.query.workspaceMembers.findFirst({
+        where: and(
+            eq(schema.workspaceMembers.workspaceId, workspaceId),
+            eq(schema.workspaceMembers.userId, userId),
+        ),
+    });
+    return !!member;
 }

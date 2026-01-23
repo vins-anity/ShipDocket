@@ -14,6 +14,8 @@ import * as v from "valibot";
 import { generateProofSummary } from "../../lib/ai";
 import { isValidUUID } from "../../lib/error";
 import * as proofsService from "../../services/proofs.service";
+import { supabaseAuth } from "../../middleware/supabase-auth";
+import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
 
 /**
  * Proofs Module
@@ -29,12 +31,18 @@ import * as proofsService from "../../services/proofs.service";
 // Routes
 // ============================================
 
-const proofs = new Hono()
+const proofs = new Hono();
+
+// Apply Auth Middleware
+proofs.use("*", supabaseAuth);
+
+proofs
     // ----------------------------------------
     // List Proof Packets
     // ----------------------------------------
     .get(
         "/",
+        requireWorkspaceAccess(),
         describeRoute({
             tags: ["Proofs"],
             summary: "List proof packets",

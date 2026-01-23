@@ -1,5 +1,6 @@
 import { IconBuilding, IconMail, IconShield, IconUser, IconUsers } from "@tabler/icons-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 
 export function SettingsPage() {
     const { user } = useAuth();
+    const { data: workspace, isLoading } = useWorkspaceStatus();
 
     return (
         <div className="space-y-6">
@@ -60,23 +62,31 @@ export function SettingsPage() {
                         <CardDescription>Manage your Trail Enterprise workspace.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <div className="flex items-center justify-between p-4 border border-white/5 rounded-lg bg-background/50">
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                                    <IconShield className="h-6 w-6 text-primary" />
+                        {isLoading ? (
+                            <div className="animate-pulse h-20 bg-white/5 rounded-lg" />
+                        ) : workspace ? (
+                            <div className="flex items-center justify-between p-4 border border-white/5 rounded-lg bg-background/50">
+                                <div className="flex items-center gap-4">
+                                    <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                                        <IconShield className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold">{workspace.name}</h4>
+                                        <p className="text-sm text-muted-foreground font-mono text-xs">ID: {workspace.id}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-semibold">Trail Enterprise</h4>
-                                    <p className="text-sm text-muted-foreground">ID: ws_8x92m...</p>
-                                </div>
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                                >
+                                    {workspace.defaultPolicyTier || "Standard"} Plan
+                                </Badge>
                             </div>
-                            <Badge
-                                variant="secondary"
-                                className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                            >
-                                Active Plan
-                            </Badge>
-                        </div>
+                        ) : (
+                            <div className="p-4 text-center text-muted-foreground">
+                                No workspace found.
+                            </div>
+                        )}
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">

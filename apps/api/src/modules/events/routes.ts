@@ -5,6 +5,8 @@ import { ChainVerificationSchema, EventListSchema, EventQuerySchema, EventSchema
 import * as v from "valibot";
 import { isValidUUID } from "../../lib/error";
 import * as eventsService from "../../services/events.service";
+import { supabaseAuth } from "../../middleware/supabase-auth";
+import { requireWorkspaceAccess } from "../../middleware/workspace-guard";
 
 /**
  * Events Module
@@ -19,43 +21,45 @@ import * as eventsService from "../../services/events.service";
 // Routes
 // ============================================
 
-const events = new Hono()
-    // ----------------------------------------
-    // List Events
-    // ----------------------------------------
-    .get(
-        "/",
-        describeRoute({
-            tags: ["Events"],
-            summary: "List events with pagination",
-            description:
-                "Returns hash-chained events from the audit log. Supports filtering by workspace, task, and event type.",
-            responses: {
-                200: {
-                    description: "List of events",
-                    content: {
-                        "application/json": {
-                            schema: resolver(EventListSchema),
-                        },
+const events = new Hono();
+
+// Apply Auth Middleware
+events.use("*", supabaseAuth);
+
+events.get(
+    "/",
+    requireWorkspaceAccess(), // Enforce workspace context for listing events
+    describeRoute({
+        tags: ["Events"],
+        summary: "List events with pagination",
+        description:
+            "Returns hash-chained events from the audit log. Supports filtering by workspace, task, and event type.",
+        responses: {
+            200: {
+                description: "List of events",
+                content: {
+                    "application/json": {
+                        schema: resolver(EventListSchema),
                     },
                 },
             },
-        }),
-        vValidator("query", EventQuerySchema),
-        async (c) => {
-            const query = c.req.valid("query");
-
-            const result = await eventsService.listEvents({
-                workspaceId: query.workspaceId,
-                taskId: query.taskId,
-                eventType: query.eventType,
-                page: query.page || 1,
-                pageSize: Math.min(query.pageSize || 20, 100),
-            });
-
-            return c.json(result);
         },
-    )
+    }),
+    vValidator("query", EventQuerySchema),
+    async (c) => {
+        const query = c.req.valid("query");
+
+        const result = await eventsService.listEvents({
+            workspaceId: query.workspaceId,
+            taskId: query.taskId,
+            eventType: query.eventType,
+            page: query.page || 1,
+            pageSize: Math.min(query.pageSize || 20, 100),
+        });
+
+        return c.json(result);
+    },
+)
 
     // ----------------------------------------
     // Get Single Event
@@ -101,8 +105,12 @@ const events = new Hono()
     // ----------------------------------------
     // Verify Chain Integrity
     // ----------------------------------------
+    // ----------------------------------------
+    // Verify Chain Integrity
+    // ----------------------------------------
     .get(
         "/verify/:workspaceId",
+        requireWorkspaceAccess(),
         describeRoute({
             tags: ["Events"],
             summary: "Verify hash chain integrity",

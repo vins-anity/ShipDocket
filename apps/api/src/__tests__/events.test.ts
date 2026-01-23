@@ -10,6 +10,7 @@ import { db, schema } from "../db";
 import app from "../index";
 
 const TEST_WORKSPACE_ID = crypto.randomUUID();
+const MOCK_USER_ID = "00000000-0000-0000-0000-000000000000";
 
 describe("Events API", () => {
     // Setup: Create a test workspace
@@ -17,6 +18,11 @@ describe("Events API", () => {
         await db.insert(schema.workspaces).values({
             id: TEST_WORKSPACE_ID,
             name: "Test Workspace Events",
+        });
+        await db.insert(schema.workspaceMembers).values({
+            workspaceId: TEST_WORKSPACE_ID,
+            userId: MOCK_USER_ID,
+            role: "owner",
         });
     });
 
@@ -30,7 +36,7 @@ describe("Events API", () => {
     // ============================================
     describe("GET /events", () => {
         it("should return paginated events list", async () => {
-            const res = await app.request("/events");
+            const res = await app.request(`/events?workspaceId=${TEST_WORKSPACE_ID}`);
             expect(res.status).toBe(200);
 
             const json = await res.json();

@@ -12,6 +12,7 @@ import app from "../index";
 const TEST_WORKSPACE_ID = crypto.randomUUID();
 const TEST_TASK_ID = "10001";
 const TEST_TASK_KEY = "TRAIL-123";
+const MOCK_USER_ID = "00000000-0000-0000-0000-000000000000";
 
 describe("Proofs API", () => {
     const originalFetch = global.fetch;
@@ -48,6 +49,11 @@ describe("Proofs API", () => {
         await db.insert(schema.workspaces).values({
             id: TEST_WORKSPACE_ID,
             name: "Test Workspace",
+        });
+        await db.insert(schema.workspaceMembers).values({
+            workspaceId: TEST_WORKSPACE_ID,
+            userId: MOCK_USER_ID,
+            role: "owner",
         });
     });
 
