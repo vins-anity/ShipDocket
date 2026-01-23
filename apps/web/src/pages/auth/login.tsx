@@ -26,7 +26,7 @@ export function LoginPage() {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<LoginFormData>({
-        resolver: valibotResolver(LoginSchema) as any,
+        resolver: valibotResolver(LoginSchema),
         defaultValues: {
             email: "",
             password: "",

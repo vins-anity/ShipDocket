@@ -67,7 +67,10 @@ export function OnboardingPage() {
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                         <div className="space-y-2">
-                            <label htmlFor="workspace-name" className="text-sm font-medium text-foreground/80 flex items-center gap-2">
+                            <label
+                                htmlFor="workspace-name"
+                                className="text-sm font-medium text-foreground/80 flex items-center gap-2"
+                            >
                                 <IconBuildingSkyscraper className="w-4 h-4 text-muted-foreground" />
                                 Workspace Name
                             </label>

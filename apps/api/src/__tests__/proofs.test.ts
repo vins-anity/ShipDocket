@@ -44,7 +44,7 @@ describe("Proofs API", () => {
                 json: async () => mockResponse,
                 text: async () => JSON.stringify(mockResponse),
             } as Response),
-        ) as any;
+        ) as unknown as typeof global.fetch;
 
         await db.insert(schema.workspaces).values({
             id: TEST_WORKSPACE_ID,

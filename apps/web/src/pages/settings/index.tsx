@@ -35,7 +35,9 @@ export function SettingsPage() {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label htmlFor="full-name" className="text-sm font-medium">Full Name</label>
+                                <label htmlFor="full-name" className="text-sm font-medium">
+                                    Full Name
+                                </label>
                                 <Input
                                     id="full-name"
                                     disabled
@@ -43,10 +45,17 @@ export function SettingsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="email" className="text-sm font-medium">Email Address</label>
+                                <label htmlFor="email" className="text-sm font-medium">
+                                    Email Address
+                                </label>
                                 <div className="flex gap-2">
                                     <IconMail className="h-4 w-4 absolute translate-y-3 translate-x-3 text-muted-foreground" />
-                                    <Input id="email" disabled value={user?.email} className="pl-9" />
+                                    <Input
+                                        id="email"
+                                        disabled
+                                        value={user?.email}
+                                        className="pl-9"
+                                    />
                                 </div>
                             </div>
                         </div>

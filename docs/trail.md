@@ -20,9 +20,9 @@ The system implements three core innovations:
 
 * **Passive Handshake Protocol:** Automatic detection of task acceptance via Jira/GitHub signals with "Explicit Rejection" capability, creating an authoritative record of intent without manual developer overhead.
 * **Optimistic Closure Protocol:** Evidence-based closure proposals (PR merged + approvals + CI passing) that auto-finalize after a set verification window (e.g., 24 hours) unless a human manager intervenes.
-* **AI-Enhanced Proof Packets:** Exportable audit artifacts containing Gemini-generated, client-friendly summaries of technical work, designed for agency client reporting, billing verification, and dispute resolution.
+* **AI-Enhanced Proof Packets:** Exportable audit artifacts containing business-readable summaries of technical work, generated via a cascading multi-model strategy (OpenRouter).
 
-Built using a modern technology stack (Bun, Hono, Drizzle ORM, Supabase, and Gemini AI), Trail AI is architected for distribution via the GitHub Marketplace and Atlassian Marketplace. The frontend is deployed on Vercel for global CDN performance, while the backend runs on Fly.io or Railway for cost-effective serverless execution. This thesis documents the system design, implementation plan, evaluation methodology, and market validation strategy.
+Built using a modern technology stack (Bun, Hono, Drizzle ORM, Supabase, and OpenRouter AI), Trail AI is architected for distribution via the GitHub Marketplace and Atlassian Marketplace. The frontend is deployed on **Cloudflare Pages** for global performance, while the backend runs on **Render** (via Infrastructure as Code Blueprints). This thesis documents the system design, implementation plan, evaluation methodology, and market validation strategy.
 
 ---
 
@@ -69,7 +69,7 @@ Trail AI transforms project management from an administrative burden into a high
 
 * **Deterministic Evidence:** Closure eligibility is anchored to objective GitHub signals (PR merged, approvals, CI pass), not probabilistic AI judgments.
 * **Tamper-Evident Audit Trail:** Hash-chained event logs ensure integrity of historical records.
-* **Client-Ready Narratives:** Gemini AI transforms technical commit logs into business-readable release notes.
+* **Client-Ready Narratives:** **OpenRouter AI** transforms technical commit logs into business-readable release notes using high-reasoning models with cost-optimized fallback.
 * **Optimistic Human Gate:** Final closure decisions assume success to reduce friction but remain under human control via a veto mechanism, preserving organizational trust.
 
 ### 1.4 Project Scope
@@ -81,8 +81,9 @@ Trail AI transforms project management from an administrative burden into a high
 * Jira REST API integration for bi-directional status sync.
 * Hash-chained event logging for data integrity.
 * 3-tier policy evaluation (Agile, Standard, Hardened).
-* Optimistic Closure Engine (Auto-close timer via pg-boss).
-* Proof Packet generation (Web, PDF, JSON export) with Gemini AI Summaries.
+* Optimistic Closure Engine (Auto-close timer via `pg-boss`).
+* Proof Packet generation (Web, PDF, JSON export) with **OpenRouter AI Summaries**.
+* Multi-tenant data isolation via **Supabase Row Level Security (RLS)**.
 
 **Out of Scope (Future Releases):**
 
@@ -211,7 +212,7 @@ flowchart LR
     PE[Policy & Optimistic Engine]
     PP[Proof Packet Generator]
     HC[Hash-Chained Event Log]
-    AI[Gemini AI Summarizer]
+    AI[OpenRouter AI Summarizer]
     Q[pg-boss Job Queue]
   end
 
@@ -270,9 +271,9 @@ Evaluates closure criteria and schedules auto-close jobs via `pg-boss`. Manager 
 
 Aggregates metadata into structured JSON. Includes Hash Chain Visualization logic.
 
-### 5.4.5 Gemini AI Integration
+### 5.4.5 **OpenRouter AI** Integration
 
-Summarizes PR descriptions and commits into 1–2 sentence client-facing summaries.
+Summarizes PR descriptions and commits into 1–2 sentence client-facing summaries using a cascading fallback strategy (Primary: Mistral Devstral 2, Fallback: MiMo V2 / GLM 4.5).
 
 ---
 
@@ -309,9 +310,9 @@ Goal: Understand delivery without reading code.
 | DB        | Supabase (Postgres) | RLS, Auth                      |
 | ORM       | Drizzle             | Type-safe, zero-runtime        |
 | Queue     | pg-boss             | No Redis required              |
-| AI        | Gemini 1.5 Flash    | Cost-effective, large context  |
+| AI        | OpenRouter (Mixed)  | Multi-model, cost-optimized    |
 | Frontend  | React + TS          | Interactive dashboards         |
-| Hosting   | Fly.io / Vercel     | Global, serverless-like        |
+| Hosting   | Render / Cloudflare | Blueprint-driven, global CDN   |
 
 ### 6.2 Development Timeline
 

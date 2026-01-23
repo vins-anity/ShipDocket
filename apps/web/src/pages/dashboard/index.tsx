@@ -185,7 +185,7 @@ export function DashboardPage() {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {recentActivity?.events?.map((event: any) => (
+                                {recentActivity?.events?.map((event) => (
                                     <div
                                         key={event.id}
                                         className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors"

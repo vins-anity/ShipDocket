@@ -41,14 +41,14 @@ export interface UpdateWorkspaceInput {
  * Decrypt workspace tokens after DB read
  */
 
-async function decryptWorkspaceTokens(workspace: Record<string, any>) {
-    if (workspace.slackAccessToken) {
+async function decryptWorkspaceTokens(workspace: Record<string, unknown>) {
+    if (typeof workspace.slackAccessToken === "string") {
         workspace.slackAccessToken = await decryptToken(workspace.slackAccessToken);
     }
-    if (workspace.githubInstallationId) {
+    if (typeof workspace.githubInstallationId === "string") {
         workspace.githubInstallationId = await decryptToken(workspace.githubInstallationId);
     }
-    if (workspace.jiraAccessToken) {
+    if (typeof workspace.jiraAccessToken === "string") {
         workspace.jiraAccessToken = await decryptToken(workspace.jiraAccessToken);
     }
     return workspace;

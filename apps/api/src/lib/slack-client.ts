@@ -5,7 +5,7 @@
  * Handles authentication and common operations.
  */
 
-import { WebClient } from "@slack/web-api";
+import { type Block, type KnownBlock, WebClient } from "@slack/web-api";
 import * as authService from "../services/auth.service";
 
 /**
@@ -47,7 +47,7 @@ export async function findUserByEmail(client: WebClient, email: string): Promise
 export async function sendDirectMessage(
     client: WebClient,
     userId: string,
-    blocks: any[],
+    blocks: (Block | KnownBlock)[],
     text: string,
 ): Promise<void> {
     try {

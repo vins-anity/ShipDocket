@@ -245,6 +245,7 @@ export function ProofDetailPage() {
                                 <div className="flex items-center gap-2 p-2 bg-muted/50 rounded text-xs">
                                     <span className="truncate flex-1">{shareUrl}</span>
                                     <button
+                                        type="button"
                                         onClick={() => navigator.clipboard.writeText(shareUrl)}
                                         className="text-muted-foreground hover:text-foreground"
                                     >

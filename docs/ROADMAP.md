@@ -9,15 +9,18 @@
 
 ### ✅ Completed
 - **Core Security**: Metadata-First Architecture (No Source Code Access).
-- **Onboarding**: GitHub App (Zero-Knowledge) + Jira/Slack Connection Gate.
+- **Onboarding**: Multi-tenant onboarding flow with Workspace selection.
+- **Security & Authorization**: Robust Row Level Security (RLS) and middleware-level workspace access control.
 - **Event Ingestion**: Webhook Router with optimized signature verification.
 - **Data Integrity**: Hash-Chained Event Log (Tamper-Evident).
-- **Proof Intelligence**: Basic "Smart Proof Packets" with AI Summaries.
+- **AI Intelligence**: **OpenRouter** integration with cascading fallback models (Mistral, GLM).
+- **Deployment**: Production-ready on **Render Blueprints** (Backend) and **Cloudflare Pages** (Frontend).
 
 ### 🚧 In Progress / Next Up
-1.  **Deployment**: Productionize on Fly.io/Render.
-2.  **Polish**: Enhance Proof Packet Viewer for mobile/client experience.
-3.  **Exports**: Generate PDF reports for billing attachments.
+1.  **Polish**: Enhance Proof Packet Viewer for mobile/client experience.
+2.  **Exports**: Generate PDF reports for billing attachments.
+3.  **Integrations**: Expand Jira status mapping and Slack command interactivity.
+
 
 ---
 

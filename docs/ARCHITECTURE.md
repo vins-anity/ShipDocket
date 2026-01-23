@@ -9,13 +9,14 @@
 2.  **Zero-Knowledge**: We cannot see, store, or leak user IP (Intellectual Property).
 3.  **Tamper-Evident**: All events are hash-chained (`prevHash` -> `currHash`).
 4.  **Optimistic Closure**: Assume success (CI Pass + Review), but allow human Veto.
+5.  **Multi-Tenant Isolation**: Robust Row Level Security (RLS) ensures data privacy between workspaces.
 
 ---
 
 ## 2. System Diagram
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph Agency["Agency Environment"]
         Dev[Developer]
         Jira[Jira Ticket]
@@ -23,15 +24,16 @@ flowchart LR
         Slack[Slack Channel]
     end
 
-    subgraph Trail["Trail AI Cloud"]
+    subgraph Trail["Trail AI Cloud (Render + Cloudflare)"]
         WR[Webhook Router]
         Eng[Policy Engine]
         DB[(Postgres + HashChain)]
-        AI[Gemini AI]
+        AI[OpenRouter AI]
+        Q[pg-boss Job Queue]
     end
 
-    subgraph Client["Client View"]
-        Packet[Proof Packet]
+    subgraph Client["Client View (Cloudflare Pages)"]
+        Packet[Proof Packet Viewer]
     end
 
     %% Flows
@@ -45,12 +47,15 @@ flowchart LR
     DB --Trigger--> Eng
     
     Eng --Request Summary--> AI
-    AI --Summary Text--> Eng
+    AI --Cascading Fallback Models--> Eng
     
     Eng --Generate--> Packet
     
     Eng --Notify--> Slack
     Slack --Veto/Approve--> WR
+    
+    Eng --Schedule Closure--> Q
+    Q --24h Timer--> Eng
 ```
 
 ---
@@ -61,20 +66,28 @@ flowchart LR
 |-----------|------------|------|
 | **Runtime** | Bun | High-performance JS runtime & package manager. |
 | **API Framework** | Hono | Lightweight, Edge-ready web framework. |
-| **Database** | Supabase (PostgreSQL) | Primary data store with RLS (future-proofing). |
+| **Database** | Supabase (PostgreSQL) | Primary data store with **Row Level Security (RLS)**. |
 | **ORM** | Drizzle | TypeScript-first schema definition & queries. |
 | **Queue** | pg-boss | Job queue for "Optimistic Closure" timers (24h delays). |
-| **AI** | Vertex AI (Gemini) | Summarization of PR titles/descriptions. |
+| **AI** | **OpenRouter** | Multi-model summarization (Mistral, MiMo, GLM fallback). |
+| **Frontend** | Vite + React | High-performance dashboard on **Cloudflare Pages**. |
+| **API Hosting** | Render | Docker-based API and Worker via Render Blueprints. |
 
 ---
 
 ## 4. Security Model
 
-### Authentication
-- **OAuth 2.0**: Used for all integrations (GitHub, Jira, Slack).
-- **State**: `workspace_id` is passed as opaque state during OAuth flows to link accounts.
+### Authentication & Authorization
+- **Supabase Auth**: Secure user authentication for the dashboard.
+- **RLS (Row Level Security)**: Every database query is restricted to the user's active `workspace_id` via Postgres policies.
+- **OAuth 2.0**: Encrypted token storage for GitHub, Jira, and Slack.
 
 ### Webhook Verification
 - **GitHub**: `HMAC-SHA256` signature verification.
 - **Slack**: `HMAC-SHA256` signing secret verification.
-- **Jira**: Context verification (JWT/Connect - *planned*).
+- **Jira**: Context verification and shared secret validation.
+
+### Deployment (Infrastructure as Code)
+- **Render Blueprints**: `render.yaml` defines the API and background worker as a unified stack.
+- **Cloudflare Pages**: Global CDN hosting for the frontend with automatic deployments.
+

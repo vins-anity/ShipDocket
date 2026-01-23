@@ -45,7 +45,7 @@ describe("OpenRouter AI Integration", () => {
                 json: async () => mockResponse,
                 text: async () => JSON.stringify(mockResponse),
             } as Response),
-        ) as any;
+        ) as unknown as typeof global.fetch;
     });
 
     afterAll(() => {

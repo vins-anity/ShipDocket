@@ -1,3 +1,4 @@
+import type { Context, Next } from "hono";
 import { Hono } from "hono";
 import { describe, expect, it, vi } from "vitest";
 
@@ -29,16 +30,16 @@ vi.mock("../lib/job-queue", () => ({
 }));
 
 vi.mock("../middleware/rate-limiter", () => ({
-    rateLimiter: () => async (_c: any, next: any) => await next(),
+    rateLimiter: () => async (_c: Context, next: Next) => await next(),
     RateLimits: { webhooks: {} },
 }));
 
 // Mock signature verification to simply pass through
 // The critical part is ensuring these are mocked BEFORE the route module imports them
 vi.mock("../middleware/verify-webhook", () => ({
-    verifySlackSignature: async (_c: any, next: any) => await next(),
-    verifyGitHubSignature: async (_c: any, next: any) => await next(),
-    verifyJiraSignature: async (_c: any, next: any) => await next(),
+    verifySlackSignature: async (_c: Context, next: Next) => await next(),
+    verifyGitHubSignature: async (_c: Context, next: Next) => await next(),
+    verifyJiraSignature: async (_c: Context, next: Next) => await next(),
 }));
 
 describe.skip("Webhook Routes", () => {

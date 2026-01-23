@@ -1,9 +1,4 @@
-import {
-    IconArrowRight,
-    IconBrandGithub,
-    IconBrandSlack,
-    IconShieldLock,
-} from "@tabler/icons-react";
+import { IconShieldLock } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 

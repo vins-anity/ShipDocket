@@ -78,7 +78,7 @@ export function ProofPacketsPage() {
                 </div>
             ) : (
                 <div className="grid gap-4">
-                    {proofs.map((proof: any) => (
+                    {proofs.map((proof) => (
                         <Link key={proof.id} to={`/proofs/${proof.id}`}>
                             <Card className="bg-card/50 backdrop-blur-sm border-white/5 hover-lift cursor-pointer group transition-all">
                                 <CardHeader className="flex flex-row items-center justify-between py-4">
@@ -88,7 +88,7 @@ export function ProofPacketsPage() {
                                         </div>
                                         <div>
                                             <CardTitle className="text-base font-medium">
-                                                {proof.task?.key || proof.taskId || proof.id}
+                                                {proof.task?.key || proof.id}
                                             </CardTitle>
                                             <p className="text-sm text-muted-foreground">
                                                 {proof.task?.summary || "Proof Packet"} •{" "}
