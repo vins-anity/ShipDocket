@@ -11,10 +11,6 @@ import { policiesService } from "../services";
 
 const connectionString = process.env.DATABASE_URL;
 
-if (!connectionString) {
-    throw new Error("DATABASE_URL is required for job queue");
-}
-
 // Singleton instance
 let boss: PgBoss | null = null;
 
@@ -27,6 +23,9 @@ export const QUEUE_NAMES = {
  */
 async function initializeBoss(): Promise<PgBoss> {
     if (boss) return boss;
+    if (!connectionString) {
+        throw new Error("DATABASE_URL is required for job queue initialization");
+    }
 
     console.log("Initializing pg-boss job queue...");
 
