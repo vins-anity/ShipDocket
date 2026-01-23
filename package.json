@@ -1,10 +1,10 @@
 {
-    "name": "honolulu",
+    "name": "trail",
     "version": "0.5.1",
     "description": "A monorepo template built with Bun, Hono, Vite, and React",
     "author": "Vince",
     "license": "MIT",
-    "homepage": "https://github.com/vins-anity/Honolulu",
+    "homepage": "https://github.com/vins-anity/trail",
     "packageManager": "bun@1.2.4",
     "workspaces": [
         "./apps/*",

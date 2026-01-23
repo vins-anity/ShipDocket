@@ -9,6 +9,7 @@
 
 import { and, eq, or } from "drizzle-orm";
 import type { PolicyTier } from "shared";
+import { type Workspace } from "../db/schema";
 import { db, schema } from "../db";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
 
@@ -40,18 +41,18 @@ export interface UpdateWorkspaceInput {
 /**
  * Decrypt workspace tokens after DB read
  */
-
-async function decryptWorkspaceTokens(workspace: Record<string, unknown>) {
-    if (typeof workspace.slackAccessToken === "string") {
-        workspace.slackAccessToken = await decryptToken(workspace.slackAccessToken);
+async function decryptWorkspaceTokens(workspace: Workspace): Promise<Workspace> {
+    const result = { ...workspace };
+    if (result.slackAccessToken) {
+        result.slackAccessToken = await decryptToken(result.slackAccessToken);
     }
-    if (typeof workspace.githubInstallationId === "string") {
-        workspace.githubInstallationId = await decryptToken(workspace.githubInstallationId);
+    if (result.githubInstallationId) {
+        result.githubInstallationId = await decryptToken(result.githubInstallationId);
     }
-    if (typeof workspace.jiraAccessToken === "string") {
-        workspace.jiraAccessToken = await decryptToken(workspace.jiraAccessToken);
+    if (result.jiraAccessToken) {
+        result.jiraAccessToken = await decryptToken(result.jiraAccessToken);
     }
-    return workspace;
+    return result;
 }
 
 /**

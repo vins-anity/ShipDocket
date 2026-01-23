@@ -4,7 +4,6 @@
  * This file sets up the connection to your PostgreSQL database using Drizzle ORM.
  * It works with any PostgreSQL database including:
  * - Supabase
- * - Railway
  * - Neon
  * - Local PostgreSQL
  * - Any PostgreSQL-compatible database
@@ -13,7 +12,7 @@
  * Set DATABASE_URL in your .env file. Examples:
  *
  * Local:
- *   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/honolulu
+ *   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/trail
  *
  * Supabase:
  *   DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT].supabase.co:5432/postgres

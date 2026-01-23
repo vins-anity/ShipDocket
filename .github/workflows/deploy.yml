@@ -6,16 +6,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy to Railway
+  build_and_test:
+    name: Build & Test
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -36,9 +36,3 @@ jobs:
         run: bun run build
         working-directory: ./apps/api
 
-      - name: Deploy to Railway
-        uses: braposo/railway-deploy@v1.1.0
-        with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          service: trail-api
-        if: github.ref == 'refs/heads/main'

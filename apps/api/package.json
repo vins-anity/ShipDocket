@@ -30,6 +30,8 @@
         "hono-openapi": "^0.4.1",
         "pg-boss": "^12.5.4",
         "postgres": "^3.4.8",
+        "@openrouter/sdk": "^0.3.14",
+        "@slack/web-api": "^7.8.0",
         "shared": "workspace:*",
         "valibot": "^1.2.0"
     },
