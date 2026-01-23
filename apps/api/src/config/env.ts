@@ -11,7 +11,7 @@ const envSchema = v.object({
     DATABASE_URL: v.optional(v.string()),
 
     // AI
-    GEMINI_API_KEY: v.optional(v.string()),
+    OPENROUTER_API_KEY: v.optional(v.string()),
 
     // Integrations
     SLACK_SIGNING_SECRET: v.optional(v.string()),
