@@ -3,7 +3,7 @@ FROM oven/bun:1.2.2
 WORKDIR /app
 
 # Copy root configs
-COPY package.json bun.lock turbo.json tsconfig.json biome.json ./
+COPY package.json bun.lock turbo.json tsconfig.json tsconfig.base.json biome.json ./
 
 # Copy packages
 COPY packages ./packages

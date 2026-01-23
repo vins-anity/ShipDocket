@@ -21,7 +21,7 @@
         "format": "biome check --write .",
         "type-check": "turbo type-check",
         "test": "turbo test",
-        "postinstall": "turbo build --filter=shared --filter=api",
+        "postinstall": "turbo build --filter=shared",
         "prepare": "husky"
     },
     "lint-staged": {
