@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { IconAlertCircle, IconLoader2 } from "@tabler/icons-react";
+import { IconAlertCircle, IconLoader2, IconShieldCheck } from "@tabler/icons-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -49,20 +49,37 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-background p-4">
-            <Card className="w-full max-w-md border-white/5 bg-card/50 backdrop-blur-sm">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold tracking-tight text-center">
-                        Trail AI
-                    </CardTitle>
-                    <CardDescription className="text-center">
-                        Enter your credentials to access the dashboard
-                    </CardDescription>
+        <div className="relative flex items-center justify-center min-h-screen bg-background p-4 overflow-hidden">
+            {/* Animated gradient mesh background */}
+            <div className="absolute inset-0 gradient-mesh opacity-60" />
+
+            {/* Floating orbs for visual depth */}
+            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '-1.5s' }} />
+            <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '-3s' }} />
+
+            {/* Login card */}
+            <Card className="relative w-full max-w-md border-white/10 bg-card/80 backdrop-blur-xl shadow-2xl animate-fade-in">
+                <CardHeader className="space-y-4 text-center pb-2">
+                    {/* Logo with glow */}
+                    <div className="flex justify-center">
+                        <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center glow-md">
+                            <IconShieldCheck className="h-9 w-9 text-white" />
+                        </div>
+                    </div>
+                    <div>
+                        <CardTitle className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                            Trail AI
+                        </CardTitle>
+                        <CardDescription className="mt-2 text-muted-foreground">
+                            Delivery assurance for software teams
+                        </CardDescription>
+                    </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-4">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         {authError && (
-                            <Alert variant="destructive">
+                            <Alert variant="destructive" className="animate-slide-up">
                                 <IconAlertCircle className="h-4 w-4" />
                                 <AlertDescription>{authError}</AlertDescription>
                             </Alert>
@@ -71,11 +88,12 @@ export function LoginPage() {
                             <Input
                                 type="email"
                                 placeholder="name@example.com"
+                                className="h-11 bg-background/50 border-white/10 focus:border-primary/50 transition-colors"
                                 {...register("email")}
                                 aria-invalid={!!errors.email}
                             />
                             {errors.email && (
-                                <p className="text-sm text-destructive font-medium">
+                                <p className="text-sm text-destructive font-medium animate-slide-up">
                                     {errors.email.message}
                                 </p>
                             )}
@@ -84,16 +102,21 @@ export function LoginPage() {
                             <Input
                                 type="password"
                                 placeholder="Password"
+                                className="h-11 bg-background/50 border-white/10 focus:border-primary/50 transition-colors"
                                 {...register("password")}
                                 aria-invalid={!!errors.password}
                             />
                             {errors.password && (
-                                <p className="text-sm text-destructive font-medium">
+                                <p className="text-sm text-destructive font-medium animate-slide-up">
                                     {errors.password.message}
                                 </p>
                             )}
                         </div>
-                        <Button type="submit" className="w-full" disabled={isSubmitting}>
+                        <Button
+                            type="submit"
+                            className="w-full h-11 font-medium transition-all duration-200 hover:glow-sm"
+                            disabled={isSubmitting}
+                        >
                             {isSubmitting ? (
                                 <>
                                     <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -104,6 +127,24 @@ export function LoginPage() {
                             )}
                         </Button>
                     </form>
+
+                    {/* Trust indicators */}
+                    <div className="mt-6 pt-6 border-t border-white/5">
+                        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                Secure
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                                Verified
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+                                Enterprise
+                            </span>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
         </div>

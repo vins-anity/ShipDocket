@@ -62,21 +62,24 @@ export function DashboardLayout() {
                                     key={item.href}
                                     to={item.href}
                                     className={cn(
-                                        "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 group",
+                                        "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 group relative",
                                         isActive
                                             ? "bg-primary/10 text-primary"
                                             : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
                                     )}
                                 >
+                                    {isActive && (
+                                        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-md" />
+                                    )}
                                     <Icon
                                         className={cn(
-                                            "h-4 w-4",
+                                            "h-4 w-4 relative z-10 transition-colors",
                                             isActive
                                                 ? "text-primary"
                                                 : "text-muted-foreground group-hover:text-foreground",
                                         )}
                                     />
-                                    {item.label}
+                                    <span className="relative z-10">{item.label}</span>
                                 </Link>
                             );
                         })}

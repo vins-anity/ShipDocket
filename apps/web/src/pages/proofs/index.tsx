@@ -1,8 +1,9 @@
-import { IconChevronRight, IconFileText, IconLoader2 } from "@tabler/icons-react";
+import { IconChevronRight, IconFileText, IconLoader2, IconInbox } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProofCardSkeleton } from "@/components/ui/skeleton";
 import { useProofPackets } from "@/hooks/use-proofs";
 
 export function ProofPacketsPage() {
@@ -12,8 +13,20 @@ export function ProofPacketsPage() {
 
     if (isLoading) {
         return (
-            <div className="flex h-[50vh] items-center justify-center">
-                <IconLoader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                            Proof Packets
+                        </h1>
+                        <p className="text-muted-foreground mt-1">Tamper-evident delivery receipts.</p>
+                    </div>
+                </div>
+                <div className="grid gap-4">
+                    <ProofCardSkeleton />
+                    <ProofCardSkeleton />
+                    <ProofCardSkeleton />
+                </div>
             </div>
         );
     }
@@ -27,14 +40,14 @@ export function ProofPacketsPage() {
     }
 
     const statusColors: Record<string, string> = {
-        draft: "bg-yellow-500/10 text-yellow-500",
-        pending: "bg-orange-500/10 text-orange-500",
-        finalized: "bg-green-500/10 text-green-500",
-        exported: "bg-blue-500/10 text-blue-500",
+        draft: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+        pending: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+        finalized: "bg-green-500/10 text-green-500 border-green-500/20",
+        exported: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -42,21 +55,33 @@ export function ProofPacketsPage() {
                     </h1>
                     <p className="text-muted-foreground mt-1">Tamper-evident delivery receipts.</p>
                 </div>
-                <Button>Export Report</Button>
+                <Button className="hover:glow-sm transition-all">Export Report</Button>
             </div>
 
             {proofs.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                    No proof packets found. They will appear here when tasks are tracked.
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-6">
+                        <IconInbox className="h-10 w-10 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                        No proof packets yet
+                    </h3>
+                    <p className="text-sm text-muted-foreground max-w-md mb-6">
+                        Proof packets will appear here when tasks are tracked through your connected tools.
+                        Make sure your integrations are set up correctly.
+                    </p>
+                    <Button variant="outline" className="hover:glow-sm transition-all">
+                        View Integration Status
+                    </Button>
                 </div>
             ) : (
                 <div className="grid gap-4">
                     {proofs.map((proof: any) => (
                         <Link key={proof.id} to={`/proofs/${proof.id}`}>
-                            <Card className="bg-card/50 backdrop-blur-sm border-white/5 hover:bg-card/80 transition-colors cursor-pointer group">
+                            <Card className="bg-card/50 backdrop-blur-sm border-white/5 hover-lift cursor-pointer group transition-all">
                                 <CardHeader className="flex flex-row items-center justify-between py-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
                                             <IconFileText className="h-5 w-5" />
                                         </div>
                                         <div>
@@ -73,13 +98,13 @@ export function ProofPacketsPage() {
                                         <Badge
                                             className={
                                                 statusColors[proof.status] ||
-                                                "bg-muted text-muted-foreground"
+                                                "bg-muted text-muted-foreground border border-white/10"
                                             }
                                         >
                                             {proof.status?.charAt(0).toUpperCase() +
                                                 proof.status?.slice(1) || "Pending"}
                                         </Badge>
-                                        <IconChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                                        <IconChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </CardHeader>
                             </Card>
