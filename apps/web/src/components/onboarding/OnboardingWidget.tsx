@@ -116,8 +116,8 @@ export function OnboardingWidget() {
                                     Workspace Configuration Complete
                                 </h3>
                                 <p className="text-muted-foreground max-w-sm mx-auto">
-                                    Your environment is fully synchronized. ShipDocket is now passively
-                                    monitoring your development cycle.
+                                    Your environment is fully synchronized. ShipDocket is now
+                                    passively monitoring your development cycle.
                                 </p>
                             </div>
                             <Button

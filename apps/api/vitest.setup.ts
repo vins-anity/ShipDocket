@@ -2,6 +2,7 @@ import type { Context, Next } from "hono";
 import { beforeEach, vi } from "vitest";
 
 // Mock globals
+// biome-ignore lint/suspicious/noExplicitAny: Mocking global fetch
 global.fetch = vi.fn() as any;
 
 // Set dummy env vars
@@ -12,6 +13,7 @@ process.env.ENCRYPTION_KEY = "00000000000000000000000000000000000000000000000000
 
 // Shared state
 const { mockDbState } = vi.hoisted(() => ({
+    // biome-ignore lint/suspicious/noExplicitAny: Mocking arbitrary state
     mockDbState: {} as Record<string, any[]>,
 }));
 
@@ -23,39 +25,51 @@ beforeEach(() => {
 // Mock Database
 vi.mock("./src/db", async (importActual) => {
     const actual = await importActual<typeof import("./src/db")>();
-    const toSnakeCase = (str: string) => str.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`);
+    const toSnakeCase = (str: string) => str.replace(/[A-Z]/g, (l) => `_${l.toLowerCase()}`);
 
+    // biome-ignore lint/suspicious/noExplicitAny: Mocking arbitrary table objects
     const getTableName = (table: any): string => {
         if (!table) return "generic";
-        if (typeof table === 'string') return toSnakeCase(table);
-        const name = table[Symbol.for('drizzle:Name')] || table.config?.name || table.name || (table._ && table._.name);
-        return name && typeof name === 'string' ? toSnakeCase(name) : "generic";
+        if (typeof table === "string") return toSnakeCase(table);
+        const name =
+            table[Symbol.for("drizzle:Name")] ||
+            table.config?.name ||
+            table.name ||
+            // biome-ignore lint/complexity/useOptionalChain: Legacy access pattern
+            (table._ && table._.name);
+        return name && typeof name === "string" ? toSnakeCase(name) : "generic";
     };
 
     // Exhaustive structural search
-    const findValues = (obj: any, values: Set<string | number> = new Set(), depth = 0): Set<string | number> => {
+    const findValues = (
+        // biome-ignore lint/suspicious/noExplicitAny: Recursive search needs any
+        obj: any,
+        values: Set<string | number> = new Set(),
+        depth = 0,
+    ): Set<string | number> => {
         if (!obj || depth > 10) return values;
 
-        if (typeof obj === 'string' || typeof obj === 'number') {
+        if (typeof obj === "string" || typeof obj === "number") {
             const s = String(obj);
-            if (s.length > 3 && !s.includes(' ') && !s.includes('{')) values.add(obj);
+            if (s.length > 3 && !s.includes(" ") && !s.includes("{")) values.add(obj);
             return values;
         }
 
-        if (typeof obj !== 'object' || Array.isArray(obj)) {
+        if (typeof obj !== "object" || Array.isArray(obj)) {
             if (Array.isArray(obj)) for (const item of obj) findValues(item, values, depth + 1);
             return values;
         }
 
         for (const k in obj) {
             // Skip huge metadata/circular keys
-            if (k === 'table' || k === 'column' || k === '_') continue;
+            if (k === "table" || k === "column" || k === "_") continue;
+            // biome-ignore lint/suspicious/noExplicitAny: Recursive object access
             const v = (obj as any)[k];
             if (v !== undefined && v !== null) {
-                if (typeof v === 'string' || typeof v === 'number') {
+                if (typeof v === "string" || typeof v === "number") {
                     const s = String(v);
-                    if (s.length > 3 && !s.includes(' ') && !s.includes('{')) values.add(v);
-                } else if (typeof v === 'object') {
+                    if (s.length > 3 && !s.includes(" ") && !s.includes("{")) values.add(v);
+                } else if (typeof v === "object") {
                     findValues(v, values, depth + 1);
                 }
             }
@@ -63,14 +77,26 @@ vi.mock("./src/db", async (importActual) => {
         return values;
     };
 
+    // biome-ignore lint/suspicious/noExplicitAny: Default values for arbitrary objects
     const withDefaults = (item: any) => {
         if (!item || typeof item !== "object" || Array.isArray(item)) return item;
-        return { id: crypto.randomUUID(), createdAt: new Date(), updatedAt: new Date(), isActive: true, isDefault: false, ...item };
+        return {
+            id: crypto.randomUUID(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isActive: true,
+            isDefault: false,
+            ...item,
+        };
     };
 
+    // biome-ignore lint/suspicious/noExplicitAny: Mocking query data
     const createMockChain = (tableName?: string, queryData?: any, isAggregation = false) => {
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking chainable interface
         const chain: any = {
-            select: vi.fn((f) => createMockChain(tableName, queryData, f && typeof f === "object" && "count" in f)),
+            select: vi.fn((f) =>
+                createMockChain(tableName, queryData, f && typeof f === "object" && "count" in f),
+            ),
             selectDistinct: vi.fn(() => chain),
             insert: vi.fn((t) => createMockChain(getTableName(t))),
             update: vi.fn((t) => createMockChain(getTableName(t))),
@@ -87,31 +113,40 @@ vi.mock("./src/db", async (importActual) => {
                 return createMockChain(tableName, results);
             }),
             returning: vi.fn(() => chain),
-            set: vi.fn((vals) => createMockChain(tableName, (Array.isArray(vals) ? vals : [vals]).map(withDefaults))),
+            set: vi.fn((vals) =>
+                createMockChain(tableName, (Array.isArray(vals) ? vals : [vals]).map(withDefaults)),
+            ),
             where: vi.fn((condition) => {
                 if (!queryData || !Array.isArray(queryData)) return chain;
                 if (!condition) return chain;
 
                 const vals = Array.from(findValues(condition));
                 if (vals.length > 0) {
-                    const filtered = queryData.filter(item => {
-                        const itemValues = Object.values(item).map(v => String(v).toLowerCase());
-                        return vals.some(v => itemValues.includes(String(v).toLowerCase()));
+                    const filtered = queryData.filter((item) => {
+                        const itemValues = Object.values(item).map((v) => String(v).toLowerCase());
+                        return vals.some((v) => itemValues.includes(String(v).toLowerCase()));
                     });
                     return createMockChain(tableName, filtered);
                 }
                 // Strict: if parsing failed but condition exists, return nothing to avoid leak
                 return createMockChain(tableName, []);
             }),
-            limit: vi.fn((n) => createMockChain(tableName, Array.isArray(queryData) ? queryData.slice(0, n) : queryData)),
+            limit: vi.fn((n) =>
+                createMockChain(
+                    tableName,
+                    Array.isArray(queryData) ? queryData.slice(0, n) : queryData,
+                ),
+            ),
             offset: vi.fn(() => chain),
             orderBy: vi.fn(() => chain),
             innerJoin: vi.fn(() => chain),
             leftJoin: vi.fn(() => chain),
             execute: vi.fn().mockImplementation(() => {
-                const res = isAggregation ? [{ count: queryData?.length || 0 }] : (queryData || []);
+                const res = isAggregation ? [{ count: queryData?.length || 0 }] : queryData || [];
                 return Promise.resolve(res);
             }),
+            // biome-ignore lint/suspicious/noExplicitAny: Mocking promise interface
+            // biome-ignore lint/suspicious/noThenProperty: Mocking promise interface
             then: (cb: any) => chain.execute().then(cb),
         };
         return chain;
@@ -119,39 +154,62 @@ vi.mock("./src/db", async (importActual) => {
 
     const mockDb = createMockChain();
 
-    mockDb.query = new Proxy({}, {
-        get: (_, tableKey) => {
-            const name = toSnakeCase(String(tableKey));
-            return {
-                findFirst: vi.fn().mockImplementation(async (opts) => {
-                    const data = mockDbState[name] || [];
-                    if (!opts?.where) return data[0] || null;
-                    const vals = Array.from(findValues(opts.where));
-                    const result = vals.length > 0 ? data.find(item => {
-                        const itemValues = Object.values(item).map(v => String(v).toLowerCase());
-                        return vals.some(v => itemValues.includes(String(v).toLowerCase()));
-                    }) : data[0];
+    mockDb.query = new Proxy(
+        {},
+        {
+            get: (_, tableKey) => {
+                const name = toSnakeCase(String(tableKey));
+                return {
+                    findFirst: vi.fn().mockImplementation(async (opts) => {
+                        const data = mockDbState[name] || [];
+                        if (!opts?.where) return data[0] || null;
+                        const vals = Array.from(findValues(opts.where));
+                        const result =
+                            vals.length > 0
+                                ? data.find((item) => {
+                                      const itemValues = Object.values(item).map((v) =>
+                                          String(v).toLowerCase(),
+                                      );
+                                      return vals.some((v) =>
+                                          itemValues.includes(String(v).toLowerCase()),
+                                      );
+                                  })
+                                : data[0];
 
-                    if (!result && (name === 'workspace_members' || name === 'workspaces' || name === 'users')) {
-                        const payload: any = { role: "owner", email: "test@example.com" };
-                        if (vals[0]) payload.id = String(vals[0]);
-                        return withDefaults(payload);
-                    }
-                    return result ? withDefaults(result) : null;
-                }),
-                findMany: vi.fn().mockImplementation(async (opts) => {
-                    const data = mockDbState[name] || [];
-                    if (!opts?.where) return data.map(withDefaults);
-                    const vals = Array.from(findValues(opts.where));
-                    const filtered = vals.length > 0 ? data.filter(item => {
-                        const itemValues = Object.values(item).map(v => String(v).toLowerCase());
-                        return vals.some(v => itemValues.includes(String(v).toLowerCase()));
-                    }) : data;
-                    return filtered.map(withDefaults);
-                })
-            };
-        }
-    });
+                        if (
+                            !result &&
+                            (name === "workspace_members" ||
+                                name === "workspaces" ||
+                                name === "users")
+                        ) {
+                            // biome-ignore lint/suspicious/noExplicitAny: Mocking payload
+                            const payload: any = { role: "owner", email: "test@example.com" };
+                            if (vals[0]) payload.id = String(vals[0]);
+                            return withDefaults(payload);
+                        }
+                        return result ? withDefaults(result) : null;
+                    }),
+                    findMany: vi.fn().mockImplementation(async (opts) => {
+                        const data = mockDbState[name] || [];
+                        if (!opts?.where) return data.map(withDefaults);
+                        const vals = Array.from(findValues(opts.where));
+                        const filtered =
+                            vals.length > 0
+                                ? data.filter((item) => {
+                                      const itemValues = Object.values(item).map((v) =>
+                                          String(v).toLowerCase(),
+                                      );
+                                      return vals.some((v) =>
+                                          itemValues.includes(String(v).toLowerCase()),
+                                      );
+                                  })
+                                : data;
+                        return filtered.map(withDefaults);
+                    }),
+                };
+            },
+        },
+    );
 
     mockDb.transaction = vi.fn(async (cb) => await cb(createMockChain()));
     return { ...actual, db: mockDb, pgClient: { options: {}, close: vi.fn(), end: vi.fn() } };

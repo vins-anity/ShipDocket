@@ -1,8 +1,4 @@
-import {
-    ArrowRightIcon,
-    CheckCircledIcon,
-    LockClosedIcon,
-} from "@radix-ui/react-icons";
+import { ArrowRightIcon, CheckCircledIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 
 export function LandingHero() {
@@ -23,9 +19,9 @@ export function LandingHero() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl font-light">
-                        Stop defending your invoices. ShipDocket creates an automated
-                        'Bill of Lading' for your code—turning Jira tickets and GitHub merges
-                        into verified Proof Packets that get you paid faster.
+                        Stop defending your invoices. ShipDocket creates an automated 'Bill of
+                        Lading' for your code—turning Jira tickets and GitHub merges into verified
+                        Proof Packets that get you paid faster.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-4">
@@ -46,7 +42,8 @@ export function LandingHero() {
 
                     <div className="border-t border-border/30 pt-6 text-sm text-muted-foreground">
                         <p className="font-medium uppercase tracking-wider text-[10px] opacity-70">
-                            🔒 Zero Code Access (Metadata Only) • 🔗 Tamper-Proof Hash Chain • 🛡️ SOC2-Ready Architecture
+                            🔒 Zero Code Access (Metadata Only) • 🔗 Tamper-Proof Hash Chain • 🛡️
+                            SOC2-Ready Architecture
                         </p>
                     </div>
                 </div>

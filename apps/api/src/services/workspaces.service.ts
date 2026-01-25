@@ -9,8 +9,8 @@
 
 import { and, eq, or } from "drizzle-orm";
 import type { PolicyTier } from "shared";
-import { type Workspace } from "../db/schema";
 import { db, schema } from "../db";
+import type { Workspace } from "../db/schema";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
 
 // ============================================

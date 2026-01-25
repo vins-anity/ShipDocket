@@ -1,6 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 
 export function LandingFeatures() {
     return (
@@ -16,12 +15,10 @@ export function LandingFeatures() {
                 {/* Stage 1 */}
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">
-                            Stage 1: The Manifest
-                        </h3>
+                        <h3 className="text-2xl font-bold">Stage 1: The Manifest</h3>
                         <p className="text-muted-foreground leading-relaxed">
-                            When a dev moves a ticket in Jira, ShipDocket 'manifests' the item.
-                            It’s now on the official record. No new tools, no manual start buttons.
+                            When a dev moves a ticket in Jira, ShipDocket 'manifests' the item. It’s
+                            now on the official record. No new tools, no manual start buttons.
                         </p>
                         <p className="text-sm font-semibold text-primary pt-2">
                             Key Benefit: Formalizes intent instantly.
@@ -55,8 +52,8 @@ export function LandingFeatures() {
                     <div className="space-y-4 md:order-2">
                         <h3 className="text-2xl font-bold">Stage 2: The Cargo</h3>
                         <p className="text-muted-foreground leading-relaxed">
-                            We attach the digital cargo: GitHub PRs, CI test results, and
-                            approvals. Every event is hash-chained to ensure it can't be faked.
+                            We attach the digital cargo: GitHub PRs, CI test results, and approvals.
+                            Every event is hash-chained to ensure it can't be faked.
                         </p>
                         <p className="text-sm font-semibold text-primary pt-2">
                             Key Benefit: Indisputable proof of execution.
@@ -96,9 +93,7 @@ export function LandingFeatures() {
                 {/* Stage 3 */}
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">
-                            Stage 3: The Inspection
-                        </h3>
+                        <h3 className="text-2xl font-bold">Stage 3: The Inspection</h3>
                         <p className="text-muted-foreground leading-relaxed">
                             If tests pass and code is reviewed, ShipDocket proposes closure. It
                             auto-closes in 24h unless you veto. Speed with control.
@@ -122,9 +117,7 @@ export function LandingFeatures() {
                             Lead Approval Gate
                         </div>
                         <div className="space-y-2">
-                            <p className="text-sm font-medium">
-                                Auto-closing in 23h 45m...
-                            </p>
+                            <p className="text-sm font-medium">Auto-closing in 23h 45m...</p>
                             <div className="flex gap-2">
                                 <Button size="sm" className="flex-1">
                                     Approve Now
@@ -144,13 +137,10 @@ export function LandingFeatures() {
                 {/* Stage 4 */}
                 <div className="grid md:grid-cols-2 gap-8 items-center md:order-2">
                     <div className="space-y-4 md:order-2">
-                        <h3 className="text-2xl font-bold">
-                            Stage 4: The Proof Packet
-                        </h3>
+                        <h3 className="text-2xl font-bold">Stage 4: The Proof Packet</h3>
                         <p className="text-muted-foreground leading-relaxed">
-                            A client-ready link generated automatically. AI summarizes
-                            technical logs into business value language your client
-                            understands.
+                            A client-ready link generated automatically. AI summarizes technical
+                            logs into business value language your client understands.
                         </p>
                         <p className="text-sm font-semibold text-primary pt-2">
                             Key Benefit: Attach to invoice → Get paid.
@@ -172,9 +162,7 @@ export function LandingFeatures() {
                         </div>
                         <div className="space-y-2 text-xs text-muted-foreground font-mono bg-background rounded p-3">
                             <div>PP-PROJ-101-20260112</div>
-                            <div className="text-foreground font-semibold">
-                                Fix login timeout
-                            </div>
+                            <div className="text-foreground font-semibold">Fix login timeout</div>
                             <div className="text-xs text-gray-500 italic my-1">
                                 "Resolved session expiry issue ensuring users stay logged in for
                                 extended duration."

@@ -1,12 +1,12 @@
-import { ReaderIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
 export function LandingNav() {
     return (
@@ -66,7 +66,7 @@ export function LandingNav() {
 
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="sm" asChild>
-                        <Link to="/auth/login">Sign In</Link>
+                        <Link to="/login">Sign In</Link>
                     </Button>
                     <Button size="sm" asChild>
                         <Link to="/onboarding">Start Shipping</Link>

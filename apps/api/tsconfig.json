@@ -7,23 +7,12 @@
         "declarationMap": true,
         "composite": true,
         "paths": {
-            "shared": [
-                "../../packages/shared/dist/index.d.ts"
-            ],
-            "@api/*": [
-                "./src/*"
-            ]
+            "shared": ["../../packages/shared/dist/index.d.ts"],
+            "@api/*": ["./src/*"]
         }
     },
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "src/__tests__",
-        "**/*.test.ts"
-    ],
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist", "src/__tests__", "**/*.test.ts"],
     "references": [
         {
             "path": "../../packages/shared"

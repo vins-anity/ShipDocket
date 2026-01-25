@@ -27,9 +27,7 @@ export function LandingFaq() {
         <section id="faq" className="relative py-24 overflow-hidden border-t border-border">
             <div className="max-w-4xl mx-auto px-6">
                 <div className="text-center space-y-6 mb-16">
-                    <h2 className="text-5xl font-bold leading-tight">
-                        Frequently Asked Questions
-                    </h2>
+                    <h2 className="text-5xl font-bold leading-tight">Frequently Asked Questions</h2>
                     <p className="text-lg text-muted-foreground">
                         Everything you need to know about ShipDocket.
                     </p>
@@ -38,20 +36,19 @@ export function LandingFaq() {
                 <div className="space-y-4">
                     {faqs.map((faq, idx) => (
                         <div
-                            key={idx}
+                            key={faq.q}
                             className="border border-border/50 rounded-lg overflow-hidden hover:border-primary/50 transition-colors"
                         >
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setExpandedFaq(expandedFaq === idx ? null : idx)
-                                }
+                                onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
                                 className="w-full px-6 py-4 flex items-center justify-between bg-card/50 hover:bg-card transition-colors"
                             >
                                 <h3 className="font-semibold text-left">{faq.q}</h3>
                                 <ChevronDownIcon
-                                    className={`w-5 h-5 text-muted-foreground transition-transform ${expandedFaq === idx ? "rotate-180" : ""
-                                        }`}
+                                    className={`w-5 h-5 text-muted-foreground transition-transform ${
+                                        expandedFaq === idx ? "rotate-180" : ""
+                                    }`}
                                 />
                             </button>
                             {expandedFaq === idx && (
@@ -62,7 +59,20 @@ export function LandingFaq() {
                         </div>
                     ))}
                     <div className="text-center pt-8 text-muted-foreground text-sm">
-                        <p>Have more questions? Check out our <a href="/security-faq" className="text-primary hover:underline">Security FAQ</a> or <a href="mailto:support@shipdocket.com" className="text-primary hover:underline">Contact Support</a>.</p>
+                        <p>
+                            Have more questions? Check out our{" "}
+                            <a href="/security-faq" className="text-primary hover:underline">
+                                Security FAQ
+                            </a>{" "}
+                            or{" "}
+                            <a
+                                href="mailto:support@shipdocket.com"
+                                className="text-primary hover:underline"
+                            >
+                                Contact Support
+                            </a>
+                            .
+                        </p>
                     </div>
                 </div>
             </div>

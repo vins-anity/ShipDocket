@@ -1,9 +1,4 @@
-import {
-    PersonIcon,
-    CodeIcon,
-    BarChartIcon,
-    ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
+import { BarChartIcon, CodeIcon, ExclamationTriangleIcon, PersonIcon } from "@radix-ui/react-icons";
 
 export function LandingProblem() {
     return (
@@ -12,8 +7,8 @@ export function LandingProblem() {
                 <div className="text-center space-y-4">
                     <h2 className="text-4xl font-bold uppercase tracking-tight">The Invoice Gap</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        You ship code. You bill for hours. The client pays for trust. When
-                        those don't align, you don't get paid.
+                        You ship code. You bill for hours. The client pays for trust. When those
+                        don't align, you don't get paid.
                     </p>
                 </div>
 
@@ -40,8 +35,8 @@ export function LandingProblem() {
                         <div className="space-y-2 pt-2">
                             <h3 className="font-semibold text-lg">The 'Status' Chase</h3>
                             <p className="text-muted-foreground text-sm">
-                                Clients ask 'Is it done?' because Jira is stale and Slack is
-                                noisy. You lose billable hours acting as a human status bot.
+                                Clients ask 'Is it done?' because Jira is stale and Slack is noisy.
+                                You lose billable hours acting as a human status bot.
                             </p>
                         </div>
                     </div>

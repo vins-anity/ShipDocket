@@ -20,18 +20,12 @@ export function LandingFooter() {
                         <h4 className="font-semibold text-sm">Product</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li>
-                                <a
-                                    href="/services"
-                                    className="hover:text-foreground transition"
-                                >
+                                <a href="/services" className="hover:text-foreground transition">
                                     How It Works
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    href="/pricing"
-                                    className="hover:text-foreground transition"
-                                >
+                                <a href="/pricing" className="hover:text-foreground transition">
                                     Pricing
                                 </a>
                             </li>
@@ -41,18 +35,12 @@ export function LandingFooter() {
                         <h4 className="font-semibold text-sm">Company</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li>
-                                <a
-                                    href="/blog"
-                                    className="hover:text-foreground transition"
-                                >
+                                <a href="/blog" className="hover:text-foreground transition">
                                     Blog
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    href="/careers"
-                                    className="hover:text-foreground transition"
-                                >
+                                <a href="/careers" className="hover:text-foreground transition">
                                     Careers
                                 </a>
                             </li>
@@ -78,10 +66,7 @@ export function LandingFooter() {
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    href="/legal/terms"
-                                    className="hover:text-foreground transition"
-                                >
+                                <a href="/legal/terms" className="hover:text-foreground transition">
                                     Terms of Service
                                 </a>
                             </li>
@@ -97,9 +82,7 @@ export function LandingFooter() {
                     </div>
                 </div>
                 <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-                    <p>
-                        © 2026 ShipDocket. Verify everything.
-                    </p>
+                    <p>© 2026 ShipDocket. Verify everything.</p>
                 </div>
             </div>
         </footer>

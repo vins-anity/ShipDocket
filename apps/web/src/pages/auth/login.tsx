@@ -26,6 +26,7 @@ export function LoginPage() {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<LoginFormData>({
+        // biome-ignore lint/suspicious/noExplicitAny: Resolver type mismatch
         resolver: valibotResolver(LoginSchema) as any,
         defaultValues: {
             email: "",

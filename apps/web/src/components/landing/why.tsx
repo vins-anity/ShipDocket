@@ -13,9 +13,8 @@ export function LandingWhy() {
                             We ran a software agency for 10 years. We hated 'explaining' bills.
                         </p>
                         <p className="text-lg text-muted-foreground leading-relaxed">
-                            The Logistics of Trust. In the shipping industry, you don't argue
-                            about delivery—you check the Bill of Lading. Software should be no
-                            different.
+                            The Logistics of Trust. In the shipping industry, you don't argue about
+                            delivery—you check the Bill of Lading. Software should be no different.
                         </p>
                         <div className="space-y-4 pt-6">
                             <div className="flex gap-4">
@@ -23,9 +22,7 @@ export function LandingWhy() {
                                     <PersonIcon className="w-6 h-6 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold">
-                                        Built for Business
-                                    </h3>
+                                    <h3 className="font-semibold">Built for Business</h3>
                                     <p className="text-sm text-muted-foreground">
                                         Developers stay in their flow. You get a business asset that
                                         proves value without micromanagement.
@@ -37,12 +34,10 @@ export function LandingWhy() {
                                     <ReaderIcon className="w-6 h-6 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold">
-                                        Zero IP Risk
-                                    </h3>
+                                    <h3 className="font-semibold">Zero IP Risk</h3>
                                     <p className="text-sm text-muted-foreground">
-                                        We verify the shipping container (metadata), we never open the
-                                        box (source code). Your IP is safe.
+                                        We verify the shipping container (metadata), we never open
+                                        the box (source code). Your IP is safe.
                                     </p>
                                 </div>
                             </div>

@@ -1,11 +1,7 @@
 {
     "compilerOptions": {
         // Environment setup & latest features
-        "lib": [
-            "ESNext",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "target": "ESNext",
         "module": "ESNext",
         "moduleDetection": "force",
@@ -29,15 +25,9 @@
         // Path aliases for DX
         "baseUrl": ".",
         "paths": {
-            "@api/*": [
-                "apps/api/src/*"
-            ],
-            "@web/*": [
-                "apps/web/src/*"
-            ],
-            "@shared/*": [
-                "packages/shared/src/*"
-            ]
+            "@api/*": ["apps/api/src/*"],
+            "@web/*": ["apps/web/src/*"],
+            "@shared/*": ["packages/shared/src/*"]
         },
         // Optional strict flags (disabled by default for DX)
         "noUnusedLocals": false,

@@ -4,14 +4,13 @@
  * TDD approach: Tests for Proof Packet generation and export
  */
 
-import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { db, schema } from "../db";
 import app from "../index";
 
 const TEST_WORKSPACE_ID = crypto.randomUUID();
 const TEST_TASK_ID = "10001";
-const TEST_TASK_KEY = "TRAIL-123";
+
 const MOCK_USER_ID = "00000000-0000-0000-0000-000000000000";
 
 describe("Proofs API", () => {
@@ -25,7 +24,13 @@ describe("Proofs API", () => {
             object: "chat.completion",
             created: Date.now(),
             model: "mistralai/devstral-2512:free",
-            choices: [{ index: 0, message: { role: "assistant", content: "AI Generated Summary" }, finish_reason: "stop" }],
+            choices: [
+                {
+                    index: 0,
+                    message: { role: "assistant", content: "AI Generated Summary" },
+                    finish_reason: "stop",
+                },
+            ],
         };
 
         global.fetch = vi.fn(() =>
@@ -56,11 +61,14 @@ describe("Proofs API", () => {
         });
 
         // Insert a default proof packet for GET/POST tests
-        const [packet] = await db.insert(schema.proofPackets).values({
-            workspaceId: TEST_WORKSPACE_ID,
-            taskId: TEST_TASK_ID,
-            status: "draft",
-        }).returning();
+        const [packet] = await db
+            .insert(schema.proofPackets)
+            .values({
+                workspaceId: TEST_WORKSPACE_ID,
+                taskId: TEST_TASK_ID,
+                status: "draft",
+            })
+            .returning();
 
         proofId = packet.id;
     });

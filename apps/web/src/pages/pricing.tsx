@@ -1,12 +1,14 @@
+import { CheckIcon } from "@radix-ui/react-icons";
 import { LandingLayout } from "@/components/layout/LandingLayout";
 import { Button } from "@/components/ui/button";
-import { CheckIcon } from "@radix-ui/react-icons";
 
 export function PricingPage() {
     return (
         <LandingLayout>
             <div className="py-24 px-6 max-w-6xl mx-auto">
-                <h1 className="text-5xl font-bold mb-6 text-center tracking-tight">Simple, Transparent Pricing</h1>
+                <h1 className="text-5xl font-bold mb-6 text-center tracking-tight">
+                    Simple, Transparent Pricing
+                </h1>
                 <p className="text-xl text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
                     Start establishing trust for free. Upgrade when you need verify at scale.
                 </p>
@@ -21,15 +23,16 @@ export function PricingPage() {
                         <div className="mb-8">
                             <span className="text-4xl font-bold">$0</span>
                             <span className="text-muted-foreground">/mo</span>
-                            <p className="text-sm text-primary font-medium mt-2">Free during Beta</p>
+                            <p className="text-sm text-primary font-medium mt-2">
+                                Free during Beta
+                            </p>
                         </div>
                         <Button className="w-full mb-8" variant="outline" asChild>
                             <a href="/login">Start Shipping</a>
                         </Button>
                         <ul className="space-y-4 flex-1">
                             <li className="flex items-center gap-3 text-sm">
-                                <CheckIcon className="w-5 h-5 text-primary" />
-                                1 Active Project
+                                <CheckIcon className="w-5 h-5 text-primary" />1 Active Project
                             </li>
                             <li className="flex items-center gap-3 text-sm">
                                 <CheckIcon className="w-5 h-5 text-primary" />
@@ -124,11 +127,17 @@ export function PricingPage() {
                     <div className="max-w-2xl mx-auto text-left grid gap-6">
                         <div className="border border-border p-6 rounded-lg">
                             <h4 className="font-semibold mb-2">Can I upgrade later?</h4>
-                            <p className="text-sm text-muted-foreground">Yes, you can upgrade from Manifest to Bill of Lading at any time. Your history will be preserved.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Yes, you can upgrade from Manifest to Bill of Lading at any time.
+                                Your history will be preserved.
+                            </p>
                         </div>
                         <div className="border border-border p-6 rounded-lg">
                             <h4 className="font-semibold mb-2">Do you charge per developer?</h4>
-                            <p className="text-sm text-muted-foreground">No. We charge per workspace. You can invite your entire dev team without extra costs.</p>
+                            <p className="text-sm text-muted-foreground">
+                                No. We charge per workspace. You can invite your entire dev team
+                                without extra costs.
+                            </p>
                         </div>
                     </div>
                 </div>
