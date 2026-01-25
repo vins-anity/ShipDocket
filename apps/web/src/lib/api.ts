@@ -14,7 +14,7 @@ import type {
     ProofPacket,
 } from "shared";
 
-const API_URL = "/api"; // Proxied by Vite
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 async function handleResponse<T>(res: Response): Promise<T> {
     if (!res.ok) {

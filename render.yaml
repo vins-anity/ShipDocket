@@ -22,17 +22,6 @@ services:
     dockerCommand: bun run apps/api/src/index.ts
     plan: free
 
-  # The Background Worker (pg-boss)
-  - type: worker
-    name: shipdocket-worker
-    runtime: docker
-    repo: https://github.com/vins-anity/trail
-    rootDir: .
-    dockerfilePath: ./apps/api/Dockerfile
-    envVars:
-      - key: DATABASE_URL
-        sync: false
-    dockerCommand: bun run apps/api/src/worker.ts
-    plan: free
+
 
 

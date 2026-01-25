@@ -11,6 +11,13 @@ import proofs from "./modules/proofs/routes";
 import slackInteractions from "./modules/slack/interactions";
 import webhooks from "./modules/webhooks/routes";
 import workspaces from "./modules/workspaces/routes";
+import { startJobQueue } from "./lib/job-queue";
+
+// Start the background worker (Free Tier Strategy)
+// In production, we run this in the same process to avoid paying for a second service.
+startJobQueue().catch((err) => {
+    console.error("Failed to start background worker:", err);
+});
 
 const app = new Hono()
     .use("*", logger())
