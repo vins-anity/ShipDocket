@@ -1,5 +1,6 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import { env } from "@/env.mjs";
 
 export function LandingCta() {
     return (
@@ -10,8 +11,10 @@ export function LandingCta() {
                     Turn your next sprint into a signed contract. Eliminate the trust gap forever.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                    <Button size="lg" className="rounded-full px-8">
-                        Start Shipping (Free Beta) <ArrowRightIcon className="w-4 h-4 ml-2" />
+                    <Button size="lg" className="rounded-full px-8" asChild>
+                        <a href={`${env.NEXT_PUBLIC_APP_URL}/onboarding`}>
+                            Start Shipping (Free Beta) <ArrowRightIcon className="w-4 h-4 ml-2" />
+                        </a>
                     </Button>
                     <Button
                         size="lg"

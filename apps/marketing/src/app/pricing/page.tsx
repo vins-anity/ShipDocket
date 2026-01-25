@@ -1,6 +1,7 @@
 import { CheckIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { env } from "@/env.mjs";
 
 export default function PricingPage() {
     return (
@@ -27,7 +28,7 @@ export default function PricingPage() {
                         </p>
                     </div>
                     <Button className="w-full mb-8" variant="outline" asChild>
-                        <Link href="/login">Start Shipping</Link>
+                        <a href={`${env.NEXT_PUBLIC_APP_URL}/login`}>Start Shipping</a>
                     </Button>
                     <ul className="space-y-4 flex-1">
                         <li className="flex items-center gap-3 text-sm">
@@ -62,7 +63,7 @@ export default function PricingPage() {
                         <span className="text-muted-foreground">/mo</span>
                     </div>
                     <Button className="w-full mb-8" asChild>
-                        <Link href="/login">Start 14-Day Trial</Link>
+                        <a href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>Start 14-Day Trial</a>
                     </Button>
                     <ul className="space-y-4 flex-1">
                         <li className="flex items-center gap-3 text-sm">

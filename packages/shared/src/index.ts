@@ -11,6 +11,9 @@ import * as v from "valibot";
 // Trail AI Schemas
 // ============================================
 
+// Utilities
+export * from "./utils";
+
 // Errors - Standardized error responses
 export * from "./schemas/errors";
 // Events - Hash-chained audit log

@@ -1,5 +1,6 @@
 import { ArrowRightIcon, CheckCircledIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import { env } from "@/env.mjs";
 
 export function LandingHero() {
     return (
@@ -28,8 +29,11 @@ export function LandingHero() {
                         <Button
                             size="lg"
                             className="gap-2 rounded-full px-8 text-base font-semibold w-fit"
+                            asChild
                         >
-                            Start Shipping (Free Beta) <ArrowRightIcon className="w-4 h-4" />
+                            <a href={`${env.NEXT_PUBLIC_APP_URL}/onboarding`}>
+                                Start Shipping (Free Beta) <ArrowRightIcon className="w-4 h-4" />
+                            </a>
                         </Button>
                         <Button
                             size="lg"

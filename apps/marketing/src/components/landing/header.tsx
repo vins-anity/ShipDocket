@@ -3,6 +3,7 @@
 import { ChevronDownIcon, ReaderIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { env } from "@/env.mjs";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -68,10 +69,10 @@ export function LandingNav() {
 
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="sm" asChild>
-                        <Link href="/login">Sign In</Link>
+                        <a href={`${env.NEXT_PUBLIC_APP_URL}/login`}>Sign In</a>
                     </Button>
                     <Button size="sm" asChild>
-                        <Link href="/onboarding">Start Shipping</Link>
+                        <a href={`${env.NEXT_PUBLIC_APP_URL}/onboarding`}>Start Shipping</a>
                     </Button>
                 </div>
             </div>

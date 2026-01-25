@@ -1,6 +1,6 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { IconAlertCircle, IconLoader2, IconShieldCheck } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as v from "valibot";
@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/lib/supabase";
 
 const LoginSchema = v.object({
@@ -20,6 +21,13 @@ type LoginFormData = v.InferOutput<typeof LoginSchema>;
 export function LoginPage() {
     const [authError, setAuthError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { user, loading } = useAuth();
+
+    useEffect(() => {
+        if (!loading && user) {
+            navigate("/dashboard");
+        }
+    }, [user, loading, navigate]);
 
     const {
         register,
@@ -48,6 +56,14 @@ export function LoginPage() {
             navigate("/dashboard");
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-background">
+                <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-background p-4 overflow-hidden">
