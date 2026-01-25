@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -27,7 +27,7 @@ function App() {
             <AuthProvider>
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/" element={<Navigate to="/login" replace />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/pricing" element={<PricingPage />} />
                     <Route path="/why-shipdocket" element={<WhyPage />} />

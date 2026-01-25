@@ -3,15 +3,14 @@ export default function CareersPage() {
         <div className="py-24 px-6 max-w-4xl mx-auto text-center">
             <h1 className="text-5xl font-bold mb-6 tracking-tight">Join the Crew</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-                We're building the logistics layer for the software industry. Help us ship
-                trust.
+                We're building the logistics layer for the software industry. Help us ship trust.
             </p>
 
             <div className="bg-muted/30 border border-border rounded-2xl p-12">
                 <h2 className="text-2xl font-bold mb-4">No Open Positions</h2>
                 <p className="text-muted-foreground mb-8">
-                    We are currently fully staffed, but we're always looking for talented
-                    engineers and agency veterans.
+                    We are currently fully staffed, but we're always looking for talented engineers
+                    and agency veterans.
                 </p>
                 <a
                     href="mailto:careers@shipdocket.com"

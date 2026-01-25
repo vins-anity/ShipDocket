@@ -1,10 +1,10 @@
 {
     "name": "shipdocket",
     "version": "0.5.1",
-    "description": "A monorepo template built with Bun, Hono, Vite, and React",
+    "description": "ShipDocket - Turn Commits into Contracts",
     "author": "Vince",
     "license": "MIT",
-    "homepage": "https://github.com/vins-anity/trail",
+    "homepage": "https://github.com/vins-anity/ShipDocket",
     "packageManager": "bun@1.2.4",
     "workspaces": [
         "./apps/*",

@@ -73,7 +73,7 @@ app.get(
             },
             servers: [
                 {
-                    url: "https://trail-api-sqoi.onrender.com",
+                    url: "https://shipdocket-api-sqoi.onrender.com",
                     description: "Production Server",
                 },
                 {

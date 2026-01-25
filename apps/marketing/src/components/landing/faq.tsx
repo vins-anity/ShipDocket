@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 
 export function LandingFaq() {
     const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
@@ -49,8 +49,9 @@ export function LandingFaq() {
                             >
                                 <h3 className="font-semibold text-left">{faq.q}</h3>
                                 <ChevronDownIcon
-                                    className={`w-5 h-5 text-muted-foreground transition-transform ${expandedFaq === idx ? "rotate-180" : ""
-                                        }`}
+                                    className={`w-5 h-5 text-muted-foreground transition-transform ${
+                                        expandedFaq === idx ? "rotate-180" : ""
+                                    }`}
                                 />
                             </button>
                             {expandedFaq === idx && (

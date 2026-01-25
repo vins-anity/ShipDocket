@@ -1,6 +1,6 @@
 import { CheckIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { env } from "@/env.mjs";
 
 export default function PricingPage() {
@@ -23,9 +23,7 @@ export default function PricingPage() {
                     <div className="mb-8">
                         <span className="text-4xl font-bold">$0</span>
                         <span className="text-muted-foreground">/mo</span>
-                        <p className="text-sm text-primary font-medium mt-2">
-                            Free during Beta
-                        </p>
+                        <p className="text-sm text-primary font-medium mt-2">Free during Beta</p>
                     </div>
                     <Button className="w-full mb-8" variant="outline" asChild>
                         <a href={`${env.NEXT_PUBLIC_APP_URL}/login`}>Start Shipping</a>
@@ -128,15 +126,15 @@ export default function PricingPage() {
                     <div className="border border-border p-6 rounded-lg">
                         <h4 className="font-semibold mb-2">Can I upgrade later?</h4>
                         <p className="text-sm text-muted-foreground">
-                            Yes, you can upgrade from Manifest to Bill of Lading at any time.
-                            Your history will be preserved.
+                            Yes, you can upgrade from Manifest to Bill of Lading at any time. Your
+                            history will be preserved.
                         </p>
                     </div>
                     <div className="border border-border p-6 rounded-lg">
                         <h4 className="font-semibold mb-2">Do you charge per developer?</h4>
                         <p className="text-sm text-muted-foreground">
-                            No. We charge per workspace. You can invite your entire dev team
-                            without extra costs.
+                            No. We charge per workspace. You can invite your entire dev team without
+                            extra costs.
                         </p>
                     </div>
                 </div>

@@ -16,8 +16,8 @@ export default function ServicesPage() {
                     <div className="space-y-4 order-2 md:order-1">
                         <h2 className="text-3xl font-bold">1. Passive Ingestion</h2>
                         <p className="text-lg text-muted-foreground">
-                            We hook into your existing tools (GitHub, Jira). No manual data
-                            entry required.
+                            We hook into your existing tools (GitHub, Jira). No manual data entry
+                            required.
                         </p>
                         <ul className="space-y-2 text-sm text-foreground">
                             <li className="flex items-center gap-2">✓ Detects PR merges</li>
@@ -26,9 +26,7 @@ export default function ServicesPage() {
                         </ul>
                     </div>
                     <div className="bg-muted aspect-video rounded-xl flex items-center justify-center order-1 md:order-2 border border-border">
-                        <span className="text-muted-foreground">
-                            Ingestion Diagram Placeholder
-                        </span>
+                        <span className="text-muted-foreground">Ingestion Diagram Placeholder</span>
                     </div>
                 </div>
 
@@ -57,21 +55,17 @@ export default function ServicesPage() {
                     <div className="space-y-4 order-2 md:order-1">
                         <h2 className="text-3xl font-bold">3. Proof Packet Generation</h2>
                         <p className="text-lg text-muted-foreground">
-                            We mint a cryptographically signed Proof Packet that you can share
-                            with clients.
+                            We mint a cryptographically signed Proof Packet that you can share with
+                            clients.
                         </p>
                         <ul className="space-y-2 text-sm text-foreground">
                             <li className="flex items-center gap-2">✓ Public Share Links</li>
                             <li className="flex items-center gap-2">✓ PDF Exports</li>
-                            <li className="flex items-center gap-2">
-                                ✓ Client-friendly summaries
-                            </li>
+                            <li className="flex items-center gap-2">✓ Client-friendly summaries</li>
                         </ul>
                     </div>
                     <div className="bg-muted aspect-video rounded-xl flex items-center justify-center order-1 md:order-2 border border-border">
-                        <span className="text-muted-foreground">
-                            Proof Packet UI Placeholder
-                        </span>
+                        <span className="text-muted-foreground">Proof Packet UI Placeholder</span>
                     </div>
                 </div>
             </div>

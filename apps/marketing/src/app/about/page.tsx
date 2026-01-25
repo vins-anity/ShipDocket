@@ -35,8 +35,8 @@ export default function AboutPage() {
             <div className="border-t border-border pt-12 text-center">
                 <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
                 <p className="text-2xl font-medium text-foreground max-w-3xl mx-auto leading-normal">
-                    "To create the universal standard for verifying software delivery, making
-                    the 'Logistics of Trust' automatic for everyone."
+                    "To create the universal standard for verifying software delivery, making the
+                    'Logistics of Trust' automatic for everyone."
                 </p>
             </div>
         </div>

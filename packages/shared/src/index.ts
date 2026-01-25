@@ -11,23 +11,20 @@ import * as v from "valibot";
 // Trail AI Schemas
 // ============================================
 
-// Utilities
-export * from "./utils";
-
 // Errors - Standardized error responses
 export * from "./schemas/errors";
 // Events - Hash-chained audit log
 export * from "./schemas/events";
-
 // Policies - Closure rules
 export * from "./schemas/policies";
 // Proofs - Shareable delivery receipts
 export * from "./schemas/proofs";
-
 // Webhooks - External integrations
 export * from "./schemas/webhooks";
 // Workspaces - Multi-tenant support
 export * from "./schemas/workspaces";
+// Utilities
+export * from "./utils";
 
 // ============================================
 // Common Schemas

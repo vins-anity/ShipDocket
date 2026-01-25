@@ -5,8 +5,7 @@ export default function WhyPage() {
         <div className="py-24 px-6 max-w-5xl mx-auto text-center">
             <h1 className="text-5xl font-bold mb-6 tracking-tight">The ROI of Trust</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-16">
-                ShipDocket isn't just a status update tool. It's a revenue acceleration
-                platform.
+                ShipDocket isn't just a status update tool. It's a revenue acceleration platform.
             </p>
 
             <div className="grid md:grid-cols-3 gap-8 mb-24">
@@ -42,8 +41,8 @@ export default function WhyPage() {
                                 ✓
                             </span>
                             <span>
-                                <strong>Metadata Only:</strong> We never clone or read your
-                                source code.
+                                <strong>Metadata Only:</strong> We never clone or read your source
+                                code.
                             </span>
                         </li>
                         <li className="flex items-center gap-2">

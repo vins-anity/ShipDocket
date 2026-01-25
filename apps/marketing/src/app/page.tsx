@@ -6,14 +6,14 @@ import { LandingProblem } from "@/components/landing/problem";
 import { LandingWhy } from "@/components/landing/why";
 
 export default function Home() {
-  return (
-    <>
-      <LandingHero />
-      <LandingProblem />
-      <LandingFeatures />
-      <LandingWhy />
-      <LandingFaq />
-      <LandingCta />
-    </>
-  );
+    return (
+        <>
+            <LandingHero />
+            <LandingProblem />
+            <LandingFeatures />
+            <LandingWhy />
+            <LandingFaq />
+            <LandingCta />
+        </>
+    );
 }

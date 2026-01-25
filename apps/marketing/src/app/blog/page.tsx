@@ -49,15 +49,12 @@ export default function BlogPage() {
                         <span className="text-muted-foreground">Image</span>
                     </div>
                     <div className="p-6">
-                        <div className="text-xs text-primary font-medium mb-2">
-                            Announcement
-                        </div>
+                        <div className="text-xs text-primary font-medium mb-2">Announcement</div>
                         <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                             Introducing ShipDocket V1
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                            We are live! Learn how we are changing the way agencies bill
-                            clients.
+                            We are live! Learn how we are changing the way agencies bill clients.
                         </p>
                     </div>
                 </div>

@@ -3,13 +3,13 @@
 import { ChevronDownIcon, ReaderIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { env } from "@/env.mjs";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { env } from "@/env.mjs";
 
 export function LandingNav() {
     return (

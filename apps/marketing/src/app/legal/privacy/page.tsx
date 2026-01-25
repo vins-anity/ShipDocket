@@ -16,8 +16,8 @@ export default function PrivacyPage() {
                 <ul className="list-disc pl-6 space-y-2">
                     <li>**Account Information:** Name, email address, password.</li>
                     <li>
-                        **Integration Data:** Metadata from connected tools (GitHub, Jira)
-                        including PR titles, commit messages, and timestamps.
+                        **Integration Data:** Metadata from connected tools (GitHub, Jira) including
+                        PR titles, commit messages, and timestamps.
                     </li>
                     <li>**Usage Data:** Logs of how you interact with our platform.</li>
                 </ul>
@@ -30,9 +30,7 @@ export default function PrivacyPage() {
                     improve our platform. We do not sell your personal data to third parties.
                 </p>
 
-                <h3 className="text-foreground mt-8 mb-4 font-bold text-xl">
-                    3. Data Retention
-                </h3>
+                <h3 className="text-foreground mt-8 mb-4 font-bold text-xl">3. Data Retention</h3>
                 <p>
                     We retain your data for as long as your account is active. You may request
                     deletion of your account and data at any time.

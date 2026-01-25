@@ -24,11 +24,11 @@ Agencies and clients suffer from a fundamental disconnect called the **Execution
 ---
 
 ## 🏗️ Architecture: "Metadata-First" (V1)
-We prioritize **Security & Privacy** over "Code Auditing". Trail AI operates on a **Zero-Code-Knowledge** model:
+We prioritize **Security & Privacy** over "Code Auditing". ShipDocket AI operates on a **Zero-Code-Knowledge** model:
 - **We Read**: PR Titles, Branch Names, Timestamps, CI Status (Pass/Fail).
 - **We DO NOT Read**: Source code files, diffs, or secrets.
 
-This allows agencies to install Trail via **GitHub App** without granting sensitive "Contents: Read" permissions.
+This allows agencies to install ShipDocket via **GitHub App** without granting sensitive "Contents: Read" permissions.
 
 ---
 
@@ -41,7 +41,7 @@ flowchart LR
         Dev -->|Merge| GH[GitHub PR]
     end
 
-    subgraph Trail_AI["Trail AI Platform"]
+    subgraph ShipDocket_AI["ShipDocket AI Platform"]
         Router[Webhook Router]
         Ledger[(Tamper-Evident Log)]
         Engine[Policy Engine]
@@ -66,7 +66,7 @@ flowchart LR
 
 ### 1. The "Passive Handshake"
 * **Trigger**: Developer moves Jira ticket to "In Progress".
-* **Action**: Trail creates a "Shadow Task" and starts listening for evidence.
+* **Action**: ShipDocket creates a "Shadow Task" and starts listening for evidence.
 * **Goal**: Capture intent without manual data entry.
 
 ### 2. Evidence Gathering & Hash Chain
@@ -75,7 +75,7 @@ flowchart LR
 * **Result**: A tamper-evident audit trail that cannot be retroactively edited.
 
 ### 3. Smart Proof Packets
-* **Generation**: On task completion, Trail compiles all evidence into a `ProofPacket`.
+* **Generation**: On task completion, ShipDocket compiles all evidence into a `ProofPacket`.
 * **AI Summary**: Uses metadata (Commit Messages + PR Description) to write a client-friendly summary.
 * **Seal**: The packet is cryptographically sealed and ready for export.
 

@@ -67,7 +67,10 @@ export function LandingFooter() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/legal/terms" className="hover:text-foreground transition">
+                                <Link
+                                    href="/legal/terms"
+                                    className="hover:text-foreground transition"
+                                >
                                     Terms of Service
                                 </Link>
                             </li>

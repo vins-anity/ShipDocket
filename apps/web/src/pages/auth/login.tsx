@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as v from "valibot";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/lib/supabase";
 
 const LoginSchema = v.object({
