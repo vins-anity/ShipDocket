@@ -23,20 +23,75 @@ const app = new Hono()
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail AI API</title>
+    <title>ShipDocket API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #fafafa; color: #333; }
-        .container { text-align: center; padding: 2rem; border-radius: 8px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { margin: 0 0 1rem; color: #0ea5e9; }
-        a { color: #0ea5e9; text-decoration: none; font-weight: 500; }
-        a:hover { text-decoration: underline; }
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow {
+            box-shadow: 0 0 50px -10px rgba(56, 189, 248, 0.15);
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>🛤️ Trail AI API</h1>
-        <p>Delivery Assurance & Evidence-Based Audit System</p>
-        <p><a href="/reference">View API Docs</a></p>
+<body class="bg-[#020617] text-slate-200 min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative">
+
+    <!-- Background Gradients -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <div class="max-w-xl w-full text-center relative z-10 space-y-8">
+        
+        <!-- Logo / Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass border-blue-500/20 text-blue-400 text-xs font-medium tracking-wide mb-4">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            SYSTEM ONLINE
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-tight">
+            <span class="block text-white">ShipDocket</span>
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">API Gateway</span>
+        </h1>
+
+        <p class="text-lg text-slate-400 max-w-md mx-auto leading-relaxed">
+            The neural backbone for delivery assurance. 
+            Automated auditing, evidence collection, and hash-chain verification.
+        </p>
+
+        <!-- Action Cards -->
+        <div class="grid sm:grid-cols-2 gap-4 pt-4">
+            <a href="/reference" class="group glass rounded-xl p-6 text-left hover:bg-white/5 transition-all glow">
+                <div class="mb-3 text-blue-400 group-hover:scale-110 transition-transform origin-left">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-white mb-1">API Documentation</h3>
+                <p class="text-sm text-slate-500">Interactive endpoints & schema reference.</p>
+            </a>
+
+            <a href="https://shipdocket.com" class="group glass rounded-xl p-6 text-left hover:bg-white/5 transition-all">
+                <div class="mb-3 text-indigo-400 group-hover:scale-110 transition-transform origin-left">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-white mb-1">Marketing Site</h3>
+                <p class="text-sm text-slate-500">Back to the main product page.</p>
+            </a>
+        </div>
+        
+        <div class="pt-8 text-xs text-slate-600 font-mono">
+            v1.0.0 • PROD-READY • SECURE
+        </div>
     </div>
 </body>
 </html>
@@ -66,7 +121,7 @@ app.get(
     openAPISpecs(app, {
         documentation: {
             info: {
-                title: "Trail AI API",
+                title: "ShipDocket API",
                 version: "1.0.0",
                 description:
                     "Delivery Assurance & Evidence-Based Audit System for Software Agencies",
