@@ -19,6 +19,8 @@ services:
         sync: false
       - key: SLACK_CLIENT_ID
         sync: false
+      - key: CRON_TOKEN
+        sync: false
     dockerCommand: bun run apps/api/src/index.ts
     plan: free
 
