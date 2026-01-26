@@ -293,5 +293,41 @@ describe("E2E: ShipDocket Workflow (Multi-Provider)", () => {
         expect(lastEvent.payload).toMatchObject({
             status: "In Progress"
         });
+
+        const firstEventHash = lastEvent.eventHash;
+
+        // =========================================================================
+        // STEP 5: Verify Hash Chain (Second Event)
+        // =========================================================================
+        // Trigger a second event to ensure it links to the first one
+        const jiraEvent2 = {
+            webhookEvent: "jira:issue_updated",
+            issue: {
+                self: "https://e2e.atlassian.net/rest/api/2/issue/10001",
+                key: "E2E-9000",
+                fields: {
+                    summary: "Final E2E Verification",
+                    status: { name: "Done" },
+                    assignee: { emailAddress: "alice@e2e.com" }
+                }
+            },
+            changelog: {
+                items: [{ field: "status", toString: "Done", fromString: "In Progress" }]
+            }
+        };
+
+        await app.request("/webhooks/jira", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(jiraEvent2)
+        });
+
+        const storedEvents2 = mockDbState.events;
+        expect(storedEvents2.length).toBe(2);
+
+        const secondEvent = storedEvents2[storedEvents2.length - 1];
+        // The second event's prevHash MUST be the first event's hash
+        expect(secondEvent.prevHash).toBe(firstEventHash);
+        expect(secondEvent.eventHash).not.toBe(firstEventHash);
     });
 });

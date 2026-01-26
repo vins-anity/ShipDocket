@@ -45,7 +45,7 @@ export async function computeEventHash(
     prevHash: string | null,
 ): Promise<string> {
     const hashInput = JSON.stringify({
-        prevHash: prevHash ?? "genesis",
+        prevHash: prevHash ?? null, // Genesis is null
         eventType: event.eventType,
         triggerSource: event.triggerSource ?? "automatic",
         payload: event.payload,
