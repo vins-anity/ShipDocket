@@ -35,6 +35,9 @@ export const env = createEnv({
         JIRA_CLIENT_ID: v.optional(v.string()),
         JIRA_CLIENT_SECRET: v.optional(v.string()),
         JIRA_WEBHOOK_SECRET: v.optional(v.string()),
+        JIRA_HOST: v.optional(v.string()),
+        JIRA_EMAIL: v.optional(v.string()),
+        JIRA_API_TOKEN: v.optional(v.string()),
 
         // Demo / Seeding
         SEED_EMAIL: v.optional(v.pipe(v.string(), v.email())),

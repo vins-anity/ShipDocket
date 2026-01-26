@@ -30,7 +30,8 @@ import * as schema from "./schema";
 // ============================================
 
 const connectionString = env.DATABASE_URL;
-console.error(`
+if (!connectionString) {
+    console.error(`
 ╔══════════════════════════════════════════════════════════════╗
 ║  ❌ DATABASE_URL is not set!                                   ║
 ║                                                                ║
@@ -42,9 +43,10 @@ console.error(`
 ║  Dashboard → Settings → Database → Connection string          ║
 ╚══════════════════════════════════════════════════════════════╝
 	`);
-    // Don't exit in dev - allow app to start for other purposes
-    // process.exit(1);
 }
+// Don't exit in dev - allow app to start for other purposes
+// process.exit(1);
+
 
 // ============================================
 // Database Client Setup

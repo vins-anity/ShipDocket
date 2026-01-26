@@ -16,9 +16,11 @@ import { startJobQueue } from "./lib/job-queue";
 
 // Start the background worker (Free Tier Strategy)
 // In production, we run this in the same process to avoid paying for a second service.
-startJobQueue().catch((err) => {
-    console.error("Failed to start background worker:", err);
-});
+if (process.env.NODE_ENV !== "test") {
+    startJobQueue().catch((err) => {
+        console.error("Failed to start background worker:", err);
+    });
+}
 
 const app = new Hono()
     .use("*", logger())
@@ -122,6 +124,27 @@ const app = new Hono()
     });
 
 // ============================================
+// Global Error Handling
+// ============================================
+
+app.onError((err, c) => {
+    console.error(`Unhandled Error: ${err.message}`);
+    console.error(err.stack);
+
+    return c.json(
+        {
+            error: "Internal Server Error",
+            message: process.env.NODE_ENV === "development" ? err.message : undefined,
+        },
+        500,
+    );
+});
+
+app.notFound((c) => {
+    return c.json({ error: "Endpoint not found" }, 404);
+});
+
+// ============================================
 // OpenAPI Documentation
 // ============================================
 app.get(
@@ -158,8 +181,6 @@ app.get(
     }),
 );
 
-export default {
-    port: env.PORT,
-    fetch: app.fetch,
-};
+export { app };
+export default app;
 export type AppType = typeof app;

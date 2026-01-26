@@ -6,9 +6,9 @@ export class JiraService {
     private apiToken: string;
 
     constructor() {
-        this.baseUrl = env.SLACK_CLIENT_ID || ""; // Placeholder for host if not set
-        this.email = ""; // User-specific or setting-specific
-        this.apiToken = "";
+        this.baseUrl = env.JIRA_HOST || "";
+        this.email = env.JIRA_EMAIL || "";
+        this.apiToken = env.JIRA_API_TOKEN || "";
     }
 
     /**

@@ -8,8 +8,21 @@ global.fetch = vi.fn() as any;
 // Set dummy env vars
 process.env.SUPABASE_URL = "https://mock.supabase.co";
 process.env.SUPABASE_ANON_KEY = "mock-key";
+process.env.SUPABASE_SERVICE_ROLE_KEY = "mock-key";
 process.env.DATABASE_URL = "postgresql://mock:mock@localhost:5432/mock";
 process.env.ENCRYPTION_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
+process.env.GEMINI_API_KEY = "mock-key";
+process.env.OPENROUTER_API_KEY = "mock-key";
+process.env.JIRA_HOST = "test.atlassian.net";
+process.env.JIRA_EMAIL = "user@test.com";
+process.env.JIRA_API_TOKEN = "token";
+
+// Dynamic mock of env to respect process.env changes in tests
+vi.mock("./src/env", () => ({
+    get env() {
+        return process.env;
+    },
+}));
 
 // Shared state
 const { mockDbState } = vi.hoisted(() => ({
@@ -167,13 +180,13 @@ vi.mock("./src/db", async (importActual) => {
                         const result =
                             vals.length > 0
                                 ? data.find((item) => {
-                                      const itemValues = Object.values(item).map((v) =>
-                                          String(v).toLowerCase(),
-                                      );
-                                      return vals.some((v) =>
-                                          itemValues.includes(String(v).toLowerCase()),
-                                      );
-                                  })
+                                    const itemValues = Object.values(item).map((v) =>
+                                        String(v).toLowerCase(),
+                                    );
+                                    return vals.some((v) =>
+                                        itemValues.includes(String(v).toLowerCase()),
+                                    );
+                                })
                                 : data[0];
 
                         if (
@@ -196,13 +209,13 @@ vi.mock("./src/db", async (importActual) => {
                         const filtered =
                             vals.length > 0
                                 ? data.filter((item) => {
-                                      const itemValues = Object.values(item).map((v) =>
-                                          String(v).toLowerCase(),
-                                      );
-                                      return vals.some((v) =>
-                                          itemValues.includes(String(v).toLowerCase()),
-                                      );
-                                  })
+                                    const itemValues = Object.values(item).map((v) =>
+                                        String(v).toLowerCase(),
+                                    );
+                                    return vals.some((v) =>
+                                        itemValues.includes(String(v).toLowerCase()),
+                                    );
+                                })
                                 : data;
                         return filtered.map(withDefaults);
                     }),
