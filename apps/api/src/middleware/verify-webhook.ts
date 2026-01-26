@@ -14,7 +14,7 @@
 
 import type { MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { env } from "../config/env";
+import { env } from "../env";
 
 // ============================================
 // Slack Signature Verification

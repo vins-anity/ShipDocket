@@ -1,5 +1,5 @@
 /**
- * Trail AI API Tests
+ * ShipDocket API Tests
  *
  * TDD approach: Tests for the core API endpoints
  */
@@ -7,7 +7,7 @@
 import { describe, expect, it } from "vitest";
 import app from "../index";
 
-describe("Trail AI API", () => {
+describe("ShipDocket API", () => {
     // ============================================
     // Health Check
     // ============================================
@@ -30,7 +30,7 @@ describe("Trail AI API", () => {
             expect(res.status).toBe(200);
 
             const html = await res.text();
-            expect(html).toContain("Trail AI API");
+            expect(html).toContain("ShipDocket API");
             expect(html).toContain("Delivery Assurance");
         });
     });
@@ -45,7 +45,7 @@ describe("Trail AI API", () => {
 
             const json = await res.json();
             expect(json.openapi).toBeDefined();
-            expect(json.info.title).toBe("Trail AI API");
+            expect(json.info.title).toBe("ShipDocket API");
         });
     });
 

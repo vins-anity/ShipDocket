@@ -1,3 +1,4 @@
+import { env } from "../env";
 import { Octokit } from "@octokit/rest";
 
 export class GitHubService {
@@ -6,7 +7,7 @@ export class GitHubService {
     constructor(auth?: string) {
         // Auth token is optional for public repos but recommended for rate limits
         this.octokit = new Octokit({
-            auth: auth || process.env.GITHUB_ACCESS_TOKEN,
+            auth: auth || env.GITHUB_CLIENT_ID, // Use a generic token if available
         });
     }
 

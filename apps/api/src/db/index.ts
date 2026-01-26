@@ -20,22 +20,17 @@
  * @see https://orm.drizzle.team/docs/get-started-postgresql
  */
 
+import { env } from "../env";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
 // ============================================
-// Environment Validation
+// Database Client Setup
 // ============================================
 
-/**
- * Validate that DATABASE_URL is set.
- * This runs at import time to fail fast if misconfigured.
- */
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-    console.error(`
+const connectionString = env.DATABASE_URL;
+console.error(`
 ╔══════════════════════════════════════════════════════════════╗
 ║  ❌ DATABASE_URL is not set!                                   ║
 ║                                                                ║

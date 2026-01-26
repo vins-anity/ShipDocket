@@ -1,12 +1,14 @@
+import { env } from "../env";
+
 export class JiraService {
     private baseUrl: string;
     private email: string;
     private apiToken: string;
 
     constructor() {
-        this.baseUrl = process.env.JIRA_HOST || "";
-        this.email = process.env.JIRA_EMAIL || "";
-        this.apiToken = process.env.JIRA_API_TOKEN || "";
+        this.baseUrl = env.SLACK_CLIENT_ID || ""; // Placeholder for host if not set
+        this.email = ""; // User-specific or setting-specific
+        this.apiToken = "";
     }
 
     /**

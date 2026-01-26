@@ -15,6 +15,7 @@
 import { relations } from "drizzle-orm";
 import {
     boolean,
+    index,
     integer,
     jsonb,
     pgEnum,
@@ -237,17 +238,27 @@ export const closureJobs = pgTable("closure_jobs", {
  * Workspace Members - User to Workspace Mapping
  * Links Supabase Auth users to specific workspaces with roles.
  */
-export const workspaceMembers = pgTable("workspace_members", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    workspaceId: uuid("workspace_id")
-        .notNull()
-        .references(() => workspaces.id, { onDelete: "cascade" }),
-    userId: uuid("user_id").notNull(), // References auth.users
-    role: workspaceRoleEnum("role").default("member").notNull(),
+export const workspaceMembers = pgTable(
+    "workspace_members",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        workspaceId: uuid("workspace_id")
+            .notNull()
+            .references(() => workspaces.id, { onDelete: "cascade" }),
+        userId: uuid("user_id").notNull(), // References auth.users
+        role: workspaceRoleEnum("role").default("member").notNull(),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    },
+    (table) => ({
+        userIdIdx: index("idx_workspace_members_user_id").on(table.userId),
+        workspaceUserIdx: index("idx_workspace_members_workspace_user").on(
+            table.workspaceId,
+            table.userId,
+        ),
+    }),
+);
 
 // ============================================
 // Relations

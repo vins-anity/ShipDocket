@@ -7,6 +7,8 @@
  * @see https://bun.com/docs/runtime/web-crypto
  */
 
+import { env } from "../env";
+
 // Web Crypto API is available globally in Bun
 const ALGORITHM = "AES-GCM";
 const KEY_LENGTH = 256;
@@ -15,11 +17,8 @@ const KEY_LENGTH = 256;
  * Get or generate encryption key from environment
  */
 async function getEncryptionKey(): Promise<CryptoKey> {
-    const keyString = process.env.ENCRYPTION_KEY;
+    const keyString = env.ENCRYPTION_KEY;
 
-    if (!keyString) {
-        throw new Error("ENCRYPTION_KEY environment variable not set");
-    }
 
     // Convert hex string to ArrayBuffer
     const keyData = new Uint8Array(

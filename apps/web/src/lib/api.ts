@@ -2,8 +2,10 @@
  * ShipDocket API Client
  *
  * Type-safe API client for the ShipDocket backend.
+ * Handles Auth Headers & Error redirection automatically.
  */
 
+import { supabase } from "@/lib/supabase";
 import type {
     CreateProofPacket,
     EvaluateClosure,
@@ -16,12 +18,51 @@ import type {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-async function handleResponse<T>(res: Response): Promise<T> {
-    if (!res.ok) {
-        const error = await res.json().catch(() => ({ message: "Request failed" }));
-        throw new Error(error.message || error.error || "Request failed");
+/**
+ * Enhanced Fetch Wrapper
+ * - Injects 'Authorization: Bearer <token>'
+ * - Handles 401 Unauthorized -> Redirects to Login
+ * - Parses JSON responses automatically
+ */
+async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    // 1. Get Session Token
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+
+    // 2. Prepare Headers
+    const headers = new Headers(options.headers);
+    headers.set("Content-Type", "application/json");
+    if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
     }
-    return res.json();
+
+    // 3. Execute Request
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        headers,
+    });
+
+    // 4. Handle Errors
+    if (!response.ok) {
+        // Handle 401 (Unauthenticated) -> Redirect
+        if (response.status === 401) {
+            console.warn("Unauthorized access. Clearing session and redirecting...");
+
+            // 🛑 STOP THE LOOP: Clear the session so /login doesn't bounce us back
+            await supabase.auth.signOut();
+
+            if (window.location.pathname !== "/login") {
+                window.location.href = "/login";
+            }
+            throw new Error("Unauthorized");
+        }
+
+        const error = await response.json().catch(() => ({ message: "Request failed" }));
+        throw new Error(error.message || error.error || `Request failed: ${response.status}`);
+    }
+
+    // 5. Parse Success
+    return response.json();
 }
 
 export const api = {
@@ -41,28 +82,16 @@ export const api = {
             if (params?.page) searchParams.set("page", String(params.page));
             if (params?.pageSize) searchParams.set("pageSize", String(params.pageSize));
 
-            const res = await fetch(`${API_URL}/events?${searchParams}`);
-            return handleResponse<EventList>(res);
+            return fetchWithAuth<EventList>(`/events?${searchParams}`);
         },
 
-        get: async (id: string): Promise<Event> => {
-            const res = await fetch(`${API_URL}/events/${id}`);
-            return handleResponse<Event>(res);
-        },
+        get: (id: string) => fetchWithAuth<Event>(`/events/${id}`),
 
-        getByTask: async (
-            taskId: string,
-        ): Promise<{ taskId: string; events: Event[]; summary: Record<string, unknown> }> => {
-            const res = await fetch(`${API_URL}/events/task/${taskId}`);
-            return handleResponse(res);
-        },
+        getByTask: (taskId: string) =>
+            fetchWithAuth<{ taskId: string; events: Event[]; summary: Record<string, unknown> }>(`/events/task/${taskId}`),
 
-        verifyChain: async (
-            workspaceId: string,
-        ): Promise<{ valid: boolean; verifiedCount: number; errors: unknown[] }> => {
-            const res = await fetch(`${API_URL}/events/verify/${workspaceId}`);
-            return handleResponse(res);
-        },
+        verifyChain: (workspaceId: string) =>
+            fetchWithAuth<{ valid: boolean; verifiedCount: number; errors: unknown[] }>(`/events/verify/${workspaceId}`),
     },
 
     // ============================================
@@ -79,88 +108,64 @@ export const api = {
             if (params?.status) searchParams.set("status", params.status);
             if (params?.page) searchParams.set("page", String(params.page));
 
-            const res = await fetch(`${API_URL}/proofs?${searchParams}`);
-            return handleResponse(res);
+            return fetchWithAuth(`/proofs?${searchParams}`);
         },
 
-        get: async (id: string): Promise<ProofPacket> => {
-            const res = await fetch(`${API_URL}/proofs/${id}`);
-            return handleResponse<ProofPacket>(res);
-        },
+        get: (id: string) => fetchWithAuth<ProofPacket>(`/proofs/${id}`),
 
-        create: async (data: CreateProofPacket): Promise<ProofPacket> => {
-            const res = await fetch(`${API_URL}/proofs`, {
+        create: (data: CreateProofPacket) =>
+            fetchWithAuth<ProofPacket>("/proofs", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
-            });
-            return handleResponse<ProofPacket>(res);
-        },
+            }),
 
-        summarize: async (
-            id: string,
-            options?: { includeCommits?: boolean; tone?: string },
-        ): Promise<{ success: boolean; summary: string; model: string }> => {
-            const res = await fetch(`${API_URL}/proofs/${id}/summarize`, {
+        summarize: (id: string, options?: { includeCommits?: boolean; tone?: string }) =>
+            fetchWithAuth<{ success: boolean; summary: string; model: string }>(`/proofs/${id}/summarize`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(options || {}),
-            });
-            return handleResponse(res);
-        },
+            }),
 
-        exportPdf: async (
-            id: string,
-        ): Promise<{ success: boolean; url: string; expiresAt: string }> => {
-            const res = await fetch(`${API_URL}/proofs/${id}/pdf`);
-            return handleResponse(res);
-        },
+        exportPdf: (id: string) =>
+            fetchWithAuth<{ success: boolean; url: string; expiresAt: string }>(`/proofs/${id}/pdf`),
 
-        share: async (
-            id: string,
-        ): Promise<{ success: boolean; shareUrl: string; expiresAt: string }> => {
-            const res = await fetch(`${API_URL}/proofs/${id}/share`, { method: "POST" });
-            return handleResponse(res);
-        },
+        share: (id: string) =>
+            fetchWithAuth<{ success: boolean; shareUrl: string; expiresAt: string }>(`/proofs/${id}/share`, { method: "POST" }),
     },
 
     // ============================================
     // Policies API
     // ============================================
     policies: {
-        list: async (workspaceId?: string): Promise<{ policies: Policy[] }> => {
-            const url = workspaceId
-                ? `${API_URL}/policies?workspaceId=${workspaceId}`
-                : `${API_URL}/policies`;
-            const res = await fetch(url);
-            return handleResponse(res);
+        list: (workspaceId?: string) => {
+            const endpoint = workspaceId ? `/policies?workspaceId=${workspaceId}` : "/policies";
+            return fetchWithAuth<{ policies: Policy[] }>(endpoint);
         },
 
-        get: async (id: string): Promise<Policy> => {
-            const res = await fetch(`${API_URL}/policies/${id}`);
-            return handleResponse<Policy>(res);
-        },
+        get: (id: string) => fetchWithAuth<Policy>(`/policies/${id}`),
 
-        getPresets: async (): Promise<{ presets: Record<string, unknown> }> => {
-            const res = await fetch(`${API_URL}/policies/presets`);
-            return handleResponse(res);
-        },
+        getPresets: () => fetchWithAuth<{ presets: Record<string, unknown> }>("/policies/presets"),
 
-        evaluate: async (data: EvaluateClosure): Promise<EvaluationResult> => {
-            const res = await fetch(`${API_URL}/policies/evaluate`, {
+        evaluate: (data: EvaluateClosure) =>
+            fetchWithAuth<EvaluationResult>("/policies/evaluate", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
-            });
-            return handleResponse<EvaluationResult>(res);
-        },
+            }),
+    },
+
+    // ============================================
+    // Workspaces API (Missing Before?)
+    // ============================================
+    workspaces: {
+        current: () => fetchWithAuth<{ id: string; name: string }>("/workspaces/current"),
+        create: (name: string) =>
+            fetchWithAuth<{ id: string; name: string }>("/workspaces", {
+                method: "POST",
+                body: JSON.stringify({ name }),
+            }),
     },
 
     // ============================================
     // Health Check
     // ============================================
-    health: async (): Promise<{ status: string }> => {
-        const res = await fetch(`${API_URL}/health`);
-        return handleResponse(res);
-    },
+    health: () => fetchWithAuth<{ status: string }>("/health"),
 };

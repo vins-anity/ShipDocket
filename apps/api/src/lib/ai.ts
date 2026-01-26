@@ -7,6 +7,7 @@
  * @see https://openrouter.ai/collections/free-models
  */
 
+import { env } from "../env";
 import { OpenRouter } from "@openrouter/sdk";
 
 // ============================================
@@ -66,7 +67,7 @@ let client: OpenRouter | null = null;
 
 function getClient(): OpenRouter {
     if (!client) {
-        const apiKey = process.env.OPENROUTER_API_KEY;
+        const apiKey = env.OPENROUTER_API_KEY;
         if (!apiKey) {
             throw new Error("OPENROUTER_API_KEY is not configured");
         }
@@ -81,7 +82,7 @@ function getClient(): OpenRouter {
 }
 
 export function isConfigured(): boolean {
-    return Boolean(process.env.OPENROUTER_API_KEY);
+    return Boolean(env.OPENROUTER_API_KEY);
 }
 
 // ============================================
@@ -97,9 +98,9 @@ function buildPrompt(input: ProofSummaryInput, options: SummaryOptions): string 
     const commitsSection =
         includeCommits && input.commits && input.commits.length > 0
             ? `\n\nCommit History:\n${input.commits
-                  .slice(0, 10)
-                  .map((c) => `- ${c.message}`)
-                  .join("\n")}`
+                .slice(0, 10)
+                .map((c) => `- ${c.message}`)
+                .join("\n")}`
             : "";
 
     const prSection =

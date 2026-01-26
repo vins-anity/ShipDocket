@@ -1,3 +1,4 @@
+import { env } from "./env";
 import { apiReference } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -69,7 +70,7 @@ const app = new Hono()
         </h1>
 
         <p class="text-lg text-slate-400 max-w-md mx-auto leading-relaxed">
-            The neural backbone for delivery assurance. 
+            The neural backbone for Delivery Assurance. 
             Automated auditing, evidence collection, and hash-chain verification.
         </p>
 
@@ -157,5 +158,8 @@ app.get(
     }),
 );
 
-export default app;
+export default {
+    port: env.PORT,
+    fetch: app.fetch,
+};
 export type AppType = typeof app;

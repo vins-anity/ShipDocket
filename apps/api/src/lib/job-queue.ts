@@ -9,7 +9,9 @@
 import { PgBoss } from "pg-boss";
 import { policiesService } from "../services";
 
-const connectionString = process.env.DATABASE_URL;
+import { env } from "../env";
+
+const connectionString = env.DATABASE_URL;
 
 // Singleton instance
 let boss: PgBoss | null = null;

@@ -27,6 +27,7 @@
         "@scalar/hono-api-reference": "^0.5.150",
         "@slack/web-api": "^7.8.0",
         "@supabase/supabase-js": "^2.48.1",
+        "@t3-oss/env-core": "^0.13.10",
         "@valibot/to-json-schema": "^1.5.0",
         "better-auth": "^1.1.15",
         "drizzle-orm": "^0.45.1",

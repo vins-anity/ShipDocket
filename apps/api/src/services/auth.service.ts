@@ -1,16 +1,10 @@
-/**
- * Authentication Service
- *
- * Manages OAuth flows for Slack, GitHub, and Jira.
- * Handles token storage with encryption.
- */
-
 import { createClient } from "@supabase/supabase-js";
+import { env } from "../env";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
 import * as workspacesService from "./workspaces.service";
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+const SUPABASE_URL = env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY;
 
 // OAuth endpoints
 const OAUTH_CONFIG = {
