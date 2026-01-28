@@ -12,7 +12,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivitySkeleton, StatCardSkeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -130,35 +130,45 @@ export function DashboardPage() {
                             bgColor: "bg-red-500/10",
                             trend: "-8%",
                         },
-                    ].map((stat, index) => (
-                        <Card
-                            key={stat.title}
-                            className="bg-card/50 backdrop-blur-sm border-white/5 hover-lift cursor-pointer"
-                            style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">
-                                    {stat.title}
-                                </CardTitle>
-                                <div
-                                    className={`h-8 w-8 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                    ].map((stat, index) => {
+                        const CardWrapper = ({ children }: { children: React.ReactNode }) => {
+                            if (stat.title === "Pending Proofs" || stat.title === "Completed") {
+                                return <Link to="/proofs">{children}</Link>;
+                            }
+                            return <>{children}</>;
+                        };
+
+                        return (
+                            <CardWrapper key={stat.title}>
+                                <Card
+                                    className="bg-card/50 backdrop-blur-sm border-white/5 hover-lift cursor-pointer"
+                                    style={{ animationDelay: `${index * 50}ms` }}
                                 >
-                                    <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold text-foreground">
-                                    {stat.value}
-                                </div>
-                                <div className="flex items-center gap-1 mt-1">
-                                    <IconTrendingUp className="h-3 w-3 text-green-500" />
-                                    <p className="text-xs text-muted-foreground">
-                                        {stat.trend} this week
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                                            {stat.title}
+                                        </CardTitle>
+                                        <div
+                                            className={`h-8 w-8 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                                        >
+                                            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-2xl font-bold text-foreground">
+                                            {stat.value}
+                                        </div>
+                                        <div className="flex items-center gap-1 mt-1">
+                                            <IconTrendingUp className="h-3 w-3 text-green-500" />
+                                            <p className="text-xs text-muted-foreground">
+                                                {stat.trend} this week
+                                            </p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </CardWrapper>
+                        );
+                    })
                 )}
             </div>
 

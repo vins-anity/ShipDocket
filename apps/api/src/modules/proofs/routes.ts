@@ -311,11 +311,9 @@ proofs
             description: "Generates a downloadable PDF version of the proof packet",
             responses: {
                 200: {
-                    description: "PDF generation initiated",
+                    description: "PDF file",
                     content: {
-                        "application/json": {
-                            schema: resolver(ExportResultSchema),
-                        },
+                        "application/pdf": {},
                     },
                 },
             },
@@ -329,15 +327,42 @@ proofs
                 return c.json({ error: "Proof packet not found" }, 404);
             }
 
-            // TODO: Generate PDF using a library like puppeteer or react-pdf
-
-            return c.json({
-                success: true,
-                url: `/proofs/${id}/download.pdf`,
-                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            // Fetch events for this proof packet
+            const { eventsService } = await import("../../services");
+            const { events } = await eventsService.listEvents({
+                workspaceId: packet.workspaceId,
+                taskId: packet.taskId,
+                pageSize: 50,
             });
+
+            // Get workspace name
+            const workspace = await proofsService.getWorkspaceForProof(packet.workspaceId);
+
+            // Generate PDF
+            const { generateProofPDF } = await import("../../lib/pdf-generator");
+            const pdfBuffer = await generateProofPDF({
+                proof: packet,
+                events: events.map((e) => ({
+                    id: e.id,
+                    eventType: e.eventType,
+                    payload: e.payload as Record<string, unknown>,
+                    createdAt: e.createdAt,
+                    eventHash: e.eventHash,
+                })),
+                workspaceName: workspace?.name || "ShipDocket",
+            });
+
+            // Return PDF as download
+            c.header("Content-Type", "application/pdf");
+            c.header(
+                "Content-Disposition",
+                `attachment; filename="proof-${packet.taskId || packet.id}.pdf"`,
+            );
+
+            return c.body(pdfBuffer as any);
         },
     )
+
 
     // ----------------------------------------
     // Export as JSON
@@ -410,22 +435,34 @@ proofs
                 return c.json({ error: "Proof packet not found" }, 404);
             }
 
-            // Generate share token and update packet
+            // Generate share token
             const shareToken = crypto.randomUUID();
-            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
+            // Persist share link to database
+            const { proofSharesService } = await import("../../services");
+            await proofSharesService.createShareLink({
+                proofId: id,
+                token: shareToken,
+                expiresAt,
+            });
+
+
+            // Update packet status
+            const frontendUrl = process.env.FRONTEND_URL || "https://shipdocket.pages.dev";
             await proofsService.updateProofPacket(id, {
                 status: "exported",
-                exportedUrl: `https://trail.ai/share/${shareToken}`,
+                exportedUrl: `${frontendUrl}/share/${shareToken}`,
             });
 
             return c.json({
                 success: true,
-                shareUrl: `https://trail.ai/share/${shareToken}`,
+                shareUrl: `${frontendUrl}/share/${shareToken}`,
                 expiresAt: expiresAt.toISOString(),
             });
         },
     );
+
 
 export default proofs;
 export type ProofsApp = typeof proofs;

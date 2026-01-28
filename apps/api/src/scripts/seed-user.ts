@@ -139,7 +139,11 @@ async function seedUser() {
         .where(eq(schema.workspaceMembers.userId, userId))
         .limit(1);
 
-    const workspaceId = member.workspaceId;
+    const workspaceId = member?.workspaceId;
+    if (!workspaceId) {
+        console.error("❌ Failed to get workspace ID for user");
+        process.exit(1);
+    }
 
     const [existingPacket] = await db
         .select()

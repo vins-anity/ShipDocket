@@ -35,10 +35,16 @@ export function SettingsPage() {
     const [brandColor, setBrandColor] = useState("#3b82f6");
     const [brandLogo, setBrandLogo] = useState("");
 
+    // Proof Rules State
+    const [autoCreateOnDone, setAutoCreateOnDone] = useState(true);
+
     // Sync state
     useEffect(() => {
         if (workspace?.workflowSettings?.startTracking) {
             setStartStatuses(workspace.workflowSettings.startTracking);
+        }
+        if (workspace?.proofPacketRules) {
+            setAutoCreateOnDone(workspace.proofPacketRules.autoCreateOnDone ?? true);
         }
     }, [workspace]);
 
@@ -96,6 +102,16 @@ export function SettingsPage() {
         toast.success("Branding assets updated");
     };
 
+    const handleSaveRules = () => {
+        updateSettingsMutation.mutate({
+            proofPacketRules: {
+                autoCreateOnDone: autoCreateOnDone,
+                minEventsForProof: 5,
+                excludedTaskTypes: []
+            }
+        });
+    };
+
     if (!workspace) return <div className="p-8">Loading console...</div>;
 
     return (
@@ -116,6 +132,9 @@ export function SettingsPage() {
                 <TabsList className="bg-gray-900/50 border border-white/10 p-1">
                     <TabsTrigger value="workflow" className="data-[state=active]:bg-blue-600">
                         <IconSettings className="w-4 h-4 mr-2" /> Workflow
+                    </TabsTrigger>
+                    <TabsTrigger value="proofs" className="data-[state=active]:bg-teal-600">
+                        <IconCheck className="w-4 h-4 mr-2" /> Proof Rules
                     </TabsTrigger>
                     <TabsTrigger value="health" className="data-[state=active]:bg-green-600">
                         <IconActivity className="w-4 h-4 mr-2" /> System Health
@@ -156,6 +175,36 @@ export function SettingsPage() {
                             </div>
                             <Button onClick={handleSaveStartStatuses} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white">
                                 <IconDeviceFloppy className="w-4 h-4 mr-2" /> Save Workflow
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* PROOF RULES TAB */}
+                <TabsContent value="proofs" className="space-y-4">
+                    <Card className="bg-gray-900/40 backdrop-blur-sm border-white/10">
+                        <CardHeader>
+                            <CardTitle>Smart Creation Rules</CardTitle>
+                            <CardDescription>Configure when Proof Packets are automatically generated.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+                                <div>
+                                    <h3 className="font-medium text-white">Auto-Create on "Done"</h3>
+                                    <p className="text-sm text-gray-400 mt-1">
+                                        Automatically create a draft Proof Packet when a Jira task updates to "Done".
+                                    </p>
+                                </div>
+                                <div
+                                    className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${autoCreateOnDone ? 'bg-teal-600' : 'bg-gray-700'}`}
+                                    onClick={() => setAutoCreateOnDone(!autoCreateOnDone)}
+                                >
+                                    <div className={`w-4 h-4 rounded-full bg-white transition-transform ${autoCreateOnDone ? 'translate-x-6' : 'translate-x-0'}`} />
+                                </div>
+                            </div>
+
+                            <Button onClick={handleSaveRules} className="bg-teal-600 hover:bg-teal-700 text-white">
+                                <IconDeviceFloppy className="w-4 h-4 mr-2" /> Save Rules
                             </Button>
                         </CardContent>
                     </Card>
@@ -250,6 +299,7 @@ export function SettingsPage() {
         </div>
     );
 }
+
 
 function HealthCard({ name, icon: Icon, connected, lastSync }: any) {
     return (

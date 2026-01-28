@@ -22,7 +22,7 @@ async function getEncryptionKey(): Promise<CryptoKey> {
 
     // Convert hex string to ArrayBuffer
     const keyData = new Uint8Array(
-        keyString.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || [],
+        (keyString || "").match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || [],
     );
 
     return await crypto.subtle.importKey(

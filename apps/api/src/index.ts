@@ -143,10 +143,65 @@ const app = new Hono()
     .route("/webhooks", webhooks)
     .route("/slack/interactions", slackInteractions)
     .route("/jobs", jobs)
+    // Public share route - NO AUTH REQUIRED
+    .get("/proofs/share/:token", async (c) => {
+        const token = c.req.param("token");
+
+        // Import services dynamically
+        const { proofSharesService, proofsService, eventsService, workspacesService } = await import("./services");
+
+        // Get share link by token
+        const shareLink = await proofSharesService?.getShareLinkByToken(token);
+        if (!shareLink) {
+            return c.json({ error: "Share link not found or expired" }, 404);
+        }
+
+        // Check expiration
+        if (shareLink.expiresAt && new Date(shareLink.expiresAt) < new Date()) {
+            return c.json({ error: "Share link has expired" }, 410);
+        }
+
+        // Get the proof packet
+        const proof = await proofsService.getProofPacketById(shareLink.proofId);
+        if (!proof) {
+            return c.json({ error: "Proof packet not found" }, 404);
+        }
+
+        // Get events for this proof
+        const { events } = await eventsService.listEvents({
+            workspaceId: proof.workspaceId,
+            taskId: proof.taskId || undefined,
+            pageSize: 50,
+        });
+
+        // Get workspace info
+        const workspace = await workspacesService.getWorkspaceById(proof.workspaceId);
+
+        // Return public-safe response
+        return c.json({
+            id: proof.id,
+            taskId: proof.taskId,
+            status: proof.status,
+            aiSummary: proof.aiSummary,
+            aiSummaryModel: proof.aiSummaryModel,
+            hashChainRoot: proof.hashChainRoot,
+            closedAt: proof.closedAt,
+            createdAt: proof.createdAt,
+            events: events.map((e) => ({
+                id: e.id,
+                eventType: e.eventType,
+                createdAt: e.createdAt,
+            })),
+            workspace: {
+                name: workspace?.name || "ShipDocket",
+            },
+        });
+    })
     .route("/proofs", proofs)
     .route("/policies", policies)
     .route("/events", events)
     .route("/workspaces", workspaces)
+
     // Dashboard Stats
     .get("/stats", async (c) => {
         const { eventsService } = await import("./services");

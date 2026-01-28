@@ -154,8 +154,48 @@ export async function createEvent(input: CreateEventInput) {
         throw new Error("Failed to create event");
     }
 
+    // ------------------------------------------------------------------
+    // Smart Events Logic: Auto-create Proof Packet
+    // ------------------------------------------------------------------
+    try {
+        if (
+            input.eventType === "jira_status_changed" &&
+            input.workspaceId &&
+            input.taskId &&
+            input.payload?.status
+        ) {
+            // Dynamic imports to avoid circular deps
+            const { workspacesService, proofsService } = await import("./index");
+
+            const workspace = await workspacesService.getWorkspaceById(input.workspaceId);
+
+            if (workspace && workspace.proofPacketRules?.autoCreateOnDone) {
+                const doneStatuses = workspace.workflowSettings?.doneStatus || ["Done"];
+                const newStatus = String(input.payload.status);
+
+                // If task moved to Done
+                if (doneStatuses.includes(newStatus)) {
+                    // Check if proof already exists
+                    const existingProof = await proofsService.getProofPacketByTask(input.taskId, input.workspaceId);
+
+                    if (!existingProof) {
+                        console.log(`🤖 Smart Logic: Auto-creating proof for completed task ${input.taskId}`);
+                        await proofsService.createProofPacket({
+                            workspaceId: input.workspaceId,
+                            taskId: input.taskId,
+                        });
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        // Non-blocking error logging
+        console.error("Error in smart proof creation logic:", error);
+    }
+
     return mapEventToResponse(event);
 }
+
 
 /**
  * Verify hash chain integrity for a workspace

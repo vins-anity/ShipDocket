@@ -31,6 +31,7 @@
         "drizzle-orm": "^0.45.1",
         "hono": "^4.10.8",
         "hono-openapi": "^0.4.1",
+        "jspdf": "^4.0.0",
         "pg-boss": "^12.5.4",
         "postgres": "^3.4.8",
         "shared": "workspace:*",

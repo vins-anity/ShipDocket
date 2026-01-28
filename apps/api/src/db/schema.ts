@@ -99,6 +99,18 @@ export const workspaces = pgTable("workspaces", {
         doneStatus: ["Done"]
     }),
 
+    // Smart Proof Creation Rules
+    proofPacketRules: jsonb("proof_packet_rules").$type<{
+        autoCreateOnDone: boolean; // Create draft when task enters Done
+        minEventsForProof: number; // Minimum events required
+        excludedTaskTypes: string[]; // e.g. "Bug", "Chore"
+    }>().default({
+        autoCreateOnDone: true,
+        minEventsForProof: 5,
+        excludedTaskTypes: []
+    }),
+
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -269,6 +281,28 @@ export const workspaceMembers = pgTable(
     }),
 );
 
+/**
+ * Proof Shares - Public Share Links
+ * Stores share tokens for public access to proof packets.
+ */
+export const proofShares = pgTable(
+    "proof_shares",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        proofId: uuid("proof_id")
+            .notNull()
+            .references(() => proofPackets.id, { onDelete: "cascade" }),
+        token: text("token").notNull().unique(),
+        expiresAt: timestamp("expires_at"),
+        createdBy: uuid("created_by"),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    },
+    (table) => ({
+        tokenIdx: index("idx_proof_shares_token").on(table.token),
+    }),
+);
+
+
 // ============================================
 // Relations
 // ============================================
@@ -353,3 +387,7 @@ export type newClosureJob = typeof closureJobs.$inferInsert;
 
 export type WorkspaceMember = typeof workspaceMembers.$inferSelect;
 export type NewWorkspaceMember = typeof workspaceMembers.$inferInsert;
+
+export type ProofShare = typeof proofShares.$inferSelect;
+export type NewProofShare = typeof proofShares.$inferInsert;
+

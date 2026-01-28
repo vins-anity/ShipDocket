@@ -18,6 +18,7 @@ import { ProofDetailPage } from "@/pages/proofs/[id]";
 import { SecurityFaqPage } from "@/pages/security-faq";
 import { ServicesPage } from "@/pages/services";
 import { SettingsPage } from "@/pages/settings";
+import { SharePage } from "@/pages/share/[token]";
 import { WhyPage } from "@/pages/why";
 import { NotFoundPage } from "@/pages/not-found";
 import { AppProviders } from "./providers";
@@ -40,6 +41,9 @@ function App() {
                     <Route path="/legal/privacy" element={<PrivacyPage />} />
                     <Route path="/legal/dpa" element={<DpaPage />} />
 
+                    {/* Public share page - no auth required */}
+                    <Route path="/share/:token" element={<SharePage />} />
+
                     <Route element={<ProtectedRoute />}>
                         <Route path="/onboarding" element={<OnboardingPage />} />
                         <Route element={<DashboardLayout />}>
@@ -57,5 +61,6 @@ function App() {
         </AppProviders>
     );
 }
+
 
 export default App;

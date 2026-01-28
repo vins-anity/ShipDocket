@@ -8,6 +8,16 @@ export interface WorkspaceStatus {
     hasGithub: boolean;
     hasJira: boolean;
     defaultPolicyTier: string;
+    workflowSettings?: {
+        startTracking: string[];
+        reviewStatus: string[];
+        doneStatus: string[];
+    };
+    proofPacketRules?: {
+        autoCreateOnDone: boolean;
+        minEventsForProof: number;
+        excludedTaskTypes: string[];
+    };
 }
 
 export function useWorkspaceStatus() {
