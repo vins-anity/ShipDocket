@@ -147,12 +147,27 @@ describe("Proofs API", () => {
     // Export as PDF
     // ============================================
     describe("GET /proofs/:id/pdf", () => {
-        it("should return PDF export URL", async () => {
+        it("should return PDF binary data", async () => {
             const res = await app.request(`/proofs/${proofId}/pdf`);
             expect(res.status).toBe(200);
-            const json = await res.json();
-            expect(json.success).toBe(true);
-            expect(json.url).toBeDefined();
+
+            // Check content type
+            const contentType = res.headers.get("Content-Type");
+            expect(contentType).toBe("application/pdf");
+
+            // Check that response is binary (not JSON)
+            const contentDisposition = res.headers.get("Content-Disposition");
+            expect(contentDisposition).toContain("attachment");
+            expect(contentDisposition).toContain("proof-");
+
+            // Verify we can get the binary data
+            const buffer = await res.arrayBuffer();
+            expect(buffer.byteLength).toBeGreaterThan(0);
+
+            // Verify PDF header
+            const uint8Array = new Uint8Array(buffer);
+            const header = String.fromCharCode(...uint8Array.slice(0, 4));
+            expect(header).toBe("%PDF");
         });
     });
 

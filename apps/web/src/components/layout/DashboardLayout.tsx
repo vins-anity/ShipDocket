@@ -28,7 +28,7 @@ export function DashboardLayout() {
     const location = useLocation();
 
     const navItems = [
-        { href: "/", label: "Dashboard", icon: IconLayoutDashboard },
+        { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
         { href: "/proofs", label: "Proof Packets", icon: IconFileText },
         { href: "/settings", label: "Settings", icon: IconSettings },
     ];

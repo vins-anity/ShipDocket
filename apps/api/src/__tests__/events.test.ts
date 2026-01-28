@@ -100,11 +100,11 @@ describe("Events API", () => {
     // ============================================
     // Dashboard Stats
     // ============================================
-    describe("GET /stats", () => {
+    describe("GET /events/stats", () => {
         it("should return dashboard statistics", async () => {
-            const res = await app.request("/stats");
+            const res = await app.request("/events/stats");
             if (res.status !== 200) {
-                console.error("GET /stats failed:", await res.text());
+                console.error("GET /events/stats failed:", await res.text());
             }
             expect(res.status).toBe(200);
 
@@ -114,9 +114,9 @@ describe("Events API", () => {
         });
 
         it("should return stats filtered by workspace", async () => {
-            const res = await app.request(`/stats?workspaceId=${TEST_WORKSPACE_ID}`);
+            const res = await app.request(`/events/stats?workspaceId=${TEST_WORKSPACE_ID}`);
             if (res.status !== 200) {
-                console.error("GET /stats?workspaceId failed:", await res.text());
+                console.error("GET /events/stats?workspaceId failed:", await res.text());
             }
             expect(res.status).toBe(200);
 
@@ -127,7 +127,7 @@ describe("Events API", () => {
 
         it("should return zero active tasks for empty workspace", async () => {
             // New workspace with no events should have 0 active tasks
-            const res = await app.request(`/stats?workspaceId=${TEST_WORKSPACE_ID}`);
+            const res = await app.request(`/events/stats?workspaceId=${TEST_WORKSPACE_ID}`);
             expect(res.status).toBe(200);
 
             const json = await res.json();
