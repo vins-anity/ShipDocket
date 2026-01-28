@@ -203,12 +203,7 @@ const app = new Hono()
     .route("/workspaces", workspaces)
 
     // Dashboard Stats
-    .get("/stats", async (c) => {
-        const { eventsService } = await import("./services");
-        const workspaceId = c.req.query("workspaceId");
-        const stats = await eventsService.getDashboardStats(workspaceId);
-        return c.json(stats);
-    })
+
     // Health Status Dashboard
     .get("/status", async (c) => {
         const { healthService } = await import("./services");

@@ -6,8 +6,11 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProofCardSkeleton } from "@/components/ui/skeleton";
 import { useProofPackets } from "@/hooks/use-proofs";
 
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
+
 export function ProofPacketsPage() {
-    const { data, isLoading, error } = useProofPackets();
+    const { data: workspace } = useWorkspaceStatus();
+    const { data, isLoading, error } = useProofPackets({ workspaceId: workspace?.id });
 
     const proofs = data?.packets || [];
 

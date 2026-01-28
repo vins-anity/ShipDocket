@@ -15,5 +15,6 @@ export function useProofPackets(options: UseProofPacketsOptions = {}) {
         queryFn: async () => {
             return api.proofs.list(options);
         },
+        enabled: !!options.workspaceId,
     });
 }

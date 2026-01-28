@@ -177,6 +177,22 @@ events
 
             return c.json(result);
         },
+    )
+
+    // ----------------------------------------
+    // Dashboard Stats
+    // ----------------------------------------
+    .get(
+        "/stats",
+        // requireWorkspaceAccess() is NOT used here by default because dashboard might load initially without specific workspace context?
+        // Wait, getDashboardStats logic likely depends on workspaceId.
+        // The original code was: const workspaceId = c.req.query("workspaceId");
+        // So we should allow it.
+        async (c) => {
+            const workspaceId = c.req.query("workspaceId");
+            const stats = await eventsService.getDashboardStats(workspaceId);
+            return c.json(stats);
+        },
     );
 
 export default events;
