@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { AboutPage } from "@/pages/about";
 import { LoginPage } from "@/pages/auth/login";
+import { DemoPage } from "@/pages/demo";
 import { BlogPage } from "@/pages/blog";
 import { CareersPage } from "@/pages/careers";
 import { DashboardPage } from "@/pages/dashboard";
@@ -29,6 +30,7 @@ function App() {
             <AuthProvider>
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/demo" element={<DemoPage />} />
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/pricing" element={<PricingPage />} />

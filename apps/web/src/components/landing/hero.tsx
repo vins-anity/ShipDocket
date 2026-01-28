@@ -25,19 +25,27 @@ export function LandingHero() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                        <Button
-                            size="lg"
-                            className="gap-2 rounded-full px-8 text-base font-semibold w-fit"
+                        <a href="/demo">
+                            <Button
+                                size="lg"
+                                className="gap-2 rounded-full px-8 text-base font-semibold w-fit"
+                            >
+                                Try Demo <ArrowRightIcon className="w-4 h-4" />
+                            </Button>
+                        </a>
+                        <a
+                            href="https://calendly.com/shipdocket/demo"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
-                            Start Shipping (Free Beta) <ArrowRightIcon className="w-4 h-4" />
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="rounded-full px-8 text-base font-semibold bg-transparent w-fit"
-                        >
-                            See a Sample Proof Packet
-                        </Button>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="rounded-full px-8 text-base font-semibold bg-transparent w-fit"
+                            >
+                                Book a Demo
+                            </Button>
+                        </a>
                     </div>
 
                     <div className="border-t border-border/30 pt-6 text-sm text-muted-foreground">

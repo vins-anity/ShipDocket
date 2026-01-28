@@ -1,6 +1,7 @@
 import { IconBuildingSkyscraper, IconCheck, IconRocket, IconBrandGithub, IconBrandSlack, IconBrandAsana } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ export function OnboardingPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const handleConnect = (provider: "github" | "slack" | "jira") => {
         if (!workspaceId) return;
@@ -101,7 +103,11 @@ export function OnboardingPage() {
 
                             <div className="pt-6">
                                 <Button
-                                    onClick={() => navigate("/dashboard", { replace: true })}
+                                    onClick={() => {
+                                        // Invalidate workspace status to ensure fresh data on dashboard
+                                        queryClient.invalidateQueries({ queryKey: ["workspace-status"] });
+                                        navigate("/dashboard", { replace: true });
+                                    }}
                                     variant="ghost"
                                     className="w-full text-gray-400 hover:text-white"
                                 >

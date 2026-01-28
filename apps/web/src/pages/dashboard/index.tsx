@@ -20,6 +20,7 @@ import { useDashboardStats } from "@/hooks/use-dashboard-stats";
 import { useEvents } from "@/hooks/use-events";
 import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { OnboardingWidget } from "../../components/onboarding/OnboardingWidget";
+import { DemoBanner } from "@/components/demo/DemoBanner";
 
 export function DashboardPage() {
     const navigate = useNavigate();
@@ -79,6 +80,9 @@ export function DashboardPage() {
     // 3. Full Dashboard (Only shown if onboarded)
     return (
         <div className="space-y-6 animate-fade-in">
+            {/* Demo Mode Banner */}
+            <DemoBanner />
+
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>

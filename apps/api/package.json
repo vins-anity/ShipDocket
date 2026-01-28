@@ -13,6 +13,7 @@
         "db:push": "drizzle-kit push",
         "db:studio": "drizzle-kit studio",
         "seed": "bun run src/scripts/seed-user.ts",
+        "seed:demo": "bun run src/scripts/seed-demo.ts",
         "test": "vitest run",
         "test:watch": "vitest",
         "worker": "bun run src/worker.ts"
