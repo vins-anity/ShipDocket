@@ -6,6 +6,12 @@ import {
     IconFileText,
     IconLoader2,
     IconShieldCheck,
+    IconSparkles,
+    IconBrandGithub,
+    IconBrandGoogle,
+    IconBuilding,
+    IconCalendar,
+    IconHash
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
@@ -55,10 +61,10 @@ export function SharePage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+            <div className="min-h-screen bg-brand-light flex items-center justify-center font-sans">
                 <div className="flex flex-col items-center gap-4">
-                    <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="text-muted-foreground">Loading proof packet...</p>
+                    <IconLoader2 className="h-8 w-8 animate-spin text-brand-dark" />
+                    <p className="text-brand-gray-mid font-medium">Verifying proof packet...</p>
                 </div>
             </div>
         );
@@ -66,22 +72,22 @@ export function SharePage() {
 
     if (error || !proof) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full bg-card/50 backdrop-blur-sm border-white/10">
-                    <CardContent className="pt-6 text-center">
-                        <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
-                            <IconFileText className="h-8 w-8 text-destructive" />
+            <div className="min-h-screen bg-brand-light flex items-center justify-center p-4 font-sans">
+                <Card className="max-w-md w-full bg-white shadow-xl border-brand-gray-light rounded-2xl overflow-hidden">
+                    <CardContent className="pt-10 pb-8 text-center px-8">
+                        <div className="h-16 w-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6">
+                            <IconFileText className="h-8 w-8 text-red-500" />
                         </div>
-                        <h2 className="text-xl font-bold text-foreground mb-2">
+                        <h2 className="text-2xl font-black font-heading text-brand-dark mb-3">
                             Proof Not Found
                         </h2>
-                        <p className="text-muted-foreground mb-4">
-                            This proof packet link may have expired or is invalid.
+                        <p className="text-brand-gray-mid mb-8 leading-relaxed">
+                            This proof packet link may have expired or is invalid. Please contact the sender for a new link.
                         </p>
                         <Link to="/">
-                            <Button variant="outline">
+                            <Button variant="outline" className="rounded-xl border-brand-gray-light hover:bg-brand-light hover:text-brand-dark transition-all">
                                 <IconArrowLeft className="h-4 w-4 mr-2" />
-                                Go Home
+                                Return Home
                             </Button>
                         </Link>
                     </CardContent>
@@ -91,135 +97,169 @@ export function SharePage() {
     }
 
     const statusColors: Record<string, string> = {
-        draft: "bg-yellow-500/10 text-yellow-500",
-        pending: "bg-orange-500/10 text-orange-500",
-        finalized: "bg-green-500/10 text-green-500",
-        exported: "bg-blue-500/10 text-blue-500",
+        draft: "bg-brand-gray-light text-brand-gray-mid border-brand-gray-mid/20",
+        pending: "bg-brand-accent-orange/10 text-brand-accent-orange border-brand-accent-orange/20",
+        finalized: "bg-brand-accent-green/10 text-brand-accent-green border-brand-accent-green/20",
+        exported: "bg-brand-accent-blue/10 text-brand-accent-blue border-brand-accent-blue/20",
     };
 
     const eventIcons: Record<string, React.ReactNode> = {
-        handshake: "🤝",
-        pr_opened: "📂",
-        pr_merged: "✅",
-        pr_approved: "👍",
-        ci_passed: "🟢",
-        ci_failed: "🔴",
-        jira_status_changed: "📝",
-        closure_approved: "✅",
+        handshake: <IconBuilding className="h-4 w-4" />,
+        pr_opened: <IconBrandGithub className="h-4 w-4" />,
+        pr_merged: <IconCheck className="h-4 w-4" />,
+        pr_approved: <IconCheck className="h-4 w-4" />,
+        ci_passed: <IconCheck className="h-4 w-4" />,
+        ci_failed: <IconCheck className="h-4 w-4" />,
+        jira_status_changed: <IconFileText className="h-4 w-4" />,
+        closure_approved: <IconShieldCheck className="h-4 w-4" />,
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="min-h-screen bg-brand-light font-sans selection:bg-brand-accent-blue/20">
             {/* Header */}
-            <header className="border-b border-white/10 bg-slate-900/50 backdrop-blur-sm">
-                <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <IconFileText className="h-5 w-5 text-primary" />
+            <header className="border-b border-brand-gray-light bg-white/80 backdrop-blur-md sticky top-0 z-10 transition-all duration-300">
+                <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 rounded-xl bg-brand-dark flex items-center justify-center shadow-lg shadow-brand-dark/20">
+                            <IconShieldCheck className="h-5 w-5 text-brand-light" />
                         </div>
                         <div>
-                            <h1 className="text-lg font-semibold text-white">Proof Packet</h1>
-                            <p className="text-xs text-muted-foreground">
-                                Shared by {proof.workspace?.name || "ShipDocket"}
+                            <h1 className="text-lg font-black font-heading text-brand-dark tracking-tight">Proof Packet</h1>
+                            <p className="text-xs text-brand-gray-mid font-medium flex items-center gap-1">
+                                Verified by <span className="text-brand-dark font-bold">{proof.workspace?.name || "ShipDocket"}</span>
                             </p>
                         </div>
                     </div>
-                    <Badge className={statusColors[proof.status] || "bg-muted"}>
-                        {proof.status.charAt(0).toUpperCase() + proof.status.slice(1)}
+                    <Badge className={`px-3 py-1 rounded-full font-bold uppercase tracking-wider text-xs shadow-sm border ${statusColors[proof.status] || "bg-brand-light text-brand-gray-mid border-brand-gray-mid/10"}`}>
+                        {proof.status}
                     </Badge>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+            <main className="max-w-5xl mx-auto px-6 py-12 space-y-8 animate-fade-in-up">
                 {/* Task Info */}
-                <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-                    <CardHeader>
-                        <CardTitle className="text-2xl">{proof.task?.key || proof.taskId}</CardTitle>
-                        <CardDescription>
-                            Created {new Date(proof.createdAt).toLocaleDateString()}
-                            {proof.closedAt && ` • Closed ${new Date(proof.closedAt).toLocaleDateString()}`}
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-                {/* AI Summary */}
-                {proof.aiSummary && (
-                    <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <span>✨</span> Summary
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-foreground leading-relaxed">{proof.aiSummary}</p>
-                            {proof.aiSummaryModel && (
-                                <p className="text-xs text-muted-foreground mt-4">
-                                    Generated by {proof.aiSummaryModel}
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Event Timeline */}
-                {proof.events && proof.events.length > 0 && (
-                    <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <IconClock className="h-5 w-5" /> Activity Timeline
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {proof.events.map((event) => (
-                                    <div
-                                        key={event.id}
-                                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-white/5"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-lg">
-                                                {eventIcons[event.eventType] || "📌"}
-                                            </span>
-                                            <span className="text-sm font-medium capitalize">
-                                                {event.eventType.replace(/_/g, " ")}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs text-muted-foreground">
-                                            {new Date(event.createdAt).toLocaleString()}
-                                        </span>
-                                    </div>
-                                ))}
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="md:col-span-2 space-y-8">
+                        <div className="space-y-2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent-blue/10 text-brand-accent-blue text-xs font-bold uppercase tracking-widest mb-2 border border-brand-accent-blue/20">
+                                <IconHash className="h-3 w-3" />
+                                {proof.task?.key || proof.taskId}
                             </div>
-                        </CardContent>
-                    </Card>
-                )}
+                            <h2 className="text-4xl font-black font-heading text-brand-dark leading-tight">
+                                {proof.task?.summary || "Proof Packet Details"}
+                            </h2>
+                            <div className="flex items-center gap-4 text-brand-gray-mid text-sm font-medium">
+                                <span className="flex items-center gap-1.5">
+                                    <IconCalendar className="h-4 w-4" />
+                                    Created {new Date(proof.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                                </span>
+                                {proof.closedAt && (
+                                    <span className="flex items-center gap-1.5 text-brand-accent-green">
+                                        <IconCheck className="h-4 w-4" />
+                                        Closed {new Date(proof.closedAt).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
 
-                {/* Hash Verification */}
-                {proof.hashChainRoot && (
-                    <Card className="bg-green-500/5 border-green-500/20">
-                        <CardContent className="py-4">
-                            <div className="flex items-center gap-3">
-                                <IconShieldCheck className="h-6 w-6 text-green-500" />
-                                <div>
-                                    <p className="font-medium text-green-400">Hash Chain Verified</p>
-                                    <p className="text-xs font-mono text-muted-foreground break-all mt-1">
-                                        {proof.hashChainRoot}
+                        {/* AI Summary */}
+                        {proof.aiSummary && (
+                            <Card className="bg-white border-brand-gray-light shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300">
+                                <CardHeader className="bg-gradient-to-r from-brand-light to-white border-b border-brand-gray-light/30 py-5">
+                                    <CardTitle className="flex items-center gap-2 text-lg font-bold font-heading text-brand-dark">
+                                        <IconSparkles className="h-5 w-5 text-brand-accent-purple" />
+                                        AI Executive Summary
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-6">
+                                    <p className="text-brand-dark leading-relaxed text-lg font-serif">
+                                        {proof.aiSummary}
                                     </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+                                    {proof.aiSummaryModel && (
+                                        <div className="mt-6 flex justify-end">
+                                            <Badge variant="outline" className="text-[10px] text-brand-gray-mid border-brand-gray-mid/20 bg-brand-light px-2 py-0.5">
+                                                Generated by {proof.aiSummaryModel}
+                                            </Badge>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
 
-                <Separator className="bg-white/10" />
+                    <div className="space-y-6">
+                        {/* Event Timeline */}
+                        <Card className="bg-white border-brand-gray-light shadow-sm rounded-2xl overflow-hidden h-fit">
+                            <CardHeader className="py-5 border-b border-brand-gray-light/30">
+                                <CardTitle className="flex items-center gap-2 text-base font-bold font-heading text-brand-dark">
+                                    <IconClock className="h-5 w-5 text-brand-gray-mid" />
+                                    Activity Timeline
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <div className="divide-y divide-brand-gray-light/30">
+                                    {proof.events && proof.events.length > 0 ? proof.events.map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="flex items-start gap-4 p-4 hover:bg-brand-light/30 transition-colors"
+                                        >
+                                            <div className="mt-1 p-1.5 rounded-lg bg-brand-light text-brand-dark shadow-sm border border-brand-gray-light/50">
+                                                {eventIcons[event.eventType] || <IconFileText className="h-4 w-4" />}
+                                            </div>
+                                            <div className="space-y-0.5">
+                                                <p className="text-sm font-bold text-brand-dark capitalize leading-tight">
+                                                    {event.eventType.replace(/_/g, " ")}
+                                                </p>
+                                                <p className="text-xs text-brand-gray-mid font-medium">
+                                                    {new Date(event.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )) : (
+                                        <div className="p-8 text-center text-brand-gray-mid italic text-sm">
+                                            No events recorded.
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Hash Verification */}
+                        {proof.hashChainRoot && (
+                            <Card className="bg-brand-accent-green/5 border-brand-accent-green/20 overflow-hidden shadow-none">
+                                <CardContent className="p-5">
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-2 bg-white rounded-full shadow-sm text-brand-accent-green">
+                                            <IconShieldCheck className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-brand-accent-green font-heading">Hash Chain Verified</p>
+                                            <p className="text-xs text-brand-accent-green/80 mt-1 mb-3 leading-snug">
+                                                This packet utilizes a cryptographic hash chain to ensure event integrity.
+                                            </p>
+                                            <div className="bg-white/50 p-2 rounded border border-brand-accent-green/20">
+                                                <p className="text-[10px] font-mono text-brand-accent-green/70 break-all leading-tight">
+                                                    {proof.hashChainRoot}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+                </div>
+
+                <Separator className="bg-brand-gray-light/50 my-12" />
 
                 {/* Footer */}
-                <div className="text-center text-sm text-muted-foreground">
-                    <p>This is a tamper-evident proof packet generated by ShipDocket.</p>
-                    <p className="mt-1">
-                        <a href="https://shipdocket.dev" className="text-primary hover:underline">
-                            Learn more about ShipDocket →
+                <div className="text-center text-sm text-brand-gray-mid pb-8">
+                    <p className="font-serif italic text-lg">This is a tamper-evident proof packet generated by ShipDocket.</p>
+                    <p className="mt-4">
+                        <a href="https://shipdocket.dev" className="inline-flex items-center gap-1 text-brand-dark font-bold hover:text-brand-accent-blue transition-colors group">
+                            Learn more about ShipDocket
+                            <IconArrowLeft className="h-3 w-3 rotate-180 group-hover:translate-x-1 transition-transform" />
                         </a>
                     </p>
                 </div>

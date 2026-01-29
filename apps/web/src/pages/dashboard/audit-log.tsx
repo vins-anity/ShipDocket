@@ -25,66 +25,70 @@ export function AuditLogExplorer() {
         enabled: !!workspace?.id,
     });
 
-    if (!workspace) return <div>Loading...</div>;
+    if (!workspace) return <div className="p-8 text-brand-gray-mid font-heading">Loading audit chain...</div>;
 
     return (
-        <div className="space-y-6 animate-fade-in max-w-5xl mx-auto py-8">
+        <div className="space-y-8 animate-fade-in max-w-7xl mx-auto py-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <IconShieldCheck className="text-green-500" />
+                    <h1 className="text-3xl font-black font-heading tracking-tight text-brand-dark flex items-center gap-3">
+                        <IconShieldCheck className="text-brand-accent-green h-8 w-8" />
                         Audit Log Explorer
                     </h1>
-                    <p className="text-gray-400 mt-1">
+                    <p className="text-brand-gray-mid mt-1 font-serif italic text-lg">
                         Cryptographically verified timeline of all workspace events.
                     </p>
                 </div>
                 <div className="text-right">
-                    <Badge variant="outline" className="text-green-400 border-green-400/30 bg-green-400/10">
+                    <Badge variant="outline" className="text-brand-accent-green border-brand-accent-green/30 bg-brand-accent-green/5 px-4 py-1.5 rounded-full font-bold shadow-sm">
                         Integrity Verified
                     </Badge>
                 </div>
             </div>
 
-            <div className="relative border-l-2 border-white/10 ml-4 space-y-8">
+            <div className="relative border-l-2 border-brand-gray-light/50 ml-6 space-y-8 py-4">
                 {isLoading ? (
-                    <div className="pl-8 text-gray-500">Loading chain...</div>
+                    <div className="pl-8 text-brand-gray-mid font-medium">Loading chain...</div>
                 ) : logs?.map((log: any, index: number) => (
-                    <div key={log.id} className="relative pl-8 group">
+                    <div key={log.id} className="relative pl-10 group">
                         {/* Timeline Node */}
-                        <div className="absolute -left-[9px] top-6 w-4 h-4 rounded-full bg-gray-900 border-2 border-blue-500 group-hover:scale-125 transition-transform" />
+                        <div className="absolute -left-[9px] top-6 w-4 h-4 rounded-full bg-brand-light border-4 border-brand-accent-blue group-hover:scale-125 group-hover:border-brand-accent-orange transition-all duration-300 shadow-sm" />
 
-                        <Card className="bg-gray-900/40 backdrop-blur-sm border-white/10 hover:border-blue-500/30 transition-colors">
-                            <CardHeader className="py-4">
+                        <Card className="bg-white border-brand-gray-light hover:border-brand-accent-blue/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl overflow-hidden">
+                            <CardHeader className="py-5 px-6">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <CardTitle className="text-lg flex items-center gap-2">
+                                        <CardTitle className="text-lg font-bold font-heading text-brand-dark flex items-center gap-3">
                                             {log.eventType}
-                                            <Badge variant="secondary" className="text-xs font-normal">
+                                            <Badge variant="secondary" className="text-xs font-semibold bg-brand-light text-brand-gray-mid border-brand-gray-mid/10">
                                                 {log.triggerSource}
                                             </Badge>
                                         </CardTitle>
-                                        <CardDescription>
+                                        <CardDescription className="text-brand-gray-mid font-medium">
                                             {formatDistanceToNow(new Date(log.createdAt), { addSuffix: true })}
                                         </CardDescription>
                                     </div>
-                                    <div className="text-xs font-mono text-gray-500 text-right space-y-1">
-                                        <div className="flex items-center gap-1 justify-end" title="Current Hash">
-                                            <IconLink size={12} />
-                                            {log.eventHash.substring(0, 16)}...
+                                    <div className="text-xs font-mono text-brand-gray-mid text-right space-y-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center gap-2 justify-end text-brand-dark" title="Current Hash">
+                                            <IconLink size={12} className="text-brand-accent-blue" />
+                                            <span className="bg-brand-light px-1.5 py-0.5 rounded border border-brand-gray-light/50">
+                                                {log.eventHash.substring(0, 16)}...
+                                            </span>
                                         </div>
                                         {log.prevHash && (
-                                            <div className="flex items-center gap-1 justify-end text-gray-700" title="Previous Hash">
-                                                <IconLink size={12} />
-                                                {log.prevHash.substring(0, 16)}...
+                                            <div className="flex items-center gap-2 justify-end" title="Previous Hash">
+                                                <IconLink size={12} className="text-brand-gray-mid" />
+                                                <span className="text-brand-gray-mid/70">
+                                                    {log.prevHash.substring(0, 16)}...
+                                                </span>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent className="py-2 pb-4">
-                                <div className="bg-black/50 rounded p-3 font-mono text-xs text-blue-200/80 overflow-x-auto">
-                                    {JSON.stringify(log.payload, null, 2)}
+                            <CardContent className="py-0 px-0">
+                                <div className="bg-brand-dark/5 p-4 mx-6 mb-6 rounded-lg border border-brand-dark/5 font-mono text-xs text-brand-dark overflow-x-auto">
+                                    <pre>{JSON.stringify(log.payload, null, 2)}</pre>
                                 </div>
                             </CardContent>
                         </Card>

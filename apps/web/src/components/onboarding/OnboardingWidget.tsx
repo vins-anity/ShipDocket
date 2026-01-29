@@ -3,16 +3,23 @@ import {
     IconBrandSlack,
     IconCheckbox,
     IconCircleCheckFilled,
+    IconArrowRight,
+    IconLoader2
 } from "@tabler/icons-react";
 import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
 
 export function OnboardingWidget() {
     const { data: status, isLoading } = useWorkspaceStatus();
 
-    if (isLoading || !status) return null;
+    if (isLoading || !status) return (
+        <div className="max-w-5xl mx-auto h-64 flex items-center justify-center">
+            <IconLoader2 className="w-8 h-8 text-brand-gray-light animate-spin" />
+        </div>
+    );
 
     // Calculate progress
     let completedSteps = 1; // Account created
@@ -29,103 +36,123 @@ export function OnboardingWidget() {
     };
 
     return (
-        <div className="relative group">
-            {/* Background Glow */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-purple-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+        <div className="relative group max-w-5xl mx-auto font-sans">
+            {/* Background Decor */}
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-accent-orange/10 via-brand-accent-blue/10 to-brand-accent-green/10 rounded-[2rem] blur-xl opacity-70 group-hover:opacity-100 transition duration-1000"></div>
 
-            <Card className="relative mb-8 border-white/10 bg-black/40 backdrop-blur-md overflow-hidden animate-fade-in shadow-2xl">
-                {/* Progress highlight line at the very top */}
-                <div
-                    className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-blue-500 via-primary to-purple-500 transition-all duration-1000 ease-out"
-                    style={{ width: `${progress}%` }}
-                />
+            <Card className="relative mb-12 border-brand-gray-light bg-white/80 backdrop-blur-xl shadow-xl rounded-[1.8rem] overflow-hidden">
+                {/* Progress Bar Top */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-brand-light">
+                    <div
+                        className="h-full bg-gradient-to-r from-brand-accent-orange via-brand-accent-blue to-brand-accent-green transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(37,99,235,0.3)]"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
 
-                <CardHeader className="pb-3 pt-8 px-8">
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-1">
-                            <CardTitle className="text-2xl font-bold bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
+                <CardHeader className="pt-10 pb-6 px-10 border-b border-brand-gray-light/30">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                                <Badge variant="outline" className="border-brand-accent-blue/30 text-brand-accent-blue bg-brand-accent-blue/5 uppercase tracking-wider text-[10px] font-bold px-2 py-0.5">
+                                    {isComplete ? "Ready" : "Setup Required"}
+                                </Badge>
+                                <span className="text-xs font-medium text-brand-gray-mid font-mono">
+                                    Step {completedSteps} of {totalSteps}
+                                </span>
+                            </div>
+                            <CardTitle className="text-3xl md:text-4xl font-black font-heading text-brand-dark tracking-tight">
                                 {isComplete
-                                    ? "ShipDocket is ready to launch!"
-                                    : "Set up your ShipDocket workspace"}
+                                    ? "ShipDocket is Ready to Launch"
+                                    : "Initialize Your Workspace"}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-lg text-brand-gray-mid font-serif italic max-w-2xl">
                                 {isComplete
-                                    ? "All integrations are active. You're ready to track delivery assurance."
+                                    ? "All integrations are active. Systems are go."
                                     : "Connect your core tools to begin automated tracking and proof generation."}
                             </p>
                         </div>
-                        <div className="text-right">
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-black text-primary animate-pulse-glow">
-                                    {Math.round(progress)}%
-                                </span>
-                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                                    Complete
-                                </span>
+
+                        <div className="flex-shrink-0">
+                            <div className="relative h-20 w-20 flex items-center justify-center">
+                                <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                                    <path
+                                        className="text-brand-light"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                    />
+                                    <path
+                                        className="text-brand-dark transition-all duration-1000 ease-out"
+                                        strokeDasharray={`${progress}, 100`}
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                    />
+                                </svg>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span className="text-sm font-bold text-brand-dark">{Math.round(progress)}%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </CardHeader>
 
-                <CardContent className="px-8 pb-8 pt-4">
+                <CardContent className="px-10 py-10">
                     {!isComplete ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Jira Card */}
                             <OnboardingCard
-                                title="1. Track Work"
+                                step="01"
+                                title="Track Work"
                                 description="Connect Jira to passively detect when work starts."
-                                icon={<IconCheckbox className="h-6 w-6 text-blue-400" />}
-                                iconBg="bg-blue-500/10"
+                                icon={<IconCheckbox className="h-6 w-6 text-brand-light" />}
+                                iconBg="bg-brand-accent-blue"
                                 isConnected={status.hasJira}
                                 onConnect={() => handleConnect("jira")}
                                 label="Jira"
                             />
 
-                            {/* GitHub Card */}
                             <OnboardingCard
-                                title="2. Verify Delivery"
+                                step="02"
+                                title="Verify Delivery"
                                 description="Connect GitHub to collect evidence automatically."
-                                icon={<IconBrandGithub className="h-6 w-6 text-slate-200" />}
-                                iconBg="bg-slate-500/10"
+                                icon={<IconBrandGithub className="h-6 w-6 text-brand-dark" />}
+                                iconBg="bg-white border border-brand-gray-light text-brand-dark"
                                 isConnected={status.hasGithub}
                                 onConnect={() => handleConnect("github")}
                                 label="GitHub"
                             />
 
-                            {/* Slack Card */}
                             <OnboardingCard
-                                title="3. Stay Notified"
+                                step="03"
+                                title="Stay Notified"
                                 description="Connect Slack for real-time alerts and vetoes."
-                                icon={<IconBrandSlack className="h-6 w-6 text-purple-400" />}
-                                iconBg="bg-purple-500/10"
+                                icon={<IconBrandSlack className="h-6 w-6 text-brand-light" />}
+                                iconBg="bg-brand-accent-orange"
                                 isConnected={status.hasSlack}
                                 onConnect={() => handleConnect("slack")}
                                 label="Slack"
                             />
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-12 text-center space-y-6 animate-slide-up">
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-                                <div className="h-20 w-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative">
-                                    <IconCircleCheckFilled className="h-12 w-12 text-primary" />
-                                </div>
+                        <div className="flex flex-col items-center justify-center py-12 text-center space-y-8">
+                            <div className="w-24 h-24 rounded-full bg-brand-accent-green/10 flex items-center justify-center animate-bounce-slow">
+                                <IconCircleCheckFilled className="h-12 w-12 text-brand-accent-green" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-white">
-                                    Workspace Configuration Complete
-                                </h3>
-                                <p className="text-muted-foreground max-w-sm mx-auto">
-                                    Your environment is fully synchronized. ShipDocket is now
-                                    passively monitoring your development cycle.
+                                <h3 className="text-2xl font-bold font-heading text-brand-dark">Configuration Complete</h3>
+                                <p className="text-brand-gray-mid max-w-md mx-auto">
+                                    Your environment is fully synchronized. ShipDocket is now passively monitoring your development cycle.
                                 </p>
                             </div>
                             <Button
                                 size="lg"
-                                className="px-12 py-6 text-lg font-bold rounded-full shadow-[0_0_30px_-5px_rgba(var(--primary),0.5)] hover:shadow-[0_0_40px_-5px_rgba(var(--primary),0.7)] transition-all duration-300"
+                                className="bg-brand-dark text-brand-light hover:bg-brand-accent-blue transition-all duration-300 rounded-xl px-8 h-12 text-base font-bold shadow-lg shadow-brand-dark/10"
                                 onClick={() => window.location.reload()}
                             >
                                 Launch Dashboard
+                                <IconArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </div>
                     )}
@@ -136,70 +163,65 @@ export function OnboardingWidget() {
 }
 
 interface OnboardingCardProps {
+    step: string;
     title: string;
     description: string;
     icon: React.ReactNode;
-    iconBg: string;
+    iconBg: string; // Tailswind classes string
     isConnected: boolean;
     onConnect: () => void;
     label: string;
 }
 
-function OnboardingCard({
-    title,
-    description,
-    icon,
-    iconBg,
-    isConnected,
-    onConnect,
-    label,
-}: OnboardingCardProps) {
+function OnboardingCard({ step, title, description, icon, iconBg, isConnected, onConnect, label }: OnboardingCardProps) {
     return (
         <div
             className={cn(
-                "p-6 rounded-xl border transition-all duration-500 flex flex-col h-full relative overflow-hidden group/card",
+                "group relative p-6 rounded-2xl border transition-all duration-300 flex flex-col h-full",
                 isConnected
-                    ? "bg-green-500/5 border-green-500/20"
-                    : "bg-white/5 border-white/5 hover:border-primary/50 hover:bg-white/10",
+                    ? "bg-brand-light border-brand-accent-green/20"
+                    : "bg-white border-brand-gray-light hover:border-brand-accent-blue/30 hover:shadow-lg hover:shadow-brand-accent-blue/5 hover:-translate-y-1"
             )}
         >
-            {isConnected && (
-                <div className="absolute top-0 right-0 p-2">
-                    <IconCircleCheckFilled className="h-5 w-5 text-green-500" />
+            <div className="flex items-start justify-between mb-6">
+                <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-105",
+                    isConnected ? "bg-brand-accent-green/10" : iconBg
+                )}>
+                    {isConnected ? <IconCircleCheckFilled className="w-6 h-6 text-brand-accent-green" /> : icon}
                 </div>
-            )}
-
-            <div className="flex items-center gap-4 mb-4">
-                <div
-                    className={cn(
-                        "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 group-hover/card:scale-110",
-                        iconBg,
-                    )}
-                >
-                    {icon}
-                </div>
-                <div className="flex-1">
-                    <h3 className="font-bold text-lg leading-tight">{title}</h3>
-                </div>
+                <span className={cn(
+                    "text-6xl font-black font-heading leading-none opacity-5 select-none transition-colors",
+                    isConnected ? "text-brand-accent-green" : "text-brand-dark"
+                )}>
+                    {step}
+                </span>
             </div>
 
-            <p className="text-sm text-muted-foreground mb-6 flex-1 italic line-clamp-2">
-                {description}
-            </p>
+            <div className="space-y-2 flex-1">
+                <h3 className={cn("font-bold text-lg font-heading", isConnected ? "text-brand-accent-green" : "text-brand-dark")}>
+                    {title}
+                </h3>
+                <p className="text-sm text-brand-gray-mid leading-relaxed">
+                    {description}
+                </p>
+            </div>
 
-            <Button
-                variant={isConnected ? "ghost" : "default"}
-                className={cn(
-                    "w-full rounded-lg font-bold transition-all duration-300",
-                    isConnected
-                        ? "text-green-500 bg-green-500/10 pointer-events-none"
-                        : "bg-primary hover:scale-[1.02] active:scale-95",
-                )}
-                onClick={onConnect}
-                disabled={isConnected}
-            >
-                {isConnected ? "Connected" : `Connect ${label}`}
-            </Button>
+            <div className="mt-8">
+                <Button
+                    onClick={onConnect}
+                    disabled={isConnected}
+                    variant={isConnected ? "ghost" : "default"}
+                    className={cn(
+                        "w-full h-11 rounded-xl font-bold transition-all duration-200 border",
+                        isConnected
+                            ? "bg-transparent text-brand-accent-green border-transparent"
+                            : "bg-brand-light text-brand-dark border-brand-gray-light hover:bg-brand-dark hover:text-brand-light hover:border-brand-dark"
+                    )}
+                >
+                    {isConnected ? "Connected" : `Connect ${label}`}
+                </Button>
+            </div>
         </div>
     );
 }

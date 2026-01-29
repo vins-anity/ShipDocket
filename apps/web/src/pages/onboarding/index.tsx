@@ -61,47 +61,47 @@ export function OnboardingPage() {
 
     if (workspaceId) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden font-sans">
-                {/* Background (Same as before) */}
-                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-purple-500/10 blur-[120px] rounded-full animate-slower-pulse" />
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+            <div className="min-h-screen flex items-center justify-center bg-brand-light relative overflow-hidden font-sans">
+                {/* Background Glow */}
+                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-brand-accent-blue/10 blur-[120px] rounded-full animate-slower-pulse" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-brand-accent-orange/10 blur-[120px] rounded-full animate-slower-pulse animation-delay-2000" />
 
-                <div className="relative z-10 w-full max-w-lg px-4 animate-fade-in-up">
-                    <div className="text-center mb-8 space-y-2">
-                        <div className="inline-flex items-center justify-center p-3 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 mb-4">
+                <div className="relative z-10 w-full max-w-lg px-6 animate-fade-in-up">
+                    <div className="text-center mb-10 space-y-4">
+                        <div className="inline-flex items-center justify-center p-4 rounded-full bg-brand-accent-green/10 text-brand-accent-green mb-2 shadow-sm border border-brand-accent-green/20">
                             <IconCheck className="w-8 h-8" />
                         </div>
-                        <h1 className="text-3xl font-bold text-white">Workspace Created!</h1>
-                        <p className="text-gray-400">Connect your tools to start tracking.</p>
+                        <h1 className="text-4xl font-black font-heading tracking-tight text-brand-dark">Workspace Created!</h1>
+                        <p className="text-brand-gray-mid font-serif italic text-lg">Connect your tools to start tracking.</p>
                     </div>
 
-                    <Card className="border-white/10 bg-gray-900/40 backdrop-blur-2xl">
+                    <Card className="border-brand-gray-light bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
                         <CardContent className="p-8 space-y-4">
                             <Button
                                 onClick={() => handleConnect("github")}
-                                className="w-full h-12 bg-[#24292e] hover:bg-[#2f363d] text-white border border-white/10 justify-start px-4"
+                                className="w-full h-14 bg-[#24292e] hover:bg-[#2f363d] text-white justify-start px-6 rounded-xl font-heading font-medium text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                             >
-                                <IconBrandGithub className="w-5 h-5 mr-3" />
+                                <IconBrandGithub className="w-6 h-6 mr-4" />
                                 Connect GitHub
                             </Button>
 
                             <Button
                                 onClick={() => handleConnect("slack")}
-                                className="w-full h-12 bg-[#4A154B] hover:bg-[#611f69] text-white border border-white/10 justify-start px-4"
+                                className="w-full h-14 bg-[#4A154B] hover:bg-[#611f69] text-white justify-start px-6 rounded-xl font-heading font-medium text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                             >
-                                <IconBrandSlack className="w-5 h-5 mr-3" />
+                                <IconBrandSlack className="w-6 h-6 mr-4" />
                                 Connect Slack
                             </Button>
 
                             <Button
                                 onClick={() => handleConnect("jira")}
-                                className="w-full h-12 bg-[#0052CC] hover:bg-[#0747a6] text-white border border-white/10 justify-start px-4"
+                                className="w-full h-14 bg-[#0052CC] hover:bg-[#0747a6] text-white justify-start px-6 rounded-xl font-heading font-medium text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                             >
-                                <IconBrandAsana className="w-5 h-5 mr-3" /> {/* Using Asana icon as Jira placeholder if missing */}
+                                <IconBrandAsana className="w-6 h-6 mr-4" /> {/* Using Asana icon as Jira placeholder if missing */}
                                 Connect Jira
                             </Button>
 
-                            <div className="pt-6">
+                            <div className="pt-8 text-center">
                                 <Button
                                     onClick={() => {
                                         // Invalidate workspace status to ensure fresh data on dashboard
@@ -109,7 +109,7 @@ export function OnboardingPage() {
                                         navigate("/dashboard", { replace: true });
                                     }}
                                     variant="ghost"
-                                    className="w-full text-gray-400 hover:text-white"
+                                    className="text-brand-gray-mid hover:text-brand-dark hover:bg-brand-light/50 font-medium"
                                 >
                                     Skip for now &rarr;
                                 </Button>
@@ -122,41 +122,35 @@ export function OnboardingPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden font-sans">
-            {/* 🌌 Aurora Background */}
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-purple-500/10 blur-[120px] rounded-full animate-slower-pulse" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-blue-500/10 blur-[120px] rounded-full animate-slower-pulse animation-delay-2000" />
+        <div className="min-h-screen flex items-center justify-center bg-brand-light relative overflow-hidden font-sans">
+            {/* Background Glow */}
+            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-brand-accent-blue/10 blur-[120px] rounded-full animate-slower-pulse" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-brand-accent-orange/10 blur-[120px] rounded-full animate-slower-pulse animation-delay-2000" />
 
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-            <div className="absolute inset-0 bg-grid-white/[0.03] bg-[size:40px_40px]" />
-
-            <div className="relative z-10 w-full max-w-lg px-4 animate-fade-in-up">
+            <div className="relative z-10 w-full max-w-lg px-6 animate-fade-in-up">
                 {/* Brand Header */}
-                <div className="text-center mb-8 space-y-2">
-                    <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-tr from-gray-800 to-gray-900 border border-white/5 shadow-2xl mb-4 group">
-                        <IconRocket className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-500" />
+                <div className="text-center mb-10 space-y-4">
+                    <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-brand-dark shadow-2xl mb-4 group transform transition-transform hover:scale-105 duration-500">
+                        <IconRocket className="w-8 h-8 text-brand-light group-hover:rotate-12 transition-transform duration-500" />
                     </div>
-                    <h1 className="text-4xl font-bold tracking-tight text-white">
-                        Welcome to ShipDocket
+                    <h1 className="text-5xl font-black font-heading tracking-tight text-brand-dark leading-[1.1]">
+                        Welcome to <span className="text-brand-accent-blue">ShipDocket</span>
                     </h1>
-                    <p className="text-gray-400 text-lg">
+                    <p className="text-brand-gray-mid text-lg font-serif italic">
                         Let's set up your command center.
                     </p>
                 </div>
 
                 {/* Glass Card */}
-                <Card className="border-white/10 bg-gray-900/40 backdrop-blur-2xl shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-
-                    <CardContent className="p-8 space-y-6">
+                <Card className="border-brand-gray-light bg-white/80 backdrop-blur-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden">
+                    <CardContent className="p-8 space-y-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-3">
                                 <label
                                     htmlFor="workspace"
-                                    className="text-sm font-medium text-gray-300 ml-1 flex items-center gap-2"
+                                    className="text-sm font-bold font-heading text-brand-dark ml-1 flex items-center gap-2 uppercase tracking-wide"
                                 >
-                                    <IconBuildingSkyscraper className="w-4 h-4 text-gray-500" />
+                                    <IconBuildingSkyscraper className="w-4 h-4 text-brand-accent-blue" />
                                     Workspace Name
                                 </label>
                                 <div className="relative group">
@@ -165,20 +159,20 @@ export function OnboardingPage() {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="Ex: Acme Logistics"
-                                        className="h-14 bg-black/40 border-white/10 hover:border-white/20 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 text-lg px-4 transition-all rounded-xl text-white placeholder:text-gray-600"
+                                        className="h-16 bg-brand-light/50 border-brand-gray-mid/20 hover:border-brand-accent-blue/50 focus:border-brand-accent-blue focus:ring-4 focus:ring-brand-accent-blue/10 text-lg px-6 transition-all rounded-xl text-brand-dark placeholder:text-brand-gray-mid/50 font-medium"
                                         required
                                         autoFocus
                                         minLength={3}
                                     />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-600 pointer-events-none group-focus-within:text-blue-400 transition-colors">
+                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-medium text-brand-gray-mid pointer-events-none group-focus-within:text-brand-accent-blue transition-colors">
                                         Enter to continue ↵
                                     </div>
                                 </div>
                             </div>
 
                             {error && (
-                                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm flex items-center gap-3 animate-shake">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm flex items-center gap-3 animate-shake font-medium">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
                                     {error}
                                 </div>
                             )}
@@ -186,33 +180,33 @@ export function OnboardingPage() {
                             <Button
                                 type="submit"
                                 disabled={loading || name.length < 3}
-                                className="w-full h-14 text-base font-semibold rounded-xl bg-white text-black hover:bg-gray-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
+                                className="w-full h-16 text-lg font-bold font-heading rounded-xl bg-brand-dark text-brand-light hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl shadow-brand-dark/20 disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
                             >
                                 {loading ? (
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-5 h-5 border-2 border-brand-light/30 border-t-brand-light rounded-full animate-spin" />
                                         Setting up...
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-2">
                                         Create Workspace
                                         {/* Arrow Icon */}
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                         </svg>
                                     </div>
                                 )}
                             </Button>
                         </form>
 
-                        <div className="pt-4 border-t border-white/5">
-                            <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
-                                <div className="flex items-center gap-1.5">
-                                    <IconCheck className="w-3.5 h-3.5 text-green-500" />
+                        <div className="pt-6 border-t border-brand-gray-light/50">
+                            <div className="flex items-center justify-center gap-6 text-xs font-medium text-brand-gray-mid uppercase tracking-wider">
+                                <div className="flex items-center gap-2">
+                                    <IconCheck className="w-4 h-4 text-brand-accent-green" />
                                     Free Forever
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                    <IconCheck className="w-3.5 h-3.5 text-green-500" />
+                                <div className="flex items-center gap-2">
+                                    <IconCheck className="w-4 h-4 text-brand-accent-green" />
                                     No Credit Card
                                 </div>
                             </div>

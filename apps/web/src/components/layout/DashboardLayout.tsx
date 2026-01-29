@@ -34,23 +34,23 @@ export function DashboardLayout() {
     ];
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex overflow-hidden">
+        <div className="min-h-screen bg-brand-light text-brand-dark flex overflow-hidden font-sans">
             {/* Sidebar */}
             <aside
                 className={cn(
-                    "fixed inset-y-0 left-0 z-50 w-64 bg-card/50 backdrop-blur-xl border-r border-border/40 transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+                    "fixed inset-y-0 left-0 z-50 w-72 bg-brand-dark text-brand-light transition-transform duration-300 ease-in-out md:relative md:translate-x-0 border-r border-brand-gray-mid/10",
                     !isSidebarOpen && "-translate-x-full md:w-0 md:opacity-0 md:overflow-hidden",
                 )}
             >
                 <div className="h-full flex flex-col">
-                    <div className="h-16 flex items-center px-6 border-b border-border/40">
-                        <IconShieldCheck className="h-6 w-6 text-primary mr-2" />
-                        <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-                            ShipDocket
+                    <div className="h-20 flex items-center px-8 border-b border-brand-light/10">
+                        <IconShieldCheck className="h-7 w-7 text-brand-accent-green mr-3" />
+                        <span className="font-heading font-black text-xl tracking-wide text-brand-light">
+                            SHIPDOCKET
                         </span>
                     </div>
 
-                    <div className="flex-1 py-6 px-3 space-y-1">
+                    <div className="flex-1 py-8 px-4 space-y-2">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const isActive =
@@ -62,117 +62,116 @@ export function DashboardLayout() {
                                     key={item.href}
                                     to={item.href}
                                     className={cn(
-                                        "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 group relative",
+                                        "flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 group relative",
                                         isActive
-                                            ? "bg-primary/10 text-primary"
-                                            : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                                            ? "bg-brand-light/10 text-brand-light shadow-lg shadow-black/20"
+                                            : "text-brand-gray-mid hover:bg-brand-light/5 hover:text-brand-light",
                                     )}
                                 >
-                                    {isActive && (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-md" />
-                                    )}
                                     <Icon
                                         className={cn(
-                                            "h-4 w-4 relative z-10 transition-colors",
+                                            "h-5 w-5 transition-colors",
                                             isActive
-                                                ? "text-primary"
-                                                : "text-muted-foreground group-hover:text-foreground",
+                                                ? "text-brand-accent-green"
+                                                : "text-brand-gray-mid group-hover:text-brand-light",
                                         )}
                                     />
-                                    <span className="relative z-10">{item.label}</span>
+                                    <span className="font-heading tracking-wide">{item.label}</span>
                                 </Link>
                             );
                         })}
                     </div>
 
-                    <div className="p-4 border-t border-border/40">
-                        <div className="bg-gradient-to-br from-primary/20 to-purple-500/10 rounded-lg p-4 border border-white/5">
-                            <h4 className="text-xs font-semibold text-primary mb-1">
+                    <div className="p-6">
+                        <div className="bg-brand-light/5 rounded-2xl p-5 border border-brand-light/5 backdrop-blur-sm">
+                            <h4 className="text-xs font-bold font-heading text-brand-accent-blue mb-1 uppercase tracking-wider">
                                 ShipDocket Enterprise
                             </h4>
-                            <p className="text-[10px] text-muted-foreground">v0.1.0 • Connected</p>
+                            <div className="flex items-center gap-2 mt-2">
+                                <div className="h-2 w-2 rounded-full bg-brand-accent-green animate-pulse"></div>
+                                <p className="text-[11px] text-brand-gray-mid">System Operational</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-                <header className="h-16 border-b border-border/40 bg-background/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6">
+            <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 bg-brand-light">
+                <header className="h-20 border-b border-brand-gray-mid/10 bg-white/50 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
                     <div className="flex items-center gap-4">
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={toggleSidebar}
-                            className="text-muted-foreground hover:text-foreground"
+                            className="text-brand-dark hover:text-brand-accent-orange md:hidden"
                         >
                             {isSidebarOpen ? (
-                                <IconX className="h-5 w-5" />
+                                <IconX className="h-6 w-6" />
                             ) : (
-                                <IconMenu2 className="h-5 w-5" />
+                                <IconMenu2 className="h-6 w-6" />
                             )}
                         </Button>
-                        <h2 className="text-sm font-medium text-foreground/80">
+                        <h2 className="text-lg font-bold font-heading text-brand-dark">
                             {navItems.find((i) => i.href === location.pathname)?.label ||
                                 "Dashboard"}
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                         <Button
                             variant="outline"
                             size="sm"
-                            className="hidden sm:flex bg-transparent border-primary/20 hover:bg-primary/10 text-primary"
+                            className="hidden sm:flex border-brand-gray-mid/30 text-brand-dark hover:bg-brand-dark hover:text-brand-light font-medium rounded-full px-4"
                         >
                             Feedback
                         </Button>
+
+                        <div className="h-6 w-px bg-brand-gray-mid/20"></div>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="relative h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 border border-primary/50"
+                                    className="relative h-10 w-10 rounded-full bg-brand-dark text-brand-light hover:bg-brand-accent-orange transition-colors shadow-md"
                                 >
-                                    <div className="flex h-full w-full items-center justify-center text-xs font-bold text-primary">
+                                    <div className="flex h-full w-full items-center justify-center text-sm font-bold">
                                         {user?.email?.charAt(0).toUpperCase() || "U"}
                                     </div>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end" forceMount>
-                                <DropdownMenuLabel className="font-normal">
+                            <DropdownMenuContent className="w-60 p-2 rounded-xl border-brand-gray-mid/20 shadow-xl bg-white" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal p-2">
                                     <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium leading-none">
+                                        <p className="text-sm font-bold text-brand-dark leading-none">
                                             {user?.user_metadata?.full_name || "ShipDocket User"}
                                         </p>
-                                        <p className="text-xs leading-none text-muted-foreground">
+                                        <p className="text-xs leading-none text-muted-foreground mt-1">
                                             {user?.email}
                                         </p>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator className="bg-brand-gray-mid/20 my-1" />
                                 <DropdownMenuItem
-                                    onClick={() => {
-                                        // Reset local storage or just force a reload to re-trigger checks
-                                        // For now, simpler: just reload dashboard
-                                        window.location.reload();
-                                    }}
+                                    onClick={() => window.location.reload()}
+                                    className="rounded-lg focus:bg-brand-light focus:text-brand-dark cursor-pointer"
                                 >
-                                    <IconLayoutDashboard className="mr-2 h-4 w-4 text-muted-foreground" />
+                                    <IconLayoutDashboard className="mr-2 h-4 w-4 text-brand-gray-mid" />
                                     <span>Reset Onboarding</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator className="bg-brand-gray-mid/20 my-1" />
                                 <DropdownMenuGroup>
                                     <Link to="/settings">
-                                        <DropdownMenuItem>
-                                            <IconSettings className="mr-2 h-4 w-4" />
+                                        <DropdownMenuItem className="rounded-lg focus:bg-brand-light focus:text-brand-dark cursor-pointer">
+                                            <IconSettings className="mr-2 h-4 w-4 text-brand-gray-mid" />
                                             <span>Settings</span>
                                         </DropdownMenuItem>
                                     </Link>
                                 </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator className="bg-brand-gray-mid/20 my-1" />
                                 <DropdownMenuItem
                                     onClick={signOut}
-                                    className="text-red-400 focus:text-red-400"
+                                    className="text-red-500 focus:text-red-600 focus:bg-red-50 rounded-lg cursor-pointer"
                                 >
                                     <IconLogout className="mr-2 h-4 w-4" />
                                     <span>Log out</span>
@@ -182,8 +181,8 @@ export function DashboardLayout() {
                     </div>
                 </header>
 
-                <main className="flex-1 p-6 overflow-y-auto">
-                    <div className="max-w-7xl mx-auto space-y-6">
+                <main className="flex-1 p-8 overflow-y-auto">
+                    <div className="max-w-7xl mx-auto space-y-8">
                         <Outlet />
                     </div>
                 </main>

@@ -1,57 +1,67 @@
-import { PersonIcon, ReaderIcon } from "@radix-ui/react-icons";
+import { IconUser, IconShieldCheck } from "@tabler/icons-react";
 
 export function LandingWhy() {
     return (
-        <section className="relative py-24 overflow-hidden border-t border-border bg-card/50">
-            <div className="max-w-6xl mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
-                    <div className="space-y-6">
-                        <h2 className="text-5xl font-bold leading-tight">
-                            Why We Built ShipDocket
-                        </h2>
-                        <p className="text-lg text-muted-foreground leading-relaxed">
-                            We ran a software agency for 10 years. We hated 'explaining' bills.
-                        </p>
-                        <p className="text-lg text-muted-foreground leading-relaxed">
-                            The Logistics of Trust. In the shipping industry, you don't argue about
-                            delivery—you check the Bill of Lading. Software should be no different.
-                        </p>
-                        <div className="space-y-4 pt-6">
-                            <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                                    <PersonIcon className="w-6 h-6 text-primary" />
+        <section className="relative py-32 overflow-hidden bg-brand-light font-sans">
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent-green/5 rounded-full blur-[120px]" />
+
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="grid md:grid-cols-2 gap-20 items-center">
+                    <div className="space-y-10">
+                        <div className="space-y-6">
+                            <h2 className="text-4xl md:text-5xl font-black font-heading leading-[1.1] text-brand-dark">
+                                Why We Built <br /><span className="text-brand-accent-blue">ShipDocket</span>
+                            </h2>
+                            <p className="text-2xl text-brand-gray-mid font-serif italic leading-relaxed">
+                                "We ran a software agency for 10 years. We hated 'explaining' bills."
+                            </p>
+                            <p className="text-lg text-brand-dark leading-relaxed font-light">
+                                <strong className="font-bold">The Logistics of Trust.</strong> In the shipping industry, you don't argue about delivery—you check the Bill of Lading. Software should be no different.
+                            </p>
+                        </div>
+
+                        <div className="space-y-8 pt-4">
+                            <div className="flex gap-6 group">
+                                <div className="w-16 h-16 rounded-2xl bg-brand-accent-blue/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-accent-blue/20 transition-colors duration-300">
+                                    <IconUser className="w-8 h-8 text-brand-accent-blue" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold">Built for Business</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Developers stay in their flow. You get a business asset that
-                                        proves value without micromanagement.
+                                    <h3 className="text-xl font-bold font-heading text-brand-dark mb-2">Built for Business</h3>
+                                    <p className="text-brand-gray-mid leading-relaxed">
+                                        Developers stay in their flow. You get a business asset that proves value without micromanagement.
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                                    <ReaderIcon className="w-6 h-6 text-primary" />
+                            <div className="flex gap-6 group">
+                                <div className="w-16 h-16 rounded-2xl bg-brand-accent-green/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-accent-green/20 transition-colors duration-300">
+                                    <IconShieldCheck className="w-8 h-8 text-brand-accent-green" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold">Zero IP Risk</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        We verify the shipping container (metadata), we never open
-                                        the box (source code). Your IP is safe.
+                                    <h3 className="text-xl font-bold font-heading text-brand-dark mb-2">Zero IP Risk</h3>
+                                    <p className="text-brand-gray-mid leading-relaxed">
+                                        We verify the shipping container (metadata), we never open the box (source code). Your IP is safe.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-gradient-to-br from-primary/10 to-background border border-primary/20 rounded-2xl p-12 flex items-center justify-center min-h-96">
-                        <div className="text-center space-y-4">
-                            <ReaderIcon className="w-24 h-24 text-primary mx-auto opacity-20" />
-                            <p className="text-muted-foreground font-medium uppercase tracking-widest text-[10px]">
-                                Verified Logistics
-                            </p>
-                            <p className="text-muted-foreground">
-                                Don't just invoice. Send a Proof Packet.
-                            </p>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-brand-accent-blue/20 to-brand-accent-purple/20 rounded-[3rem] blur-3xl transform rotate-6 scale-95" />
+                        <div className="relative bg-white border border-brand-gray-light rounded-[2.5rem] p-16 flex items-center justify-center min-h-[500px] shadow-2xl">
+                            <div className="text-center space-y-8">
+                                <div className="w-32 h-32 mx-auto bg-brand-light rounded-full flex items-center justify-center shadow-inner">
+                                    <IconShieldCheck className="w-16 h-16 text-brand-dark opacity-80" />
+                                </div>
+                                <div>
+                                    <p className="text-brand-accent-blue font-bold uppercase tracking-widest text-xs mb-3">
+                                        Verified Logistics
+                                    </p>
+                                    <p className="text-4xl font-black font-heading text-brand-dark leading-tight">
+                                        Don't just invoice.<br />Send a Proof Packet.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

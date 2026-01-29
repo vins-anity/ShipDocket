@@ -24,50 +24,57 @@ export function LandingFaq() {
     ];
 
     return (
-        <section id="faq" className="relative py-24 overflow-hidden border-t border-border">
+        <section id="faq" className="relative py-32 overflow-hidden bg-white">
             <div className="max-w-4xl mx-auto px-6">
-                <div className="text-center space-y-6 mb-16">
-                    <h2 className="text-5xl font-bold leading-tight">Frequently Asked Questions</h2>
-                    <p className="text-lg text-muted-foreground">
+                <div className="text-center space-y-6 mb-20">
+                    <h2 className="text-4xl md:text-5xl font-black font-heading text-brand-dark tracking-tight">Frequently Asked Questions</h2>
+                    <p className="text-xl text-brand-gray-mid font-serif">
                         Everything you need to know about ShipDocket.
                     </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {faqs.map((faq, idx) => (
                         <div
                             key={faq.q}
-                            className="border border-border/50 rounded-lg overflow-hidden hover:border-primary/50 transition-colors"
+                            className={`rounded-2xl border transition-all duration-300 overflow-hidden ${expandedFaq === idx
+                                    ? "bg-brand-light border-brand-dark shadow-md"
+                                    : "bg-white border-brand-gray-light hover:border-brand-gray-mid"
+                                }`}
                         >
                             <button
                                 type="button"
                                 onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
-                                className="w-full px-6 py-4 flex items-center justify-between bg-card/50 hover:bg-card transition-colors"
+                                className="w-full px-8 py-6 flex items-center justify-between text-left focus:outline-none"
                             >
-                                <h3 className="font-semibold text-left">{faq.q}</h3>
-                                <ChevronDownIcon
-                                    className={`w-5 h-5 text-muted-foreground transition-transform ${
-                                        expandedFaq === idx ? "rotate-180" : ""
-                                    }`}
-                                />
+                                <h3 className={`font-bold text-lg font-heading ${expandedFaq === idx ? "text-brand-dark" : "text-brand-gray-mid"}`}>
+                                    {faq.q}
+                                </h3>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${expandedFaq === idx ? "bg-brand-dark text-brand-light rotate-180" : "bg-brand-light text-brand-gray-mid"
+                                    }`}>
+                                    <ChevronDownIcon className="w-5 h-5" />
+                                </div>
                             </button>
-                            {expandedFaq === idx && (
-                                <div className="px-6 py-4 text-muted-foreground leading-relaxed border-t border-border/30 bg-background/50">
+                            <div
+                                className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedFaq === idx ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                                    }`}
+                            >
+                                <div className="px-8 pb-8 text-brand-dark/80 leading-relaxed text-lg">
                                     {faq.a}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     ))}
-                    <div className="text-center pt-8 text-muted-foreground text-sm">
+                    <div className="text-center pt-12 text-brand-gray-mid">
                         <p>
                             Have more questions? Check out our{" "}
-                            <a href="/security-faq" className="text-primary hover:underline">
+                            <a href="/security-faq" className="text-brand-dark font-bold hover:text-brand-accent-blue hover:underline transition-colors">
                                 Security FAQ
                             </a>{" "}
                             or{" "}
                             <a
                                 href="mailto:support@shipdocket.com"
-                                className="text-primary hover:underline"
+                                className="text-brand-dark font-bold hover:text-brand-accent-blue hover:underline transition-colors"
                             >
                                 Contact Support
                             </a>
