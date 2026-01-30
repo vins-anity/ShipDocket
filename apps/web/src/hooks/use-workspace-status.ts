@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
+// Sanitize API_URL to remove trailing slash if present
+const RAW_API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = RAW_API_URL.replace(/\/$/, "");
+
 export interface WorkspaceStatus {
     id: string;
     name: string;
@@ -32,7 +36,7 @@ export function useWorkspaceStatus() {
 
             if (!token) throw new Error("Not authenticated");
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/workspaces/current`, {
+            const res = await fetch(`${API_URL}/workspaces/current`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
