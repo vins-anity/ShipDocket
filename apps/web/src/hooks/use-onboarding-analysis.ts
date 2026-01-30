@@ -44,7 +44,7 @@ export function useJiraAnalysis(workspaceId: string, enabled: boolean) {
         queryKey: ["onboarding", "analyze", "jira", workspaceId],
         queryFn: async () => {
             const res = await api.post(`/onboarding/${workspaceId}/analyze/jira`);
-            return res.data as JiraAnalysis;
+            return (res as any).data as JiraAnalysis;
         },
         enabled: enabled && !!workspaceId,
         staleTime: 10 * 60 * 1000, // Cache for 10 mins
@@ -57,7 +57,7 @@ export function useGitHubAnalysis(workspaceId: string, enabled: boolean) {
         queryKey: ["onboarding", "analyze", "github", workspaceId],
         queryFn: async () => {
             const res = await api.post(`/onboarding/${workspaceId}/analyze/github`);
-            return res.data as GitHubAnalysis;
+            return (res as any).data as GitHubAnalysis;
         },
         enabled: enabled && !!workspaceId,
         staleTime: 10 * 60 * 1000, // Cache for 10 mins

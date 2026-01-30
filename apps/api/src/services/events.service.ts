@@ -137,7 +137,7 @@ export async function createEvent(input: CreateEventInput) {
     // Create hashed event data
     const eventData = await createHashedEvent(
         {
-            eventType: input.eventType,
+            eventType: input.eventType as any,
             triggerSource: input.triggerSource,
             payload: input.payload,
             workspaceId: input.workspaceId,
