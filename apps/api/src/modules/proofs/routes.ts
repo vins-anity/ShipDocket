@@ -112,24 +112,33 @@ proofs
                 return c.json({ error: "Proof packet not found" }, 404);
             }
 
-            // Augment with expected structure from Appendix B
+            // Fetch linked events for richer output
+            const { eventsService } = await import("../../services");
+            const [handshakeEvent, closureEvent] = await Promise.all([
+                packet.handshakeEventId ? eventsService.getEventById(packet.handshakeEventId) : null,
+                packet.closureEventId ? eventsService.getEventById(packet.closureEventId) : null,
+            ]);
+
+            // Augment with real structure
             return c.json({
                 ...packet,
                 task: {
                     id: packet.taskId,
                     key: packet.taskId,
-                    summary: "Task summary",
+                    summary: (handshakeEvent?.payload?.issueTitle as string) || "Task summary",
                 },
                 handshake: {
-                    triggeredAt: packet.createdAt,
-                    triggerSource: "jira_webhook",
+                    triggeredAt: handshakeEvent?.createdAt || packet.createdAt,
+                    triggerSource: handshakeEvent?.triggerSource || "jira_webhook",
+                    user: handshakeEvent?.payload?.user as string | undefined,
                 },
                 execution: {
-                    approvals: [],
-                    ciPassed: false,
+                    approvals: (closureEvent?.payload?.approvals as string[]) || [],
+                    ciPassed: (closureEvent?.payload?.ciPassed as boolean) || false,
                 },
                 closure: {
                     closedAt: packet.closedAt,
+                    jobId: closureEvent?.payload?.pgBossJobId as string | undefined,
                 },
             });
         },

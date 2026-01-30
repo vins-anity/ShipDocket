@@ -149,6 +149,7 @@ const app = new Hono()
     .route("/auth", auth)
     .route("/webhooks", webhooks)
     .route("/jobs", jobs)
+    .route("/onboarding", onboarding)
     // Public share route - NO AUTH REQUIRED
     .get("/proofs/share/:token", async (c) => {
         const token = c.req.param("token");
