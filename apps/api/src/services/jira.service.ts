@@ -1,5 +1,5 @@
 import { env } from "../env";
-import { getOAuthToken } from "./auth.service";
+import * as authService from "./auth.service";
 import * as workspacesService from "./workspaces.service";
 
 export class JiraService {
@@ -18,7 +18,7 @@ export class JiraService {
      */
     async syncTaskStatus(workspaceId: string, taskId: string, status: string) {
         // Try OAuth first
-        const oauthToken = await getOAuthToken(workspaceId, "jira");
+        const oauthToken = await authService.refreshIfNeeded(workspaceId, "jira");
         const workspace = await workspacesService.getWorkspaceById(workspaceId);
         const cloudId = workspace?.jiraSite;
 

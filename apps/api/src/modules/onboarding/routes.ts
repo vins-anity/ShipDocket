@@ -54,7 +54,7 @@ const onboarding = new Hono()
             const workspace = await workspacesService.getWorkspaceById(workspaceId);
             if (!workspace) return c.json({ error: "Workspace not found" }, 404);
 
-            const token = await authService.getOAuthToken(workspaceId, "jira");
+            const token = await authService.refreshIfNeeded(workspaceId, "jira");
             if (!token || !workspace.jiraSite) {
                 return c.json({ error: "Jira not connected" }, 400);
             }
@@ -112,7 +112,7 @@ const onboarding = new Hono()
             // 1. Get Workspace & Token
             // Note: Currently we overload 'githubInstallationId' for OAuth token in existing service
             // This might need cleanup later but sticking to established pattern for now
-            const token = await authService.getOAuthToken(workspaceId, "github");
+            const token = await authService.refreshIfNeeded(workspaceId, "github");
 
             if (!token) {
                 return c.json({ error: "GitHub not connected" }, 400);

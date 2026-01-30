@@ -141,16 +141,20 @@ export async function storeOAuthToken(
     provider: OAuthProvider,
     accessToken: string,
     refreshToken?: string,
+    expiresIn?: number,
     siteId?: string,
 ): Promise<void> {
     const encryptedAccessToken = await encryptToken(accessToken);
-    const _encryptedRefreshToken = refreshToken ? await encryptToken(refreshToken) : undefined;
+    const encryptedRefreshToken = refreshToken ? await encryptToken(refreshToken) : undefined;
+    const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : undefined;
 
-    const updates: Record<string, string | undefined> = {};
+    const updates: Record<string, string | Date | null | undefined> = {};
 
     switch (provider) {
         case "slack":
             updates.slackAccessToken = encryptedAccessToken;
+            if (encryptedRefreshToken) updates.slackRefreshToken = encryptedRefreshToken;
+            if (expiresAt) updates.slackTokenExpiresAt = expiresAt;
             break;
         case "github":
             // For GitHub Apps, we store installation token differently
@@ -158,6 +162,8 @@ export async function storeOAuthToken(
             break;
         case "jira":
             updates.jiraAccessToken = encryptedAccessToken;
+            if (encryptedRefreshToken) updates.jiraRefreshToken = encryptedRefreshToken;
+            if (expiresAt) updates.jiraTokenExpiresAt = expiresAt;
             if (siteId) {
                 updates.jiraSite = siteId;
             }
@@ -199,6 +205,95 @@ export async function getOAuthToken(
     }
 
     return await decryptToken(encryptedToken);
+}
+
+/**
+ * Refresh OAuth token if it's expired or about to expire (within 5 mins)
+ */
+export async function refreshIfNeeded(
+    workspaceId: string,
+    provider: OAuthProvider,
+): Promise<string | null> {
+    if (provider === "github") {
+        return getOAuthToken(workspaceId, "github");
+    }
+
+    const workspace = await workspacesService.getWorkspaceById(workspaceId);
+    if (!workspace) return null;
+
+    let encryptedToken: string | null = null;
+    let encryptedRefreshToken: string | null = null;
+    let expiresAt: Date | null = null;
+
+    if (provider === "slack") {
+        encryptedToken = workspace.slackAccessToken;
+        encryptedRefreshToken = workspace.slackRefreshToken;
+        expiresAt = workspace.slackTokenExpiresAt;
+    } else if (provider === "jira") {
+        encryptedToken = workspace.jiraAccessToken;
+        encryptedRefreshToken = workspace.jiraRefreshToken;
+        expiresAt = workspace.jiraTokenExpiresAt;
+    }
+
+    if (!encryptedToken) return null;
+
+    // Check if token is expired or expires in the next 5 minutes
+    const isExpired =
+        expiresAt && expiresAt.getTime() - Date.now() < 5 * 60 * 1000;
+
+    if (!isExpired) {
+        return await decryptToken(encryptedToken);
+    }
+
+    if (!encryptedRefreshToken) {
+        console.warn(`Token expired for ${provider} but no refresh token available`);
+        return await decryptToken(encryptedToken);
+    }
+
+    // Attempt to refresh
+    try {
+        const refreshToken = await decryptToken(encryptedRefreshToken);
+        const config = OAUTH_CONFIG[provider];
+        const clientId = process.env[`${provider.toUpperCase()}_CLIENT_ID`];
+        const clientSecret = process.env[`${provider.toUpperCase()}_CLIENT_SECRET`];
+
+        const body = new URLSearchParams({
+            grant_type: "refresh_token",
+            refresh_token: refreshToken,
+            client_id: clientId || "",
+            client_secret: clientSecret || "",
+        });
+
+        const response = await fetch(config.tokenUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Accept: "application/json",
+            },
+            body: body.toString(),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Refresh failed: ${await response.text()}`);
+        }
+
+        const data = await response.json();
+
+        // Store new tokens
+        await storeOAuthToken(
+            workspaceId,
+            provider,
+            data.access_token,
+            data.refresh_token,
+            data.expires_in,
+            provider === "jira" ? workspace.jiraSite || undefined : undefined
+        );
+
+        return data.access_token;
+    } catch (e) {
+        console.error(`Failed to refresh ${provider} token:`, e);
+        return await decryptToken(encryptedToken); // Fallback to old token
+    }
 }
 
 /**

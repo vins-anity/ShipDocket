@@ -107,6 +107,7 @@ const auth = new Hono()
                     "slack",
                     tokens.accessToken,
                     tokens.refreshToken,
+                    tokens.expiresIn,
                 );
 
                 // Redirect back to frontend
@@ -275,6 +276,7 @@ const auth = new Hono()
                     "jira",
                     tokens.accessToken,
                     tokens.refreshToken,
+                    tokens.expiresIn,
                     tokens.cloudId,
                 );
 

@@ -79,13 +79,21 @@ export const workspaces = pgTable("workspaces", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
 
-    // Integration identifiers
-    slackTeamId: text("slack_team_id"),
-    slackAccessToken: text("slack_access_token"), // Encrypted
-    githubOrg: text("github_org"),
-    githubInstallationId: text("github_installation_id"),
+    // Jira Integration
     jiraSite: text("jira_site"),
     jiraAccessToken: text("jira_access_token"), // Encrypted
+    jiraRefreshToken: text("jira_refresh_token"), // Encrypted
+    jiraTokenExpiresAt: timestamp("jira_token_expires_at"),
+
+    // GitHub Integration
+    githubOrg: text("github_org"),
+    githubInstallationId: text("github_installation_id"),
+
+    // Slack Integration
+    slackTeamId: text("slack_team_id"),
+    slackAccessToken: text("slack_access_token"), // Encrypted
+    slackRefreshToken: text("slack_refresh_token"), // Encrypted
+    slackTokenExpiresAt: timestamp("slack_token_expires_at"),
 
     // Settings
     defaultPolicyTier: policyTierEnum("default_policy_tier").default("standard"),

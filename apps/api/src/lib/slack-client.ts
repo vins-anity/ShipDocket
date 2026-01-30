@@ -12,7 +12,7 @@ import * as authService from "../services/auth.service";
  * Create authenticated Slack client for workspace
  */
 export async function createSlackClient(workspaceId: string): Promise<WebClient> {
-    const token = await authService.getOAuthToken(workspaceId, "slack");
+    const token = await authService.refreshIfNeeded(workspaceId, "slack");
 
     if (!token) {
         throw new Error(`Slack not connected for workspace ${workspaceId}`);
