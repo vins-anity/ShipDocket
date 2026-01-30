@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
-import { useJiraAnalysis, useGitHubAnalysis } from "@/hooks/use-onboarding-analysis";
-import { CreateWorkspaceStep } from "./CreateWorkspaceStep";
-import { ConnectIntegrationsStep } from "./ConnectIntegrationsStep";
-import { TemplateSelector, type WorkflowTemplate } from "./TemplateSelector";
-import { ReviewConfigStep, type WorkflowConfig } from "./ReviewConfigStep";
-import { api } from "@/lib/api";
 import { IconLoader2 } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useGitHubAnalysis, useJiraAnalysis } from "@/hooks/use-onboarding-analysis";
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
+import { api } from "@/lib/api";
+import { ConnectIntegrationsStep } from "./ConnectIntegrationsStep";
+import { CreateWorkspaceStep } from "./CreateWorkspaceStep";
+import { ReviewConfigStep, type WorkflowConfig } from "./ReviewConfigStep";
+import { TemplateSelector, type WorkflowTemplate } from "./TemplateSelector";
 
 type Step = "create" | "integrations" | "template" | "review" | "saving";
 
@@ -26,13 +26,13 @@ export function OnboardingWizard() {
     const { data: workspaceStatus, refetch: refetchStatus } = useWorkspaceStatus();
     const { data: jiraAnalysis, isLoading: analyzingJira } = useJiraAnalysis(
         workspaceId || "",
-        step === "review" && configSource === "jira"
+        step === "review" && configSource === "jira",
     );
     // We can use GitHub analysis to refine CI rules, but for now we focus on Jira for workflow
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data: githubAnalysis } = useGitHubAnalysis(
         workspaceId || "",
-        step === "review" // Fetch whenever we are in review to check for CI
+        step === "review", // Fetch whenever we are in review to check for CI
     );
 
     // Initial hydration from URL
@@ -104,10 +104,10 @@ export function OnboardingWizard() {
                 proofPacketRules: {
                     autoCreateOnDone: true,
                     minEventsForProof: 5,
-                    excludedTaskTypes: finalConfig.excludedTaskTypes || []
+                    excludedTaskTypes: finalConfig.excludedTaskTypes || [],
                 },
                 defaultPolicyTier: finalConfig.policyTier || "standard",
-                onboardingCompletedAt: new Date()
+                onboardingCompletedAt: new Date(),
             });
 
             // Done! specific redirect?
@@ -151,7 +151,9 @@ export function OnboardingWizard() {
         return (
             <div className="max-w-4xl mx-auto px-6 animate-fade-in-up">
                 <div className="text-center mb-8 space-y-2">
-                    <h2 className="text-3xl font-black font-heading text-brand-dark">Choose a Workflow</h2>
+                    <h2 className="text-3xl font-black font-heading text-brand-dark">
+                        Choose a Workflow
+                    </h2>
                     <p className="text-brand-gray-mid">Select a template to get started quickly.</p>
                 </div>
                 <TemplateSelector onSelect={handleTemplateSelect} />
@@ -173,8 +175,12 @@ export function OnboardingWizard() {
             return (
                 <div className="flex flex-col items-center justify-center min-h-[400px] animate-fade-in">
                     <IconLoader2 className="w-12 h-12 text-brand-accent-blue animate-spin mb-4" />
-                    <h3 className="text-xl font-bold font-heading text-brand-dark">Analyzing Jira Projects...</h3>
-                    <p className="text-brand-gray-mid">Detecting workflow statuses and configuration.</p>
+                    <h3 className="text-xl font-bold font-heading text-brand-dark">
+                        Analyzing Jira Projects...
+                    </h3>
+                    <p className="text-brand-gray-mid">
+                        Detecting workflow statuses and configuration.
+                    </p>
                 </div>
             );
         }
@@ -187,7 +193,9 @@ export function OnboardingWizard() {
                         source={configSource}
                         detectedType={detectedType}
                         onSave={handleConfigSave}
-                        onBack={() => updateStep(configSource === "jira" ? "integrations" : "template")}
+                        onBack={() =>
+                            updateStep(configSource === "jira" ? "integrations" : "template")
+                        }
                     />
                 </div>
             );
@@ -201,7 +209,9 @@ export function OnboardingWizard() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] animate-fade-in">
                 <IconLoader2 className="w-12 h-12 text-brand-accent-green animate-spin mb-4" />
-                <h3 className="text-xl font-bold font-heading text-brand-dark">Setting up Command Center...</h3>
+                <h3 className="text-xl font-bold font-heading text-brand-dark">
+                    Setting up Command Center...
+                </h3>
             </div>
         );
     }

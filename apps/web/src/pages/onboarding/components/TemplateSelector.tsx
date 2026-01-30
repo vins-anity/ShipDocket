@@ -1,8 +1,4 @@
-import {
-    IconLayoutKanban,
-    IconListCheck,
-    IconTimeline,
-} from "@tabler/icons-react";
+import { IconLayoutKanban, IconListCheck, IconTimeline } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
 // ==========================================
@@ -73,11 +69,7 @@ interface TemplateSelectorProps {
     className?: string;
 }
 
-export function TemplateSelector({
-    onSelect,
-    selectedId,
-    className,
-}: TemplateSelectorProps) {
+export function TemplateSelector({ onSelect, selectedId, className }: TemplateSelectorProps) {
     return (
         <div className={cn("grid grid-cols-1 gap-4", className)}>
             {WORKFLOW_TEMPLATES.map((template) => {

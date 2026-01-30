@@ -12,7 +12,6 @@ import jobs from "./modules/jobs/routes";
 import onboarding from "./modules/onboarding/routes";
 import policies from "./modules/policies/routes";
 import proofs from "./modules/proofs/routes";
-import slackInteractions from "./modules/slack/interactions";
 import webhooks from "./modules/webhooks/routes";
 import workspaces from "./modules/workspaces/routes";
 
@@ -149,7 +148,6 @@ const app = new Hono()
     })
     .route("/auth", auth)
     .route("/webhooks", webhooks)
-    .route("/slack/interactions", slackInteractions)
     .route("/jobs", jobs)
     // Public share route - NO AUTH REQUIRED
     .get("/proofs/share/:token", async (c) => {

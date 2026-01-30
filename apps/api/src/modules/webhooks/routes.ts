@@ -21,8 +21,8 @@ import { eventsService, policiesService, slackService, workspacesService } from 
  */
 function extractTaskId(text: string | undefined): string | null {
     if (!text) return null;
-    const match = text.match(/([A-Z]+-\d+)/);
-    return match ? (match[1] ?? null) : null;
+    const match = text.match(/([a-zA-Z]+-\d+)/);
+    return match ? (match[1]?.toUpperCase() ?? null) : null;
 }
 
 const webhooks = new Hono()
@@ -56,7 +56,18 @@ const webhooks = new Hono()
             // Handle actual events (e.g., messages, app mentions)
             if (payload.event) {
                 console.log(`[Slack Event] ${payload.event.type}:`, payload.event);
-                // Future: Handle specific event types (app_mention, message, etc.)
+
+                // Handle App Home Opened
+                if (payload.event.type === "app_home_opened") {
+                    const workspaceId = payload.team_id; // Slack Event API sends team_id
+                    const userId = payload.event.user;
+
+                    // Verify workspace exists
+                    const workspace = await workspacesService.findBySlackTeamId(workspaceId);
+                    if (workspace) {
+                        await slackService.publishAppHome(workspace.id, userId);
+                    }
+                }
             }
 
             return c.json({ success: true, message: "Slack event received" });
@@ -213,10 +224,19 @@ const webhooks = new Hono()
                 return c.json({ success: false, message: "Workspace not found" }, 404);
             }
 
-            // 2. Identify Task ID
+            // 2. Identify Task ID from multiple sources
             const branchName = payload.pull_request?.head?.ref;
             const prTitle = payload.pull_request?.title;
-            const taskId = extractTaskId(branchName) || extractTaskId(prTitle);
+            const deployDesc = payload.deployment?.description;
+            const releaseName = payload.release?.name;
+            const releaseBody = payload.release?.body;
+
+            const taskId =
+                extractTaskId(branchName) ||
+                extractTaskId(prTitle) ||
+                extractTaskId(deployDesc) ||
+                extractTaskId(releaseName) ||
+                extractTaskId(releaseBody);
 
             // 3. Map Event
             let _trailEventType: EventType | null = null;
@@ -329,7 +349,7 @@ const webhooks = new Hono()
                                     workspace.id,
                                     taskId,
                                     payload.pull_request?.title ||
-                                    `PR #${payload.pull_request?.number}`,
+                                        `PR #${payload.pull_request?.number}`,
                                     prAuthorEmail,
                                     new Date(checkResult.scheduledCloseAt),
                                 );

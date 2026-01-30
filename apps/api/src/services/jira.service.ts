@@ -156,19 +156,45 @@ export class JiraService {
      * Make an authenticated request to Jira Cloud API
      */
     async callJiraAPI<T>(cloudId: string, accessToken: string, endpoint: string): Promise<T> {
-        const response = await fetch(`https://api.atlassian.com/ex/jira/${cloudId}${endpoint}`, {
+        return this.fetchWithRetry(`https://api.atlassian.com/ex/jira/${cloudId}${endpoint}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 Accept: "application/json",
             },
         });
+    }
 
-        if (!response.ok) {
-            throw new Error(`Jira API error [${response.status}]: ${response.statusText}`);
+    /**
+     * Fetch with exponential backoff retry logic
+     */
+    private async fetchWithRetry<T>(url: string, options: RequestInit, retries = 3): Promise<T> {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+
+                if (response.ok) {
+                    return response.json();
+                }
+
+                // Handle Rate Limiting (429) and Server Errors (5xx)
+                if (response.status === 429 || response.status >= 500) {
+                    const delay = 2 ** i * 1000; // 1s, 2s, 4s
+                    console.warn(
+                        `[JiraService] Request failed (${response.status}). Retrying in ${delay}ms...`,
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, delay));
+                    continue;
+                }
+
+                throw new Error(`Jira API error [${response.status}]: ${response.statusText}`);
+            } catch (error) {
+                if (i === retries - 1) throw error;
+                const delay = 2 ** i * 1000;
+                await new Promise((resolve) => setTimeout(resolve, delay));
+            }
         }
-
-        return response.json();
+        throw new Error("Max retries exceeded");
     }
 }
 

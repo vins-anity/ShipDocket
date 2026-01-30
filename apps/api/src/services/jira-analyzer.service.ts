@@ -136,7 +136,7 @@ export class JiraAnalyzerService {
             startTracking: trackingStatuses,
             reviewStatus: detectedReviewStatuses.length > 0 ? detectedReviewStatuses : [],
             doneStatus: doneStatuses,
-            excludedTaskTypes: issueTypes.filter(it => it.subtask).map(it => it.name),
+            excludedTaskTypes: issueTypes.filter((it) => it.subtask).map((it) => it.name),
             policyTier: "standard",
         };
 
@@ -154,8 +154,13 @@ export class JiraAnalyzerService {
             }
         } else if (detectedType === "project_management") {
             suggestedConfig.policyTier = "standard";
-            suggestedConfig.startTracking = ["In Progress", "Active"];
-            suggestedConfig.doneStatus = ["Done", "Closed", "Complete"];
+            // Use detected statuses if found, otherwise fall back to defaults
+            if (suggestedConfig.startTracking.length === 0) {
+                suggestedConfig.startTracking = ["In Progress", "Active"];
+            }
+            if (suggestedConfig.doneStatus.length === 0) {
+                suggestedConfig.doneStatus = ["Done", "Closed", "Complete"];
+            }
         }
 
         return {

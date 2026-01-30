@@ -21,6 +21,8 @@
     "dependencies": {
         "@clerk/backend": "^1.24.1",
         "@hono/valibot-validator": "^0.6.1",
+        "@octokit/plugin-retry": "^8.0.3",
+        "@octokit/plugin-throttling": "^11.0.3",
         "@octokit/rest": "^22.0.1",
         "@openrouter/sdk": "^0.3.14",
         "@scalar/hono-api-reference": "^0.5.150",

@@ -1,4 +1,8 @@
+import { retry } from "@octokit/plugin-retry";
+import { throttling } from "@octokit/plugin-throttling";
 import { Octokit } from "@octokit/rest";
+
+const MyOctokit = Octokit.plugin(retry, throttling);
 
 // ==========================================
 // Types
@@ -55,7 +59,8 @@ export class GitHubAnalyzerService {
         const checks = await Promise.all(
             recentRepos.map((repo) => {
                 const parts = repo.fullName.split("/");
-                if (parts.length < 2) return { hasCICD: false, provider: "none", workflows: [] } as CICDAnalysis;
+                if (parts.length < 2)
+                    return { hasCICD: false, provider: "none", workflows: [] } as CICDAnalysis;
                 const owner = parts[0] as string;
                 const name = parts[1] as string;
                 return this.detectCICD(accessToken, owner, name);
@@ -90,7 +95,27 @@ export class GitHubAnalyzerService {
      * List repositories visible to the user
      */
     async listUserRepos(accessToken: string): Promise<GitHubRepo[]> {
-        const octokit = new Octokit({ auth: accessToken });
+        const octokit = new MyOctokit({
+            auth: accessToken,
+            throttle: {
+                onRateLimit: (retryAfter: number, options: any, octokit: any) => {
+                    octokit.log.warn(
+                        `Request quota exhausted for request ${options.method} ${options.url}`,
+                    );
+                    if (options.request.retryCount === 0) {
+                        // only retries once
+                        octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+                        return true;
+                    }
+                },
+                onSecondaryRateLimit: (retryAfter: number, options: any, octokit: any) => {
+                    // does not retry, only logs a warning
+                    octokit.log.warn(
+                        `SecondaryRateLimit detected for request ${options.method} ${options.url}`,
+                    );
+                },
+            },
+        });
         try {
             const { data } = await octokit.repos.listForAuthenticatedUser({
                 per_page: 100,
@@ -116,12 +141,28 @@ export class GitHubAnalyzerService {
     /**
      * Detect CI/CD configuration for a specific repo
      */
-    async detectCICD(
-        accessToken: string,
-        owner: string,
-        repo: string,
-    ): Promise<CICDAnalysis> {
-        const octokit = new Octokit({ auth: accessToken });
+    async detectCICD(accessToken: string, owner: string, repo: string): Promise<CICDAnalysis> {
+        const octokit = new MyOctokit({
+            auth: accessToken,
+            throttle: {
+                onRateLimit: (retryAfter: number, options: any, octokit: any) => {
+                    octokit.log.warn(
+                        `Request quota exhausted for request ${options.method} ${options.url}`,
+                    );
+                    if (options.request.retryCount === 0) {
+                        // only retries once
+                        octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+                        return true;
+                    }
+                },
+                onSecondaryRateLimit: (retryAfter: number, options: any, octokit: any) => {
+                    // does not retry, only logs a warning
+                    octokit.log.warn(
+                        `SecondaryRateLimit detected for request ${options.method} ${options.url}`,
+                    );
+                },
+            },
+        });
 
         // Check for GitHub Actions Workflows
         try {
@@ -139,8 +180,18 @@ export class GitHubAnalyzerService {
                 };
             }
         } catch (error) {
-            // Fallback: Check for common config files if API fails (e.g. scopes issue)
-            // This is "passive" detection via file presence
+            // Fallback: Check for common config files via contents API
+            try {
+                // Check for .github/workflows directory presence
+                await octokit.repos.getContent({ owner, repo, path: ".github/workflows" });
+                return {
+                    hasCICD: true,
+                    provider: "github_actions",
+                    workflows: ["Detected via .github/workflows"],
+                };
+            } catch (e) {
+                // Ignore 404
+            }
         }
 
         // TODO: Add CircleCI/Jenkins detection via file existence check if needed

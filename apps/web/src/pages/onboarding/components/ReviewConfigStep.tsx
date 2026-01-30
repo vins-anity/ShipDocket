@@ -128,31 +128,41 @@ export function ReviewConfigStep({
                     colorClass="bg-gray-100 text-gray-700 border-gray-200"
                     onRemove={(s) => {
                         const current = config.excludedTaskTypes || [];
-                        setConfig(prev => ({ ...prev, excludedTaskTypes: current.filter(t => t !== s) }));
+                        setConfig((prev) => ({
+                            ...prev,
+                            excludedTaskTypes: current.filter((t) => t !== s),
+                        }));
                     }}
                     onAdd={(s) => {
                         if (!s.trim()) return;
                         const current = config.excludedTaskTypes || [];
-                        setConfig(prev => ({ ...prev, excludedTaskTypes: [...current, s.trim()] }));
+                        setConfig((prev) => ({
+                            ...prev,
+                            excludedTaskTypes: [...current, s.trim()],
+                        }));
                     }}
                 />
 
                 {/* Policy Tier */}
                 <div className="space-y-3">
                     <div>
-                        <h3 className="font-bold text-brand-dark font-heading text-sm">Compliance Policy</h3>
-                        <p className="text-xs text-brand-gray-mid">Determines strictness of proof requirements.</p>
+                        <h3 className="font-bold text-brand-dark font-heading text-sm">
+                            Compliance Policy
+                        </h3>
+                        <p className="text-xs text-brand-gray-mid">
+                            Determines strictness of proof requirements.
+                        </p>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
-                        {(["agile", "standard", "hardened"] as const).map(tier => (
+                        {(["agile", "standard", "hardened"] as const).map((tier) => (
                             <button
                                 key={tier}
-                                onClick={() => setConfig(prev => ({ ...prev, policyTier: tier }))}
+                                onClick={() => setConfig((prev) => ({ ...prev, policyTier: tier }))}
                                 className={cn(
                                     "px-4 py-3 rounded-xl text-sm font-bold capitalize border-2 transition-all",
                                     config.policyTier === tier
                                         ? "border-brand-accent-blue bg-blue-50 text-brand-accent-blue"
-                                        : "border-brand-gray-light bg-white text-brand-gray-mid hover:border-brand-accent-blue/50"
+                                        : "border-brand-gray-light bg-white text-brand-gray-mid hover:border-brand-accent-blue/50",
                                 )}
                             >
                                 {tier}

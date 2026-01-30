@@ -8,6 +8,7 @@
  * @see docs/trail.md Section 5.3 "End-to-End Event Flow"
  */
 
+import type { Block, KnownBlock } from "@slack/web-api";
 import * as slackClient from "../lib/slack-client";
 
 /**
@@ -59,7 +60,7 @@ export async function sendHandshakeNotification(
                         },
                         style: "danger",
                         value: taskId,
-                        action_id: "reject_handshake",
+                        action_id: "reject_task",
                     },
                 ],
             },
@@ -150,5 +151,106 @@ export async function sendClosureProposal(
     } catch (error) {
         console.error(`Failed to send closure proposal for ${taskId}:`, error);
         // Don't throw - notifications are non-critical
+    }
+}
+
+/**
+ * PHASE 6: Publish Slack App Home
+ *
+ * Renders the App Home tab for a user.
+ */
+export async function publishAppHome(workspaceId: string, slackUserId: string): Promise<void> {
+    try {
+        const client = await slackClient.createSlackClient(workspaceId);
+
+        // Fetch recent events for context
+        // This would ideally come from the DB, but for now we'll show a static welcome
+        // + dynamic "Connection Status".
+
+        const blocks: (Block | KnownBlock)[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "🚢 Welcome to ShipDocket",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "*Your Automated Engineering Manager*\nWe handle the boring stuff (Jira updates, detailed logs) so you can focus on shipping.",
+                },
+            },
+            {
+                type: "divider",
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "✅ *System Status*\n• Jira Integration: *Active*\n• GitHub Integration: *Active*\n• Policy Engine: *Standard Tier*",
+                },
+            },
+            {
+                type: "context",
+                elements: [
+                    {
+                        type: "image",
+                        image_url:
+                            "https://api.slack.com/img/blocks/bkb_template_images/placeholder.png",
+                        alt_text: "placeholder",
+                    },
+                    {
+                        type: "mrkdwn",
+                        text: `Last updated: ${new Date().toLocaleString()}`,
+                    },
+                ],
+            },
+            {
+                type: "divider",
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "*Quick Actions*",
+                },
+            },
+            {
+                type: "actions",
+                elements: [
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "View Dashboard",
+                        },
+                        url: process.env.FRONTEND_URL || "http://localhost:5173",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "Help & Docs",
+                        },
+                        url: "https://docs.shipdocket.dev", // Placeholder
+                    },
+                ],
+            },
+        ];
+
+        await client.views.publish({
+            user_id: slackUserId,
+            view: {
+                type: "home",
+                blocks: blocks,
+            },
+        });
+
+        console.log(`[Slack] Published App Home for user ${slackUserId}`);
+    } catch (error) {
+        console.error(`[Slack] Failed to publish App Home for ${slackUserId}:`, error);
     }
 }

@@ -1,13 +1,13 @@
 import {
+    IconArrowRight,
     IconBrandAsana, // Using as placeholder for Jira
     IconBrandGithub,
     IconBrandSlack,
     IconCheck,
-    IconArrowRight,
 } from "@tabler/icons-react";
-import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 import { cn } from "@/lib/utils";
 
 interface ConnectIntegrationsStepProps {
@@ -20,7 +20,7 @@ export function ConnectIntegrationsStep({ workspaceId, onNext }: ConnectIntegrat
 
     const handleConnect = (provider: "jira" | "github" | "slack") => {
         const baseUrl = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-        // Encode the current path with wizard state if possible, but for now 
+        // Encode the current path with wizard state if possible, but for now
         // we assume the wizard wrapper will restore state based on URL or local storage if needed.
         // We pass 'next' param to ensuring we return to onboarding.
         const next = "/onboarding?step=integrations";
@@ -125,7 +125,9 @@ function IntegrationCard({
                     <div
                         className={cn(
                             "w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm",
-                            connected ? "bg-green-100 text-green-600" : "bg-brand-light text-brand-dark",
+                            connected
+                                ? "bg-green-100 text-green-600"
+                                : "bg-brand-light text-brand-dark",
                         )}
                     >
                         {connected ? <IconCheck className="w-8 h-8" /> : icon}
@@ -157,12 +159,19 @@ function IntegrationCard({
                         <Button
                             onClick={onConnect}
                             disabled={loading}
-                            className={cn("h-10 px-5 rounded-lg font-bold text-sm shadow-sm transition-all", colorClass)}
+                            className={cn(
+                                "h-10 px-5 rounded-lg font-bold text-sm shadow-sm transition-all",
+                                colorClass,
+                            )}
                         >
                             Connect
                         </Button>
                     ) : (
-                        <Button variant="ghost" className="text-brand-gray-mid hover:text-red-500 text-sm h-10 px-4" disabled>
+                        <Button
+                            variant="ghost"
+                            className="text-brand-gray-mid hover:text-red-500 text-sm h-10 px-4"
+                            disabled
+                        >
                             Connected
                         </Button>
                     )}
