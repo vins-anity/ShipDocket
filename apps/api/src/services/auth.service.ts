@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { env } from "../env";
 import { decryptToken, encryptToken } from "../lib/token-encryption";
 import * as workspacesService from "./workspaces.service";
+import type { UpdateWorkspaceInput } from "./workspaces.service";
 
 const SUPABASE_URL = env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY;
@@ -144,25 +145,23 @@ export async function storeOAuthToken(
     expiresIn?: number,
     siteId?: string,
 ): Promise<void> {
-    const encryptedAccessToken = await encryptToken(accessToken);
-    const encryptedRefreshToken = refreshToken ? await encryptToken(refreshToken) : undefined;
     const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : undefined;
 
-    const updates: Record<string, string | Date | null | undefined> = {};
+    const updates: UpdateWorkspaceInput = {};
 
     switch (provider) {
         case "slack":
-            updates.slackAccessToken = encryptedAccessToken;
-            if (encryptedRefreshToken) updates.slackRefreshToken = encryptedRefreshToken;
+            updates.slackAccessToken = accessToken;
+            if (refreshToken) updates.slackRefreshToken = refreshToken;
             if (expiresAt) updates.slackTokenExpiresAt = expiresAt;
             break;
         case "github":
             // For GitHub Apps, we store installation token differently
-            updates.githubInstallationId = encryptedAccessToken;
+            updates.githubInstallationId = accessToken;
             break;
         case "jira":
-            updates.jiraAccessToken = encryptedAccessToken;
-            if (encryptedRefreshToken) updates.jiraRefreshToken = encryptedRefreshToken;
+            updates.jiraAccessToken = accessToken;
+            if (refreshToken) updates.jiraRefreshToken = refreshToken;
             if (expiresAt) updates.jiraTokenExpiresAt = expiresAt;
             if (siteId) {
                 updates.jiraSite = siteId;

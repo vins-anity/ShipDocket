@@ -114,9 +114,14 @@ const auth = new Hono()
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
                 const nextPath = next || `/?connected=slack&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
-            } catch (e: unknown) {
-                const message = e instanceof Error ? e.message : "Failed to complete Slack OAuth";
-                return c.json({ error: message }, 400);
+            } catch (e: any) {
+                console.error("Slack OAuth Error:", e);
+                return c.json({
+                    error: e.message || "Failed to complete Slack OAuth",
+                    detail: e.detail || e.hint || undefined,
+                    query: e.query,
+                    params: e.params
+                }, 500);
             }
         },
     )
@@ -198,9 +203,14 @@ const auth = new Hono()
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
                 const nextPath = next || `/?connected=github&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
-            } catch (e: unknown) {
-                const message = e instanceof Error ? e.message : "Failed to complete GitHub OAuth";
-                return c.json({ error: message }, 400);
+            } catch (e: any) {
+                console.error("GitHub OAuth Error:", e);
+                return c.json({
+                    error: e.message || "Failed to complete GitHub OAuth",
+                    detail: e.detail || e.hint || undefined,
+                    query: e.query,
+                    params: e.params
+                }, 500);
             }
         },
     )
@@ -284,9 +294,14 @@ const auth = new Hono()
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
                 const nextPath = next || `/?connected=jira&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
-            } catch (e: unknown) {
-                const message = e instanceof Error ? e.message : "Failed to complete Jira OAuth";
-                return c.json({ error: message }, 400);
+            } catch (e: any) {
+                console.error("Jira OAuth Error:", e);
+                return c.json({
+                    error: e.message || "Failed to complete Jira OAuth",
+                    detail: e.detail || e.hint || undefined,
+                    query: e.query,
+                    params: e.params
+                }, 500);
             }
         },
     );

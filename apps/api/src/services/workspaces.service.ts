@@ -27,10 +27,14 @@ export interface UpdateWorkspaceInput {
     name?: string;
     slackTeamId?: string;
     slackAccessToken?: string;
+    slackRefreshToken?: string;
+    slackTokenExpiresAt?: Date;
     githubOrg?: string;
     githubInstallationId?: string;
     jiraSite?: string;
     jiraAccessToken?: string;
+    jiraRefreshToken?: string;
+    jiraTokenExpiresAt?: Date;
     defaultPolicyTier?: PolicyTier;
     workflowSettings?: {
         startTracking: string[];
@@ -86,27 +90,21 @@ async function decryptWorkspaceTokens(workspace: Workspace): Promise<Workspace> 
         if (result.slackAccessToken) {
             result.slackAccessToken = await decryptToken(result.slackAccessToken);
         }
-    } catch (e) {
-        console.warn(`Failed to decrypt slackAccessToken for workspace ${workspace.id}`);
-        result.slackAccessToken = null;
-    }
-
-    try {
+        if (result.slackRefreshToken) {
+            result.slackRefreshToken = await decryptToken(result.slackRefreshToken);
+        }
         if (result.githubInstallationId) {
             result.githubInstallationId = await decryptToken(result.githubInstallationId);
         }
-    } catch (e) {
-        console.warn(`Failed to decrypt githubInstallationId for workspace ${workspace.id}`);
-        result.githubInstallationId = null;
-    }
-
-    try {
         if (result.jiraAccessToken) {
             result.jiraAccessToken = await decryptToken(result.jiraAccessToken);
         }
+        if (result.jiraRefreshToken) {
+            result.jiraRefreshToken = await decryptToken(result.jiraRefreshToken);
+        }
     } catch (e) {
-        console.warn(`Failed to decrypt jiraAccessToken for workspace ${workspace.id}`);
-        result.jiraAccessToken = null;
+        console.warn(`Failed to decrypt tokens for workspace ${workspace.id}`);
+        // Optionally nullify only failed ones, but usually if one fails (wrong key), they all fail
     }
 
     return result;
@@ -121,11 +119,17 @@ async function encryptWorkspaceTokens(input: UpdateWorkspaceInput) {
     if (encrypted.slackAccessToken) {
         encrypted.slackAccessToken = await encryptToken(encrypted.slackAccessToken);
     }
+    if (encrypted.slackRefreshToken) {
+        encrypted.slackRefreshToken = await encryptToken(encrypted.slackRefreshToken);
+    }
     if (encrypted.githubInstallationId) {
         encrypted.githubInstallationId = await encryptToken(encrypted.githubInstallationId);
     }
     if (encrypted.jiraAccessToken) {
         encrypted.jiraAccessToken = await encryptToken(encrypted.jiraAccessToken);
+    }
+    if (encrypted.jiraRefreshToken) {
+        encrypted.jiraRefreshToken = await encryptToken(encrypted.jiraRefreshToken);
     }
 
     return encrypted;
