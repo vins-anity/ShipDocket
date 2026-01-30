@@ -1,3 +1,5 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
     IconArrowRight,
     IconBrandGithub,
@@ -7,12 +9,18 @@ import {
     IconLoader2,
 } from "@tabler/icons-react";
 import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { toast } from "sonner";
 
 export function OnboardingWidget({ workspaceId }: { workspaceId?: string | null }) {
+    const { session } = useAuth();
+    const queryClient = useQueryClient();
+    const [isLaunching, setIsLaunching] = useState(false);
     const { data: status, isLoading } = useWorkspaceStatus(workspaceId);
 
     if (isLoading || !status)
@@ -51,26 +59,22 @@ export function OnboardingWidget({ workspaceId }: { workspaceId?: string | null 
     };
 
     const handleLaunch = async () => {
-        // Mark onboarding as complete in the backend
-        try {
-            const token = localStorage.getItem("supabase.auth.token");
-            const session = token ? JSON.parse(token) : null;
-            const accessToken = session?.currentSession?.access_token;
+        if (!status?.id) return;
+        setIsLaunching(true);
 
-            await fetch(`${import.meta.env.VITE_API_URL}/workspaces/${status.id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: accessToken ? `Bearer ${accessToken}` : "",
-                },
-                body: JSON.stringify({
-                    onboardingCompletedAt: new Date().toISOString(),
-                }),
+        try {
+            await api.workspaces.update(status.id, {
+                onboardingCompletedAt: new Date().toISOString(),
             });
-            window.location.reload();
+
+            // Refresh status to move past onboarding gate
+            await queryClient.invalidateQueries({ queryKey: ["workspace-status"] });
+            toast.success("Launch sequence successful!");
         } catch (e) {
             console.error("Failed to complete onboarding:", e);
-            window.location.reload();
+            toast.error("Failed to launch dashboard. Please try again.");
+        } finally {
+            setIsLaunching(false);
         }
     };
 
@@ -207,9 +211,19 @@ export function OnboardingWidget({ workspaceId }: { workspaceId?: string | null 
                                 size="lg"
                                 className="bg-brand-dark text-brand-light hover:bg-brand-accent-blue transition-all duration-300 rounded-xl px-8 h-12 text-base font-bold shadow-lg shadow-brand-dark/10"
                                 onClick={handleLaunch}
+                                disabled={isLaunching}
                             >
-                                Launch Dashboard
-                                <IconArrowRight className="w-4 h-4 ml-2" />
+                                {isLaunching ? (
+                                    <>
+                                        <IconLoader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Launching...
+                                    </>
+                                ) : (
+                                    <>
+                                        Launch Dashboard
+                                        <IconArrowRight className="w-4 h-4 ml-2" />
+                                    </>
+                                )}
                             </Button>
                         </div>
                     )}
