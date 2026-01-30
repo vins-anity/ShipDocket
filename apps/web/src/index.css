@@ -154,4 +154,8 @@
     h6 {
         @apply font-heading font-semibold tracking-tight;
     }
+
+    button {
+        cursor: pointer;
+    }
 }
