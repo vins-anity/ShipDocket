@@ -1,5 +1,5 @@
 import { IconChevronRight, IconFileText, IconInbox, IconShieldCheck } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,8 @@ import { useProofPackets } from "@/hooks/use-proofs";
 import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
 
 export function ProofPacketsPage() {
-    const { data: workspace } = useWorkspaceStatus();
+    const [searchParams] = useSearchParams();
+    const { data: workspace } = useWorkspaceStatus(searchParams.get("workspace_id"));
     const { data, isLoading, error } = useProofPackets({ workspaceId: workspace?.id });
 
     const proofs = data?.packets || [];
@@ -119,10 +120,9 @@ export function ProofPacketsPage() {
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <Badge
-                                            className={`px-3 py-1 rounded-full font-bold uppercase tracking-wider text-xs shadow-sm border ${
-                                                statusColors[proof.status] ||
+                                            className={`px-3 py-1 rounded-full font-bold uppercase tracking-wider text-xs shadow-sm border ${statusColors[proof.status] ||
                                                 "bg-brand-gray-light text-brand-gray-mid border-brand-gray-mid/10"
-                                            }`}
+                                                }`}
                                         >
                                             {proof.status?.charAt(0).toUpperCase() +
                                                 proof.status?.slice(1) || "Pending"}

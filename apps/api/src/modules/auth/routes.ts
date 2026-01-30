@@ -112,7 +112,7 @@ const auth = new Hono()
 
                 // Redirect back to frontend
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
-                const nextPath = next || "/?connected=slack";
+                const nextPath = next || `/?connected=slack&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
             } catch (e: unknown) {
                 const message = e instanceof Error ? e.message : "Failed to complete Slack OAuth";
@@ -196,7 +196,7 @@ const auth = new Hono()
 
                 // Redirect back to frontend
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
-                const nextPath = next || "/?connected=github";
+                const nextPath = next || `/?connected=github&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
             } catch (e: unknown) {
                 const message = e instanceof Error ? e.message : "Failed to complete GitHub OAuth";
@@ -282,7 +282,7 @@ const auth = new Hono()
 
                 // Redirect back to frontend
                 const frontendUrl = process.env.FRONTEND_URL || "https://trail-web.pages.dev";
-                const nextPath = next || "/?connected=jira";
+                const nextPath = next || `/?connected=jira&workspace_id=${workspaceId}`;
                 return c.redirect(`${frontendUrl}${nextPath}`);
             } catch (e: unknown) {
                 const message = e instanceof Error ? e.message : "Failed to complete Jira OAuth";

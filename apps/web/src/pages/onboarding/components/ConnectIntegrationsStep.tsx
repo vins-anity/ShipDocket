@@ -19,7 +19,7 @@ interface ConnectIntegrationsStepProps {
 }
 
 export function ConnectIntegrationsStep({ workspaceId, onNext }: ConnectIntegrationsStepProps) {
-    const { data: workspace, isLoading } = useWorkspaceStatus();
+    const { data: workspace, isLoading } = useWorkspaceStatus(workspaceId);
     const queryClient = useQueryClient();
 
     useEffect(() => {

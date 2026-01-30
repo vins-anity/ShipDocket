@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -28,7 +29,8 @@ import { supabase } from "@/lib/supabase";
 
 export function SettingsPage() {
     const { user } = useAuth();
-    const { data: workspace, isLoading } = useWorkspaceStatus();
+    const [searchParams] = useSearchParams();
+    const { data: workspace, isLoading } = useWorkspaceStatus(searchParams.get("workspace_id"));
     const queryClient = useQueryClient();
 
     // Workflow State

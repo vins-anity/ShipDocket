@@ -25,9 +25,9 @@ export interface WorkspaceStatus {
     onboardingCompletedAt?: string;
 }
 
-export function useWorkspaceStatus() {
+export function useWorkspaceStatus(workspaceId?: string | null) {
     return useQuery<WorkspaceStatus | null>({
-        queryKey: ["workspace-status"],
+        queryKey: ["workspace-status", workspaceId],
         queryFn: async () => {
             const {
                 data: { session },
@@ -36,21 +36,26 @@ export function useWorkspaceStatus() {
 
             if (!token) throw new Error("Not authenticated");
 
-            const res = await fetch(`${API_URL}/workspaces/current`, {
+            const url = new URL(`${API_URL}/workspaces/current`);
+            if (workspaceId) url.searchParams.set("workspaceId", workspaceId);
+
+            const res = await fetch(url.toString(), {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
             if (res.status === 401) {
-                // Do NOT sign out here. Let the component handle the error.
-                // Signing out here causes an infinite loop if the token is valid in Supabase but invalid in the backend.
                 throw new Error("Session expired");
             }
             if (res.status === 404) return null;
-            if (!res.ok) throw new Error("Failed to fetch workspace status");
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || "Failed to fetch workspace status");
+            }
 
-            return res.json();
+            const data = await res.json();
+            return data;
         },
         retry: false, // Don't retry auth errors
     });

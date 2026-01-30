@@ -23,7 +23,7 @@ export function OnboardingWizard() {
     const [detectedType, setDetectedType] = useState<string>("");
 
     // Queries
-    const { data: workspaceStatus, refetch: refetchStatus } = useWorkspaceStatus();
+    const { data: workspaceStatus, refetch: refetchStatus } = useWorkspaceStatus(workspaceId);
     const { data: jiraAnalysis, isLoading: analyzingJira } = useJiraAnalysis(
         workspaceId || "",
         step === "review" && configSource === "jira",
@@ -35,21 +35,21 @@ export function OnboardingWizard() {
         step === "review", // Fetch whenever we are in review to check for CI
     );
 
+    const urlWorkspaceId = searchParams.get("workspace_id");
+    const stepParam = searchParams.get("step");
+
     // Initial hydration from URL
     useEffect(() => {
-        const sid = searchParams.get("workspace_id");
-        const stepParam = searchParams.get("step");
-
-        if (sid) {
-            setWorkspaceId(sid);
+        if (urlWorkspaceId) {
+            setWorkspaceId(urlWorkspaceId);
             // If we have an ID but no step, default to integrations
             if (!stepParam && step === "create") {
                 setStep("integrations");
-            } else if (stepParam) {
+            } else if (stepParam && stepParam !== step) {
                 setStep(stepParam as Step);
             }
         }
-    }, [searchParams, step]);
+    }, [urlWorkspaceId, stepParam, step]);
 
     // Handle updates
     const updateStep = (newStep: Step) => {

@@ -27,7 +27,7 @@ export function DashboardPage() {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const queryClient = useQueryClient();
-    const { data: status, isLoading: statusLoading, error: statusError } = useWorkspaceStatus();
+    const { data: status, isLoading: statusLoading, error: statusError } = useWorkspaceStatus(searchParams.get("workspace_id"));
 
     // Redirect to onboarding if no workspace found
     useEffect(() => {
@@ -99,14 +99,14 @@ export function DashboardPage() {
 
     // 2. Onboarding Gate (Show ONLY widget if any service is missing OR not marked complete)
     // Account created is step 1, so we check the 3 integrations.
-    const isFullyOnboarded =
-        !!status?.onboardingCompletedAt ||
-        (status?.hasJira && status?.hasGithub && status?.hasSlack);
+    // 2. Onboarding Gate (Show ONLY widget if any service is missing OR not marked complete)
+    // Account created is step 1, so we check the 3 integrations.
+    const isFullyOnboarded = !!status?.onboardingCompletedAt;
 
     if (!isFullyOnboarded) {
         return (
             <div className="max-w-2xl mx-auto mt-20">
-                <OnboardingWidget />
+                <OnboardingWidget workspaceId={status?.id} />
             </div>
         );
     }

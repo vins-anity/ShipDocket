@@ -4,10 +4,12 @@ import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkspaceStatus } from "@/hooks/use-workspace-status";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 
 export function AuditLogExplorer() {
-    const { data: workspace } = useWorkspaceStatus();
+    const [searchParams] = useSearchParams();
+    const { data: workspace } = useWorkspaceStatus(searchParams.get("workspace_id"));
 
     const { data: logs, isLoading } = useQuery({
         queryKey: ["audit-log", workspace?.id],
