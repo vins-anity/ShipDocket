@@ -14,20 +14,17 @@ import * as authService from "../../services/auth.service";
  * Helper to construct the redirect URI.
  * Forces HTTPS if running in production or on Render.
  */
-function getRedirectUri(c: Context, getPath: string): string {
+function getRedirectUri(c: Context, path: string): string {
     const url = new URL(c.req.url);
-    const origin = url.origin;
 
-    // Check if we need to force HTTPS (e.g. Render behind proxy)
-    const isProduction = process.env.NODE_ENV === "production" || origin.includes("onrender.com");
+    // Check if we're on Render or in production
+    const isRender = url.hostname.includes("onrender.com");
+    const isProduction = process.env.NODE_ENV === "production";
 
-    let protocol = url.protocol;
-    if (isProduction && protocol === "http:") {
-        protocol = "https:";
-    }
+    // Force HTTPS for production/Render
+    const protocol = (isProduction || isRender) ? "https:" : url.protocol;
 
-    // host includes port if present
-    return `${protocol}//${url.host}${getPath}`;
+    return `${protocol}//${url.host}${path}`;
 }
 
 const auth = new Hono()
